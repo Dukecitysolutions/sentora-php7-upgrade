@@ -1,0 +1,43 @@
+Sentora Ubuntu 14.04 to 16.04 upgrade Guide
+
+## login to server directly or thur SSH as root
+## and run the commands below and follow the instructions
+
+apt-get -y update
+apt-get -y install update-manager-core
+sudo do-release-upgrade
+
+## upgrade will start downloading files
+It will say "Installing the upgrade can take serverals hours. Once the download has finished, the process cannot be canceled"
+Press y - then press Enter.
+
+## Continues downloading files
+
+Postfix Config window will appear.
+Select No Configuration - then press enter
+
+ProFTPD Config window will apprear.
+select standalone - then press enter
+
+Configuring Libssl1.0.1 window will apprear.
+Select Yes - then press enter
+
+Dovecot Config window will apprear.
+Select Keep the local version currently installed - then press enter
+
+ProFTPD will ask again about config
+Press N - then press enter
+Select Keep the local version currently installed - then press enter
+
+Unattended-upgrade windows will appear
+Select Keep the local version currently installed - then press enter
+
+Remove Obsolete packages
+Press Y - then press enter
+
+Restart required
+Press Y - then press enter
+
+## Done. Enjoy.
+
+
