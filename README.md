@@ -6,6 +6,18 @@
 
 ## THIS CODE IS NOT FOR PRODUCTION SYSTEMS YET. NEEDS TESTING. USE AT YOUR OWN RISK.
 
+## About this upgrade script:
+* Upgrades PHP 5.x to PHP 7.3
+* Replaces Suhosin 9.x with Snuffleupagus for DISABLED_FUNCTIONS rules per vhost.
+* Apache_admin - Upgraded to support SSL, Snuffleupagus disable_functions, vhosts file written with Smarty .tpl files.
+* Domains Module - supports Snuffleupagus vhost rules deletion.
+* Parked_Domains Module - supports Snuffleupagus vhost rules deletion.
+* Sub_Domains Module - supports Snuffleupagus vhost rules deletion.
+* Fixes __auto_loader issues with PHP 7.x
+* Adds Smarty template lib to /etc/sentora/panel/etc/libs/smarty
+* Adds apache vhost templates to /etc/sentora/configs/apache/templates
+* More details to come soon.
+
 Supported OS:
 
 CentOS 6 & 7
