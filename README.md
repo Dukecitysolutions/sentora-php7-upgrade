@@ -1,4 +1,4 @@
-# sentora-php7-upgrade *Beta*
+# sentora-php7-upgrade - *Beta*
  Sentora PHP7 Upgrade
 
 * Version: 1.0.0
