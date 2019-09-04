@@ -1,6 +1,9 @@
 # sentora-php7-upgrade *Beta*
  Sentora PHP7 Upgrade
 
+* Version: 1.0.0
+* [Bug Tracker](https://github.com/Dukecitysolutions/sentora-php7-upgrade/issues) for any bugs or security related issues.
+
 ## THIS CODE IS NOT FOR PRODUCTION SYSTEMS YET. NEEDS TESTING. USE AT YOUR OWN RISK.
 
 Supported OS:
