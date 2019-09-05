@@ -125,5 +125,3 @@ fi
 	
 	echo "Done Processing PHP 7.3 with Snuffaluffagus packages updates. Enjoy."
 	
-
-
