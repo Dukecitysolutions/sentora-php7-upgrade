@@ -47,12 +47,34 @@ fi
 
 ######################################################################################
 
+
+	################################################################################
+	
+	# Start Sentora php 7.3 config update
+	
+	################################################################################
+
+	if [[ "$VER" = "16.04" ]]; then
+	
+	# Fix missing php.ini settings sentora needs
+	echo ""
+	echo "Fix missing php.ini settings sentora needs in Ubuntu 16.04 php 7.3 ..."
+	echo "setting upload_tmp_dir = /var/sentora/temp/"
+	echo ""
+	sed -i 's|;upload_tmp_dir =|upload_tmp_dir = /var/sentora/temp/|g' /etc/php/7.3/apache2/php.ini
+	echo "Setting session.save_path = /var/sentora/sessions"
+	sed -i 's|;session.save_path = "/var/lib/php/sessions"|session.save_path = "/var/sentora/sessions"|g' /etc/php/7.3/apache2/php.ini
+	
+	fi
+
+
 	################################################################################
 	
 	# Start Sentora php 7.3 module package update Below
 	
 	################################################################################
 	
+	echo ""
 	echo "Starting PHP 7.3 with Snuffaluffagus packages updates"
 		
 	#### FIX - Upgrade Sentora to Sentora Live for PHP 7.x fixes

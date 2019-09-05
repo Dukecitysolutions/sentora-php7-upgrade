@@ -161,6 +161,15 @@ if [[ "$OS" = "Ubuntu" || "$OS" = "debian" ]]; then
 		# Install git
 		apt-get -y install git
 		
+		# Fix missing php.ini settings sentora needs
+		echo ""
+		echo "Fix missing php.ini settings sentora needs in Ubuntu 16.04 php 7.3 ..."
+		echo "setting upload_tmp_dir = /var/sentora/temp/"
+		echo ""
+		sed -i 's|;upload_tmp_dir =|upload_tmp_dir = /var/sentora/temp/|g' /etc/php/7.3/apache2/php.ini
+		echo "Setting session.save_path = /var/sentora/sessions"
+		sed -i 's|;session.save_path = "/var/lib/php/sessions"|session.save_path = "/var/sentora/sessions"|g' /etc/php/7.3/apache2/php.ini
+		
     fi
 		# ....
 fi

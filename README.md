@@ -42,9 +42,9 @@ bash <(curl -L -Ss http://zppy-repo.dukecitysolutions.com/repo/sentora-live/php7
 
 bash <(curl -L -Ss http://zppy-repo.dukecitysolutions.com/repo/sentora-live/php7_upgrade/sentora_php7_upgrade.sh)
 
-## Updating packages for this install - USE ONLY IF YOU HAVE INSTALLED sentora_php7_upgrade.sh script:
+## Nightly Updating for packages for this install - USE ONLY IF YOU HAVE INSTALLED sentora_php7_upgrade.sh script:
 ### This script is safe to run at any time. Details below:
-* Updates core files used in this upgrade script.
-* Use when updates have been made to files in this repo.
+* Updates core files and fixes needed in this upgrade script.
+* Use when updates have been made to files in this repo or use daily to keep current.
 
 bash <(curl -L -Ss http://zppy-repo.dukecitysolutions.com/repo/sentora-live/php7_upgrade/sentora_php7_pkg_update.sh)
