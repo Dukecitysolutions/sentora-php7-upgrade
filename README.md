@@ -23,7 +23,7 @@
 
 CentOS 6 & 7
 
-Ubuntu 16.04 - Upgraded from 14.04 Proir to running upgrade script. - Details Below.
+Ubuntu 16.04 - Upgraded from 14.04 Prior to running upgrade script. - Details Below.
 
 
 ## How to use Sentora php7 upgrade script.
