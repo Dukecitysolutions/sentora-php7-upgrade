@@ -16,6 +16,7 @@
 * Fixes __auto_loader issues with PHP 7.x
 * Adds Smarty template lib to /etc/sentora/panel/etc/libs/smarty
 * Adds apache vhost templates to /etc/sentora/configs/apache/templates
+* NEEDS Security testing to make sure PHP 7 w/Snuffleupagus upgrade did not uninstall packages we need.(Except for Suhosin)
 * More details to come soon.
 
 ### Supported OS:
@@ -37,5 +38,13 @@ bash sentora_php7_upgrade.sh
 
 ## Ubuntu 14.04 to 16.04 Install:
 
-Coming Soon! 
-Need to make 14.04 to 16.04 upgrade step by step guide.
+### Download and Read upgrade instructions found below first. Use them Step-by-step.
+(https://github.com/Dukecitysolutions/sentora-php7-upgrade/blob/master/sentora_ubun14to16.04_upgrade_guide.txt)
+
+### After Ubuntu 14.04 to 16.04 is completed with instructions above. Run code below.
+
+wget -nv -O sentora_php7_upgrade.sh http://zppy-repo.dukecitysolutions.com/repo/sentora-live/php7_upgrade/sentora_php7_upgrade.sh
+
+chmod +x sentora_php7_upgrade.sh
+
+bash sentora_php7_upgrade.sh
