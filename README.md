@@ -1,7 +1,7 @@
 # Sentora php7 upgrade - *Beta*
  Sentora PHP7 Upgrade
 
-* Version: 1.0.0
+* Version: 0.1.0 - Beta
 * [Bug Tracker](https://github.com/Dukecitysolutions/sentora-php7-upgrade/issues) for any bugs or security related issues.
 
 ## THIS CODE IS NOT FOR PRODUCTION SYSTEMS YET. NEEDS TESTING. USE AT YOUR OWN RISK.
@@ -41,3 +41,8 @@ bash <(curl -L -Ss http://zppy-repo.dukecitysolutions.com/repo/sentora-live/php7
 ### After Ubuntu 14.04 to 16.04 is completed with instructions above. Run code below.
 
 bash <(curl -L -Ss http://zppy-repo.dukecitysolutions.com/repo/sentora-live/php7_upgrade/sentora_php7_upgrade.sh)
+
+## Updating packages for this install - USE ONLY IF YOU HAVE INSTALLED sentora_php7_upgrade.sh script:
+### This script is safe to run at any time. Details below:
+* Updates core files used in this upgrade script.
+* Use when updates have been made to files in this repo.
