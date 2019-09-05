@@ -29,11 +29,7 @@ Ubuntu 16.04 - Upgraded from 14.04 Prior to running upgrade script. - Details Be
 ## How to use Sentora php7 upgrade script.
 
 ## CentOS Install:
-wget -nv -O sentora_php7_upgrade.sh http://zppy-repo.dukecitysolutions.com/repo/sentora-live/php7_upgrade/sentora_php7_upgrade.sh
-
-chmod +x sentora_php7_upgrade.sh
-
-bash sentora_php7_upgrade.sh
+bash <(curl -L -Ss http://zppy-repo.dukecitysolutions.com/repo/sentora-live/php7_upgrade/sentora_php7_upgrade.sh)
 
 
 ## Ubuntu 14.04 to 16.04 Install:
@@ -43,8 +39,4 @@ bash sentora_php7_upgrade.sh
 
 ### After Ubuntu 14.04 to 16.04 is completed with instructions above. Run code below.
 
-wget -nv -O sentora_php7_upgrade.sh http://zppy-repo.dukecitysolutions.com/repo/sentora-live/php7_upgrade/sentora_php7_upgrade.sh
-
-chmod +x sentora_php7_upgrade.sh
-
-bash sentora_php7_upgrade.sh
+bash <(curl -L -Ss http://zppy-repo.dukecitysolutions.com/repo/sentora-live/php7_upgrade/sentora_php7_upgrade.sh)
