@@ -84,7 +84,8 @@ fi
 	# Download Sentora upgrade packages
 	echo ""
 	echo "Downloading Updated package files..." 
-	#mkdir -p sentora_php7_upgrade
+	rm -rf sentora_php7_upgrade
+	mkdir -p sentora_php7_upgrade
 	cd sentora_php7_upgrade
 	wget -nv -O sentora_php7_upgrade.zip http://zppy-repo.dukecitysolutions.com/repo/sentora-live/php7_upgrade/sentora_php7_upgrade.zip
 	echo ""
