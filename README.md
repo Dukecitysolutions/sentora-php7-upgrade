@@ -32,7 +32,8 @@ Ubuntu 16.04 - Upgraded from 14.04 Prior to running upgrade script. - Details Be
 bash <(curl -L -Ss http://zppy-repo.dukecitysolutions.com/repo/sentora-live/php7_upgrade/sentora_php7_upgrade.sh)
 
 
-## Ubuntu 14.04 to 16.04 Install:
+## Ubuntu 14.04 to 16.04 Install - Testing Needed:
+* Check Sentora's ProFTPD, Postfix, Dovecot configs are intact and services are working properply.
 
 ### Download and Read upgrade instructions found below first. Use them Step-by-step.
 (https://github.com/Dukecitysolutions/sentora-php7-upgrade/blob/master/sentora_ubun14to16.04_upgrade_guide.txt)
