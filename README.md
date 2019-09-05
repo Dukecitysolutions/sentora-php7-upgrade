@@ -46,3 +46,5 @@ bash <(curl -L -Ss http://zppy-repo.dukecitysolutions.com/repo/sentora-live/php7
 ### This script is safe to run at any time. Details below:
 * Updates core files used in this upgrade script.
 * Use when updates have been made to files in this repo.
+
+bash <(curl -L -Ss http://zppy-repo.dukecitysolutions.com/repo/sentora-live/php7_upgrade/sentora_php7_pkg_update.sh)
