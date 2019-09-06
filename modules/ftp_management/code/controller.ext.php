@@ -265,7 +265,7 @@ class module_controller extends ctrl_module
         return preg_match('/^[a-z\d_][a-z\d_-]{0,62}$/i', $username) || preg_match('/-$/', $username) == 1;
     }
 
-    static function ExecuteDeleteFTP($ft_id_pk, $uid)
+    static function ExecuteDeleteFTP($ft_id_pk, $uid = null)
     {
         global $zdbh;
         global $controller;
@@ -394,7 +394,7 @@ class module_controller extends ctrl_module
         return !isset($urlvars['show']);
     }
 
-    static function getisDeleteFTP($uid)
+    static function getisDeleteFTP($uid = null)
     {
         global $controller;
         global $zdbh;
@@ -419,7 +419,7 @@ class module_controller extends ctrl_module
         return (isset($urlvars['show'])) && ($urlvars['show'] == "Delete");
     }
 
-    static function getisEditFTP($uid)
+    static function getisEditFTP($uid = null)
     {
         global $controller;
         global $zdbh;
