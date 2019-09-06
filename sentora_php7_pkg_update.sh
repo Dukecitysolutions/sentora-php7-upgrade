@@ -65,8 +65,19 @@ fi
 	echo "Setting session.save_path = /var/sentora/sessions"
 	sed -i 's|;session.save_path = "/var/lib/php/sessions"|session.save_path = "/var/sentora/sessions"|g' /etc/php/7.3/apache2/php.ini
 	
+	# Fix postfix not working after upgrade to 16.04
+	echo ""
+	echo "Fixing postfix not working after upgrade to 16.04..."
+	# *Workaround* Postfix disable daemon_directory for now to allow startup after update
+	sed -i 's|daemon_directory = /usr/lib/postfix|#daemon_directory = /usr/lib/postfix|g' /etc/sentora/configs/postfix/main.cf
+	systemctl restart postfix
+	
+	# Install missing php7.3-xml for system and roundcube
+	echo ""
+	echo "Install missing php7.3-xml for system and roundcube..."
+	apt-get -y install php7.3-xml php7.3-gd
+				
 	fi
-
 
 	################################################################################
 	
@@ -122,6 +133,35 @@ fi
 	rm -rf /etc/sentora/configs/apache/templates/
 	cp -r ~/sentora_php7_upgrade/preconf/apache/templates /etc/sentora/configs/apache/
 	echo ""
+	
+	
+	################################################################################
+	
+	# Start Roundcube-1.3.10 upgrade Below
+	
+	################################################################################
+	
+	echo ""
+	echo "Starting Roundcube upgrade to 1.3.10..."
+	
+	wget -nv -O roundcubemail-1.3.10.tar.gz https://github.com/roundcube/roundcubemail/releases/download/1.3.10/roundcubemail-1.3.10-complete.tar.gz
+	tar xf roundcubemail-*.tar.gz
+	cd roundcubemail-1.3.10
+	bin/installto.sh /etc/sentora/panel/etc/apps/webmail/
+	
+	
+	################################################################################
+	
+	# Start PHPsysinfo 3.3.1 upgrade Below
+	
+	################################################################################
+	
+	echo ""
+	echo "Starting PHPsysinfo upgrade to 3.3.1..."
+	rm -rf /etc/sentora/panel/etc/apps/phpsysinfo/
+	cp -r  ~/sentora_php7_upgrade/etc/apps/phpsysinfo $PANEL_PATH/panel/etc/apps/
+	
+	################################################################################
 	
 	echo "Done Processing PHP 7.3 with Snuffaluffagus packages updates. Enjoy."
 	

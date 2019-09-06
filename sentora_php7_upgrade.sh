@@ -104,7 +104,13 @@ if [[ "$OS" = "CentOs" ]]; then
 	yum -y install php-zip php-mysql php-mcrypt
 	
 	#yum -y install httpd mod_ssl php php-zip php-fpm php-devel php-gd php-imap php-ldap php-mysql php-odbc php-pear php-xml php-xmlrpc php-pecl-apc php-mbstring php-mcrypt php-soap php-tidy curl curl-devel perl-libwww-perl ImageMagick libxml2 libxml2-devel mod_fcgid php-cli httpd-devel php-fpm php-intl php-imagick php-pspell wget
-
+	
+	# Install php-fpm
+	#yum -y install php-fpm
+	
+	# Create CGI Scripts
+	#....
+	
 	# Install git
 	yum -y install git
 	
@@ -123,7 +129,7 @@ if [[ "$OS" = "CentOs" ]]; then
 fi	
 
 #################################################################################
-if [[ "$OS" = "Ubuntu" || "$OS" = "debian" ]]; then
+if [[ "$OS" = "Ubuntu" ]]; then
 	
 	PACKAGE_INSTALLER="apt-get -yqq install"
 	
@@ -147,7 +153,7 @@ if [[ "$OS" = "Ubuntu" || "$OS" = "debian" ]]; then
 		# Install PHP 7 and modules
 		apt-get -yqq install php7.3 php7.3-common 
 		apt-get -yqq install php7.3-mysql php7.3-mbstring
-		apt-get -yqq install php7.3-zip 
+		apt-get -yqq install php7.3-zip php7.3-xml php7.3-gd
 		apt-get -yqq install php7.0-dev libapache2-mod-php7.3
 		apt-get -yqq install php7.3-dev
 		
@@ -169,6 +175,15 @@ if [[ "$OS" = "Ubuntu" || "$OS" = "debian" ]]; then
 		sed -i 's|;upload_tmp_dir =|upload_tmp_dir = /var/sentora/temp/|g' /etc/php/7.3/apache2/php.ini
 		echo "Setting session.save_path = /var/sentora/sessions"
 		sed -i 's|;session.save_path = "/var/lib/php/sessions"|session.save_path = "/var/sentora/sessions"|g' /etc/php/7.3/apache2/php.ini
+		
+		# Fix postfix not working after upgrade to 16.04
+		echo ""
+		echo "Fixing postfix not working after upgrade to 16.04..."
+		
+		# disable postfix daemon_directory for now to allow startup after update
+		sed -i 's|daemon_directory = /usr/lib/postfix|#daemon_directory = /usr/lib/postfix|g' /etc/sentora/configs/postfix/main.cf
+				
+		systemctl restart postfix
 		
     fi
 		# ....
@@ -206,36 +221,37 @@ fi
 	mkdir /etc/sentora/configs/php/sp
 	touch /etc/sentora/configs/php/sp/snuffleupagus.rules
 	
-	
-	
-	if [[ "$OS" = "Ubuntu" ]]; then
+	if [[ "$OS" = "CentOs" && ( "$VER" = "6" || "$VER" = "7" ) ]]; then
 	
 		# Enable snuffleupagus in PHP.ini
-		echo '' >> /etc/php/7.3/apache2/php.ini
-		echo 'extension=snuffleupagus.so' >> /etc/php/7.3/apache2/php.ini
-		echo '' >> /etc/php/7.3/apache2/php.ini
-		echo 'sp.configuration_file=/etc/sentora/configs/php/sp/snuffleupagus.rules' >> /etc/php/7.3/apache2/php.ini
-		
-    elif [[ "$OS" = "CentOs" ]]; then
-	
-		# Enable snuffleupagus in PHP.ini
+		echo 'updating CentOS PHP.ini Enable snuffleupagus...'
 		echo '' >> /etc/php.ini
 		echo 'extension=snuffleupagus.so' >> /etc/php.ini
 		echo '' >> /etc/php.ini
 		echo 'sp.configuration_file=/etc/sentora/configs/php/sp/snuffleupagus.rules' >> /etc/php.ini
 		
 		#### FIX - Suhosin loading in php.ini
-		zip -r /etc/php.d/suhosin.zip /etc/php.d/suhosin.ini
-		rm -rf /etc/php.d/suhosin.ini
+		mv /etc/php.d/suhosin.ini /etc/php.d/suhosin.ini_bak
+		# zip -r /etc/php.d/suhosin.zip /etc/php.d/suhosin.ini
+		# rm -rf /etc/php.d/suhosin.ini
 		
-    fi
+    elif [[ "$OS" = "Ubuntu" && ( "$VER" = "16.04" ) ]]; then
 	
+		# Enable snuffleupagus in PHP.ini
+		echo 'updating CentOS PHP.ini Enable snuffleupagus...'
+		echo '' >> /etc/php/7.3/apache2/php.ini
+		echo 'extension=snuffleupagus.so' >> /etc/php/7.3/apache2/php.ini
+		echo '' >> /etc/php/7.3/apache2/php.ini
+		echo 'sp.configuration_file=/etc/sentora/configs/php/sp/snuffleupagus.rules' >> /etc/php/7.3/apache2/php.ini
+		
+	fi
 	
 	# Restart Apache service
-	if [[ "$OS" = "Ubuntu" ]]; then
-		systemctl restart apache2
-    elif [[ "$OS" = "CentOs" ]]; then
+	if [[ "$OS" = "CentOs" && ("$VER" = "6" || "$VER" = "7") ]]; then
 		systemctl restart httpd
+	
+    elif [[ "$OS" = "Ubuntu" && ("$VER" = "16.04") ]]; then
+		systemctl restart apache2
     fi
 	
 
@@ -299,14 +315,39 @@ fi
 	#wget -nv -O  update.sql https://raw.githubusercontent.com/sentora/sentora-installers/master/preconf/sentora-update/1-0-3/sql/update.sql #need url
 	mysql -u root -p"$mysqlpassword" < ~/sentora_php7_upgrade/preconf/sql/sentora_1_0_3_1.sql
 	
+		
+	################################################################################
 	
-	#sudo /usr/bin/php -q /etc/sentora/panel/bin/daemon.php
+	# Start Roundcube-1.3.10 upgrade Below
 	
-	# Install php-fpm
-	#yum -y install php-fpm
+	################################################################################
 	
-	# Create CGI Scripts
-	#....
+	echo ""
+	echo "Starting Roundcube upgrade to 1.3.10..."
+	
+	wget -nv -O roundcubemail-1.3.10.tar.gz https://github.com/roundcube/roundcubemail/releases/download/1.3.10/roundcubemail-1.3.10-complete.tar.gz
+	tar xf roundcubemail-*.tar.gz
+	cd roundcubemail-1.3.10
+	bin/installto.sh /etc/sentora/panel/etc/apps/webmail/
+	
+	
+	################################################################################
+	
+	# Start PHPsysinfo 3.3.1 upgrade Below
+	
+	################################################################################
+	
+	echo ""
+	echo "Starting PHPsysinfo upgrade to 3.3.1..."
+	rm -rf /etc/sentora/panel/etc/apps/phpsysinfo/
+	cp -r  ~/sentora_php7_upgrade/etc/apps/phpsysinfo $PANEL_PATH/panel/etc/apps/
+	
+	
+	################################################################################
+	
+	# Start Sentora system premission upgrade Below
+	
+	################################################################################
 	
 	# Fix permissions to prep and secure sentora for PHP-FPM
 	# Needs research and testing. All help is needed
@@ -321,5 +362,14 @@ fi
 	#chmod 0740 /var/sentora/hostdata
 	#chmod 0740 /var/sentora/hostdata/*/public_html
 	#chmod 0740 /var/sentora/hostdata/*/public_html/tmp
+	
+	################################################################################
 
+echo ""
+echo "Done updating all Sentora_core and PHP 7.3 files"
+echo ""
+echo "Enjoy and have fun testing!"
+echo ""
 echo "We are done upgrading Sentora 1.0.3 - PHP 5.* w/Suhosin to PHP 7.3 w/Snuffleupagus"
+echo ""
+echo "echo "Sincerely yours, Duke City Solutions, LLC"
