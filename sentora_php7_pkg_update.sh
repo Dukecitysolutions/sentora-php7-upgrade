@@ -114,6 +114,12 @@ fi
 	echo "Updating Domains module..."
 	rm -rf /etc/sentora/panel/modules/domains/
 	cp -r  ~/sentora_php7_upgrade/modules/domains $PANEL_PATH/panel/modules/
+	
+	# Upgrade ftp_management module 1.0.x
+	echo ""
+	echo "Updating FTP_management module..."
+	rm -rf /etc/sentora/panel/modules/ftp_management/
+	cp -r  ~/sentora_php7_upgrade/modules/ftp_management $PANEL_PATH/panel/modules/
 		
 	# Upgrade parked_Domains module 1.0.x
 	echo ""
@@ -160,6 +166,25 @@ fi
 	echo "Starting PHPsysinfo upgrade to 3.3.1..."
 	rm -rf /etc/sentora/panel/etc/apps/phpsysinfo/
 	cp -r  ~/sentora_php7_upgrade/etc/apps/phpsysinfo $PANEL_PATH/panel/etc/apps/
+	
+	
+	################################################################################
+	
+	# Start PHPmyadmin 4.9 upgrade Below - TESTING WHICH VERSION IS BEST HERE.
+	
+	################################################################################
+	
+	#echo ""
+	#echo "Starting PHPmyadmin upgrade to 4.9..."
+	#mkdir -p /etc/sentora/panel/etc/apps/phpmyadmin_bak
+	#cp -r /etc/sentora/panel/etc/apps/phpmyadmin/* /etc/sentora/panel/etc/apps/phpmyadmin_bak
+	#rm -rf /etc/sentora/panel/etc/apps/phpmyadmin/
+	
+	# copy original conf bak to phpmyadmin
+	#cp -r /etc/sentora/panel/etc/apps/phpmyadmin_bak/config.inc.php /etc/sentora/panel/etc/apps/phpmyadmin/
+	# copy new PHPmyadmin 4.9 files to PHPmyadmin dir
+	#cp -r  ~/sentora_php7_upgrade/etc/apps/phpmyadmin $PANEL_PATH/panel/etc/apps/
+	
 	
 	################################################################################
 	

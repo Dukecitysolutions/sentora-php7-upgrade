@@ -277,32 +277,45 @@ fi
 	#cp -r /sentora_update/loader.inc.php $PANEL_PATH/panel/dryden/
 	sed -i 's/__autoload/x__autoload/g' /etc/sentora/panel/dryden/loader.inc.php
 	
+	# Upgrade apache_admin with apache_admin 1.0.x
+	echo ""
+	echo "Updating Apache_admin module..."
+	rm -rf /etc/sentora/panel/modules/apache_admin
+	cp -r  ~/sentora_php7_upgrade/modules/apache_admin $PANEL_PATH/panel/modules/	
 	
-	# Upgrade domains_module to 1.0.1
+	# Upgrade domains_module to 1.0.x
+	echo ""
+	echo "Updating Domains module..."
 	rm -rf /etc/sentora/panel/modules/domains/
 	cp -r  ~/sentora_php7_upgrade/modules/domains $PANEL_PATH/panel/modules/
+	
+	# Upgrade ftp_management module 1.0.x
+	echo ""
+	echo "Updating FTP_management module..."
+	rm -rf /etc/sentora/panel/modules/ftp_management/
+	cp -r  ~/sentora_php7_upgrade/modules/ftp_management $PANEL_PATH/panel/modules/
 		
-	# Upgrade parked_Domains module 1.0.1
+	# Upgrade parked_Domains module 1.0.x
+	echo ""
+	echo "Updating Parked_Domains module..."
 	rm -rf /etc/sentora/panel/modules/parked_domains/
 	cp -r  ~/sentora_php7_upgrade/modules/parked_domains $PANEL_PATH/panel/modules/
 	
-	# Upgrade Sub_Domains module 1.0.1
+	# Upgrade Sub_Domains module 1.0.x
+	echo ""
+	echo "Updating Sub_Domains module..."
 	rm -rf /etc/sentora/panel/modules/sub_domains/
 	cp -r  ~/sentora_php7_upgrade/modules/sub_domains $PANEL_PATH/panel/modules/
 	
+	# Copy New Apache config template files
+	echo ""
+	echo "Updating Sentora vhost templates..."
+	rm -rf /etc/sentora/configs/apache/templates/
+	cp -r ~/sentora_php7_upgrade/preconf/apache/templates /etc/sentora/configs/apache/
+	echo ""
+	
 	# install Smarty files
 	cp -r ~/sentora_php7_upgrade/etc/lib/smarty /etc/sentora/panel/etc/lib/
-
-	# Copy New Apache config template files
-	cp -r ~/sentora_php7_upgrade/preconf/apache/templates /etc/sentora/configs/apache/
-	
-	# Upgrade apache_admin with apache_admin 1.0.1
-	rm -rf /etc/sentora/panel/modules/apache_admin
-	cp -r  ~/sentora_php7_upgrade/modules/apache_admin $PANEL_PATH/panel/modules/
-	# Download new Apache_admin 1.0.1	
-	#zppy repo add zppy-repo.dukecitysolutions.com
-	#zppy update
-	#zppy install apache_admin
 	
 	
 	# Update Sentora Core Mysql tables
@@ -371,5 +384,4 @@ echo ""
 echo "Enjoy and have fun testing!"
 echo ""
 echo "We are done upgrading Sentora 1.0.3 - PHP 5.* w/Suhosin to PHP 7.3 w/Snuffleupagus"
-echo ""
-echo "echo "Sincerely yours, Duke City Solutions, LLC"
+
