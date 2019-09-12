@@ -1,8 +1,16 @@
 #!/bin/bash
 
-SENTORA_UPDATER_VERSION="1.0.3"
+SENTORA_UPDATER_VERSION="0.3.0"
 PANEL_PATH="/etc/sentora"
 PANEL_DATA="/var/sentora"
+
+#--- Display the 'welcome' splash/user warning info..
+echo ""
+echo "############################################################"
+echo "#  Welcome to the Unofficial Sentora PHP 7 upgrader. Installer v.$SENTORA_UPDATER_VERSION  #"
+echo "############################################################"
+
+echo -e "\nChecking that minimal requirements are ok"
 
 # Check if the user is 'root' before updating
 if [ $UID -ne 0 ]; then
@@ -61,21 +69,33 @@ if [[ "$OS" = "CentOs" ]]; then
 
 	yum clean all
 	rm -rf /var/cache/yum/*
-
-	# Add Repos
-	wget https://dl.fedoraproject.org/pub/epel/epel-release-latest-6.noarch.rpm
-	wget http://rpms.remirepo.net/enterprise/remi-release-6.rpm
-	rpm -Uvh remi-release-6.rpm epel-release-latest-6.noarch.rpm
 	
-	# Install PHP 7.3 and update modules
-	yum -y install yum-utils
-	yum-config-manager --enable remi-php73
-	yum -y update
-	yum -y install php-zip php-mysql php-mcrypt
+	yum -y install epel-release
 	
+	rpm -Uvh http://rpms.famillecollet.com/enterprise/remi-release-6.rpm
+	
+	yum -y --enablerepo=remi-php73 install php
+	# yum --enablerepo=remi-php73 install php-xml php-soap php-xmlrpc php-mbstring php-json php-gd php-mcrypt
+	
+	# Fix autoconf issues
+	wget http://ftp.gnu.org/gnu/autoconf/autoconf-2.69.tar.gz
+	tar xvfvz autoconf-2.69.tar.gz
+	cd autoconf-2.69
+	./configure
+	make
+	sudo make install
+	 
+	# Reset home
+	cd ~
+	
+	# upgrade PRCE
+	yum -y install pcre-devel
+		
 	# Install git
 	yum -y install git
 	
+	# Restart Apache
+	service httpd restart
 		
 	# END
 	##############################################################################################
@@ -91,10 +111,31 @@ if [[ "$OS" = "CentOs" ]]; then
 	
 	yum clean all
 	rm -rf /var/cache/yum/*
-
+	
 	# Add Repos
-	wget https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
-	wget http://rpms.remirepo.net/enterprise/remi-release-7.rpm
+	if wget --spider https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm 2>/dev/null; then
+		echo ""
+  		echo "Repo *epel-release-latest-7.noarch.rpm* is available procced ..."
+		wget https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+	else
+		echo ""
+  		echo "Repo *epel-release-latest-7.noarch.rpm* is not available. Exiting installer. Please contact script admin"
+		exit 1
+	fi
+	
+	if wget --spider http://rpms.remirepo.net/enterprise/remi-release-7.rpm 2>/dev/null; then
+		echo ""
+  		echo "Repo *remi-release-7.rpm* is available procced ..."
+		wget http://rpms.remirepo.net/enterprise/remi-release-7.rpm
+	else
+		echo ""
+  		echo "Repo *remi-release-7.rpm* is not available. Exiting installer. Please contact script admin"
+		exit 1
+	fi
+	
+	
+	#wget https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+	#wget http://rpms.remirepo.net/enterprise/remi-release-7.rpm
 	rpm -Uvh remi-release-7.rpm epel-release-latest-7.noarch.rpm
 
 	# Install PHP 7.3 and update modules
@@ -118,11 +159,11 @@ if [[ "$OS" = "CentOs" ]]; then
 	# END
 	##############################################################################################
 	
-	else
+	#else
         
 	#add something here for non-Centos OS
-	echo "Wrong CentOS Version. Exiting update."
-	exit 1
+	#echo "Wrong CentOS Version. Exiting update."
+	#exit 1
 
 
     fi
@@ -192,6 +233,22 @@ fi
 	# END
 	################################################################################################
 	
+	
+	##### Check php 7 was installed or quit installer.
+	PHPVERFULL=$(php -r 'echo phpversion();')
+	PHPVER=${PHPVERFULL:0:3} # return 6 or 7
+
+	echo "Detected PHP: $PHPVER "
+
+	if  [[ "$PHPVER" = "7.3" ]]; then
+    	echo "PHP 7.3 installed. Procced installing ..."
+	else
+		echo ""
+    	echo "PHP 7.3 not installed. Exiting installer. Please contact script admin"
+		exit 1
+	fi
+	
+	
 	################################################################################
 	
 	# Start Snuffleupagus install Below
@@ -247,7 +304,10 @@ fi
 	fi
 	
 	# Restart Apache service
-	if [[ "$OS" = "CentOs" && ("$VER" = "6" || "$VER" = "7") ]]; then
+	if [[ "$OS" = "CentOs" && ("$VER" = "6") ]]; then
+		service httpd restart
+	
+	elif [[ "$OS" = "CentOs" && ("$VER" = "7") ]]; then
 		systemctl restart httpd
 	
     elif [[ "$OS" = "Ubuntu" && ("$VER" = "16.04") ]]; then
@@ -272,9 +332,9 @@ fi
 	unzip sentora_php7_upgrade.zip
 	
 	# ####### start here   Upgrade __autoloader() to x__autoloader()
-	#rm -rf $PANEL_PATH/panel/dryden/loader.inc.php
-	#cd 
-	#cp -r /sentora_update/loader.inc.php $PANEL_PATH/panel/dryden/
+	# rm -rf $PANEL_PATH/panel/dryden/loader.inc.php
+	# cd 
+	# cp -r /sentora_update/loader.inc.php $PANEL_PATH/panel/dryden/
 	sed -i 's/__autoload/x__autoload/g' /etc/sentora/panel/dryden/loader.inc.php
 	
 	# Upgrade apache_admin with apache_admin 1.0.x
@@ -343,6 +403,8 @@ fi
 	cd roundcubemail-1.3.10
 	bin/installto.sh /etc/sentora/panel/etc/apps/webmail/
 	
+	chown -R root:root /etc/sentora/panel/etc/apps/webmail
+	
 	
 	################################################################################
 	
@@ -366,15 +428,16 @@ fi
 	# Needs research and testing. All help is needed
 	# Panel permissions
 	#chmod 0770 /etc/sentora
+	#chmod 0770 /etc/sentora/configs
 	#chmod 0770 /etc/sentora/panel
 	
 	# Logs permissions
 	#chmod 0770 /var/sentora/logs/domains/*
 	
 	# Hostdata permissions
-	#chmod 0740 /var/sentora/hostdata
-	#chmod 0740 /var/sentora/hostdata/*/public_html
-	#chmod 0740 /var/sentora/hostdata/*/public_html/tmp
+	#chmod 0770 /var/sentora/hostdata
+	#chmod 0770 /var/sentora/hostdata/*/public_html
+	#chmod 0770 /var/sentora/hostdata/*/public_html/tmp
 	
 	################################################################################
 
@@ -384,4 +447,3 @@ echo ""
 echo "Enjoy and have fun testing!"
 echo ""
 echo "We are done upgrading Sentora 1.0.3 - PHP 5.* w/Suhosin to PHP 7.3 w/Snuffleupagus"
-
