@@ -67,26 +67,6 @@ function BuildVhostPortForward($vhostName, $customPort, $userEmail)
     return $line;
 }
 
-/*
-function BuildVirtualHostSSL($vhostName, $customPort, $userEmail) {
-		
-	//Start Smarty Session
-	$smarty = new Smarty;
-	$smarty->setTemplateDir('/etc/sentora/configs/apache/templates/');
-	$smarty->setCompileDir('/etc/sentora/panel/etc/lib/smarty/templates_c/');	
-		
-	// Build Vhost SSL section
-	$line = fs_filehandler::NewLine() . fs_filehandler::NewLine();
-	$line .= "# DOMAIN: " . $vhostName . fs_filehandler::NewLine();
-    $line .= "# THIS DOMAIN HAS SSL Enabled" . fs_filehandler::NewLine();
-	$line .= $smarty->fetch("vhost_domain_ssl.tpl") . fs_filehandler::NewLine();
-	$line .= "# END DOMAIN: " . $vhostName . fs_filehandler::NewLine();
-    $line .= "################################################################" . fs_filehandler::NewLine();
-	
-	return $line;
-}
-*/
-
 function WriteVhostConfigFile()
 {
     global $zdbh;
@@ -120,8 +100,6 @@ function WriteVhostConfigFile()
 	
     $customPortList = array_unique($customPorts);
 	
-
-	
 	//Set Control vhost path and check is there folder
 	$server_panel = "/etc/sentora/configs/apache/vhosts/";	
 	
@@ -152,7 +130,6 @@ function WriteVhostConfigFile()
 	}
 	};
 	
-	//$is_errorpg_data = $loaderrorpages;
   	$is_errorpages = is_errorpages();
 	
 		 //***************************
@@ -171,11 +148,9 @@ function WriteVhostConfigFile()
 					'server_admin' => $serveremail,
 					'server_name' => $server_name,
 					'log_dir' => $server_log_dir
-					//'global_zpcustom' => $global_zpcustom
 					); 
 					
 	$smarty->assign('cp', $cpsearch);
-	//$smarty->assign('errorline', $errorline);
 	$smarty->assign('panel_ssl_txt', $panel_ssl_txt);
 	$smarty->assign('global_zpcustom', $global_zpcustom);
 	$smarty->assign('loaderrorpages', $is_errorpages);
@@ -259,11 +234,9 @@ function WriteVhostConfigFile()
 
 		//Check if site is ssl enabled to pevent duplicate Port 443
         //if ($rowvhost['vh_ssl_tx'] == !null) {
-			
 			//$vhostPort = $VHostDefaultPort;
 		//} else {
-			
-		$vhostPort = ( fs_director::CheckForEmptyValue($rowvhost['vh_custom_port_in']) ) ? $VHostDefaultPort : $rowvhost['vh_custom_port_in'];
+			$vhostPort = ( fs_director::CheckForEmptyValue($rowvhost['vh_custom_port_in']) ) ? $VHostDefaultPort : $rowvhost['vh_custom_port_in'];
 		//};
 		
         $vhostIp = ( fs_director::CheckForEmptyValue($rowvhost['vh_custom_ip_vc']) ) ? "*" : $rowvhost['vh_custom_ip_vc'];
@@ -291,7 +264,6 @@ function WriteVhostConfigFile()
 		$vh_bandwidth_log = '"' . "/var/sentora/logs/" . "domains/" . $vhostuser['username'] . "/" . $rowvhost['vh_name_vc'] . '-bandwidth.log" ' . ctrl_options::GetSystemOption('bandwidth_log_format');
 		$vh_php_open_basedir = ($rowvhost['vh_obasedir_in'] <> 0) ? '"' . $vh_server_root . ctrl_options::GetSystemOption('openbase_seperator') . ctrl_options::GetSystemOption('hosted_dir') . $vhostuser['username'] . "/tmp" . ctrl_options::GetSystemOption('openbase_seperator') . ctrl_options::GetSystemOption('openbase_temp') . '"' : '"' . $vh_server_root . ':     ' . '"';
 	
-		//$vh_php_func_blacklist = ($rowvhost['vh_suhosin_in'] <> 0) ? ctrl_options::GetSystemOption('suhosin_value') : '';
 		$vh_php_upload_dir = '"' . ctrl_options::GetSystemOption('hosted_dir') . $vhostuser['username'] . "/tmp" . "\"";
 		$vh_php_session_path = '"' . ctrl_options::GetSystemOption('hosted_dir') . $vhostuser['username'] . "/tmp" . "\"";
 		$vh_parking_path = ctrl_options::GetSystemOption('parking_path');
@@ -305,50 +277,43 @@ function WriteVhostConfigFile()
 		
 		# PHP Disable_functions protection system ( suhison or Ssnuffleupagus )
 		if (extension_loaded('suhosin') == true ) {	
-		
 			$func_blklist_sys = ($rowvhost['vh_suhosin_in'] <> 0) ? ctrl_options::GetSystemOption('suhosin_value') : '';
-			
 		} else {
-			
 			$func_blklist_sys = ($rowvhost['vh_suhosin_in'] <> 0) ? 'php_admin_value sp.configuration_file ' . $vh_snuff_path . $vh_vhostuser . "/" . $rowvhost['vh_name_vc'] . '.rules' : '';
 					
 			// Check sp user path exists if not make folder for sp vhost configs
 			if(!is_file($vh_snuff_path . $vh_vhostuser . "/" . $rowvhost['vh_name_vc'] . '.rules')) {
 				
-					if ( !is_dir( $vh_snuff_path . $vh_vhostuser ) ) {
-						fs_director::CreateDirectory( $vh_snuff_path . $vh_vhostuser );
-					}
-				
-  					$linesp = $smarty->fetch("vhost_sp_rules.tpl") . fs_filehandler::NewLine();
-
-					//*********Write to file
-					writetofile($vh_snuff_path . $vh_vhostuser . "/" . $rowvhost['vh_name_vc'] . '.rules'  , $linesp);
-					//***********
-				
-				} elseif (is_file($vh_snuff_path . $vh_vhostuser . "/" . $rowvhost['vh_name_vc'] . '.rules')) {
-				
-					//if($rowvhost['vh_custom_sp_tx'] != null) {
-					// TEST build if statment to add custom sp values
-					//....
-					$linesp = $smarty->fetch("vhost_sp_rules.tpl") . fs_filehandler::NewLine();
-					$linesp .= $rowvhost['vh_custom_sp_tx'];
-					
-					//*********Write to file
-					writetofile($vh_snuff_path . $vh_vhostuser . "/" . $rowvhost['vh_name_vc'] . '.rules'  , $linesp);
-					//***********
-					//}
-			
+				if ( !is_dir( $vh_snuff_path . $vh_vhostuser ) ) {
+					fs_director::CreateDirectory( $vh_snuff_path . $vh_vhostuser );
 				}
+  				$linesp = $smarty->fetch("vhost_sp_rules.tpl") . fs_filehandler::NewLine();
+
+				//*********Write to file
+				writetofile($vh_snuff_path . $vh_vhostuser . "/" . $rowvhost['vh_name_vc'] . '.rules'  , $linesp);
+				//***********
+				
+			} elseif (is_file($vh_snuff_path . $vh_vhostuser . "/" . $rowvhost['vh_name_vc'] . '.rules')) {
+				
+				// TEST build if statment to add custom sp values
+				//if($rowvhost['vh_custom_sp_tx'] != null) {
+				$linesp = $smarty->fetch("vhost_sp_rules.tpl") . fs_filehandler::NewLine();
+				$linesp .= $rowvhost['vh_custom_sp_tx'];
+					
+				//*********Write to file
+				writetofile($vh_snuff_path . $vh_vhostuser . "/" . $rowvhost['vh_name_vc'] . '.rules'  , $linesp);
+				//***********
+				//}
+			}
 		};
-		
-		//Set vhost path and check is there folder
+		/*
+		//Set vhost path and checks if there is folder
 		$vh_path = "/etc/sentora/configs/apache/vhosts/";
-		
 		if ( !is_dir( $vh_path  ) ) {
               fs_director::CreateDirectory( $vh_path  );
-       		}
+       	}
+		*/	
 		
-				
  		//Smarty values
  		$vhsearch = array('server_ip' => $vh_server_ip,
 						'server_port' => $vh_server_port,
@@ -381,8 +346,7 @@ function WriteVhostConfigFile()
 		$smarty->assign('vh', $vhsearch);
  		
 		//****************************
-		
-		
+	
         //Domain is enabled
         //Line1: Domain enabled & Client also is enabled.
         //Line2: Domain enabled & Client may be disabled, but 'Allow Disabled' = 'true' in apache settings.
@@ -526,7 +490,6 @@ function WriteVhostConfigFile()
                 }
 				
 				//Load template file into vhost config to save
-				//$line .= fs_filehandler::NewLine();
 				$line .= $smarty->fetch("vhost_domain.tpl") . fs_filehandler::NewLine();
                 // End Virtual Host Settings
                 $line .= "# END DOMAIN: " . $rowvhost['vh_name_vc'] . fs_filehandler::NewLine();
@@ -564,7 +527,6 @@ function WriteVhostConfigFile()
             //Domain is NOT enabled
 			
 			//Load template file into vhost cofig to save
-			//$line .= "";
 			$line .= "# DOMAIN: " . $rowvhost['vh_name_vc'] . fs_filehandler::NewLine();
             $line .= "# THIS DOMAIN HAS BEEN DISABLED" . fs_filehandler::NewLine();
 			$line .= $smarty->fetch("vhost_disabled.tpl") . fs_filehandler::NewLine();
@@ -1173,7 +1135,6 @@ function BackupVhostConfigFile()
         fs_director::CreateDirectory(ctrl_options::GetSystemOption('apache_budir'));
     }
     copy(ctrl_options::GetSystemOption('apache_vhost'), ctrl_options::GetSystemOption('apache_budir') . "VHOST_BACKUP_" . time());
-	//shell_exec("cp -r " . ctrl_options::GetSystemOption('apache_vhost') . " " . ctrl_options::GetSystemOption('apache_budir') . "VHOST_BACKUP_" . time());
 	
     fs_director::SetFileSystemPermissions(ctrl_options::GetSystemOption('apache_budir') . ctrl_options::GetSystemOption('apache_vhost') . ".BU", 0777);
 	
