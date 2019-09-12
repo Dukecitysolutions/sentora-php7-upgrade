@@ -1,8 +1,16 @@
 #!/bin/bash
 
-SENTORA_UPDATER_VERSION="1.0.3"
+SENTORA_UPDATER_VERSION="0.3.0"
 PANEL_PATH="/etc/sentora"
 PANEL_DATA="/var/sentora"
+
+#--- Display the 'welcome' splash/user warning info..
+echo ""
+echo "#############################################################################################"
+echo "#  Welcome to the Unofficial Sentora PHP 7 PKG updater. Installer v.$SENTORA_UPDATER_VERSION  #"
+echo "#############################################################################################"
+
+echo -e "\nChecking that minimal requirements are ok"
 
 # Check if the user is 'root' before updating
 if [ $UID -ne 0 ]; then
@@ -155,6 +163,8 @@ fi
 	cd roundcubemail-1.3.10
 	bin/installto.sh /etc/sentora/panel/etc/apps/webmail/
 	
+	chown -R root:root /etc/sentora/panel/etc/apps/webmail
+	
 	
 	################################################################################
 	
@@ -176,14 +186,14 @@ fi
 	
 	#echo ""
 	#echo "Starting PHPmyadmin upgrade to 4.9..."
-	#mkdir -p /etc/sentora/panel/etc/apps/phpmyadmin_bak
-	#cp -r /etc/sentora/panel/etc/apps/phpmyadmin/* /etc/sentora/panel/etc/apps/phpmyadmin_bak
-	#rm -rf /etc/sentora/panel/etc/apps/phpmyadmin/
+	#mkdir -p /etc/sentora/panel/etc/apps/phpmyadmin-old
+	#cp -r /etc/sentora/panel/etc/apps/phpmyadmin/* /etc/sentora/panel/etc/apps/phpmyadmin-old
+	#rm -rf /etc/sentora/panel/etc/apps/phpmyadmin/*
 	
 	# copy original conf bak to phpmyadmin
-	#cp -r /etc/sentora/panel/etc/apps/phpmyadmin_bak/config.inc.php /etc/sentora/panel/etc/apps/phpmyadmin/
+	#cp -r /etc/sentora/panel/etc/apps/phpmyadmin-old/config.inc.php /etc/sentora/panel/etc/apps/phpmyadmin/
 	# copy new PHPmyadmin 4.9 files to PHPmyadmin dir
-	#cp -r  ~/sentora_php7_upgrade/etc/apps/phpmyadmin $PANEL_PATH/panel/etc/apps/
+	#cp -r  ~/sentora_php7_upgrade/etc/apps/phpmyadmin/* $PANEL_PATH/panel/etc/apps/phpmyadmin
 	
 	
 	################################################################################
