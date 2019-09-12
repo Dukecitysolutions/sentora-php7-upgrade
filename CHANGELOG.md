@@ -5,6 +5,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [0.3.0] - 2019-09-11
+### Added
+- Version # added to installer/updater files
+- Upgrader now logs upgrade output to /root/*_php7upgrade.log for DEBUGGING
+- Added a ToDo.md file with check list
+
+### Fixed
+- CentOS 6 PHP 7 install issue with autoconfig wrong version
+- Minor cleanup of apache_admin OnDaemonRun.hook file 
+- Fixed Roundcube 1.3.10 folder owner to root:root
+- Fixed ftp_management module not creating proftpd user in proftpd database
+- Cleaned up upgrader script and added Fail points with errors
 
 ## [0.2.0] - 2019-09-09
 ### Added
@@ -12,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added CHANGELOG.md to log all changes of builds.
 
 ### Changed
+- Apache_admin module - Fixed Suhosin 0.9.3x and PHP7/Suhosin 7 support when released.
 - FTP_management PHP 7.x fixes.
 - PHPsysinfo 3.3.1 upgraded.
 - Roundcube 1.3.10 upgraded.
