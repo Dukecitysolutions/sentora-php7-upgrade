@@ -7,6 +7,9 @@
 - [x]  Update PHPSysinfo to 3.3.2
 - [ ]  Update PHPMyAdmin to 4.9.x
 - [ ]  Merge Sentora Github 1.0.x core updated files
+- [ ]  Security check and overhaul if needed after testing
 - [ ]  Fix Sentora panel/vhost folder Premissions for secure php-fpm setup
 - [ ]  Change from PHP_MOD to PHP-FPM w/ possibly Snuffleupagus too
 - [ ]  Convert "Virtual Users" to "Real System Users" for php-fpm account setup
+- [ ]  Security check and overhaul if needed.
+- [ ]  -Complete and submit to Sentora Team to Merge.-
