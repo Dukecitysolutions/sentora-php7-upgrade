@@ -11,6 +11,7 @@ Options +FollowSymLinks -Indexes
 </Directory>
 
 AddType application/x-httpd-php .php
+php_admin_value sp.configuration_file "/etc/sentora/configs/php/sp/sentora.rules"
 
 ErrorLog "{$cp.log_dir}sentora-error.log" 
 CustomLog "{$cp.log_dir}sentora-access.log" combined
