@@ -7,12 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ## [0.3.0] - 2019-09-11
 ### Added
+- Snuffleupagus default rules
+- Sentora panel Snuffleupagus default rules
 - Version # added to installer/updater files
 - Upgrader now logs upgrade output to /root/*_php7upgrade.log for DEBUGGING
 - Added a ToDo.md file with check list
+- Installers styling reformated to read better
+- Lots of little fixes like styling. No need to list
 
 ### Fixed
+- Ubuntu 16.04 PHP 7 install not installing Mcrypt
+- CentOS fixed Proftpd not installing with Sentora orignal installer
+- Sentora Panel error 500 after accessing other vhosts.
 - CentOS 6 PHP 7 install issue with autoconfig wrong version
+- Fixed Ubuntu 16.04 bind9 not starting after upgrade because of apparmor
 - Minor cleanup of apache_admin OnDaemonRun.hook file 
 - Fixed Roundcube 1.3.10 folder owner to root:root
 - Fixed ftp_management module not creating proftpd user in proftpd database
