@@ -8,9 +8,11 @@ ServerAdmin {$vh.server_admiin}
 DocumentRoot "{$vh.server_root}"
 
 <Directory {$vh.server_root}>
-  Options +FollowSymLinks -Indexes
-  AllowOverride All
-  Require all granted
+    Options +FollowSymLinks -Indexes
+    AllowOverride All
+{if $vh.grant == '1'}
+    Require all granted
+{/if}
 </Directory>
 
 {$vh.server_addtype}
