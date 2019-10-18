@@ -5,6 +5,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [0.3.1] - 2019-10-17
+### Changed
+- PHPMyAdmin 4.x to 4.9.1 current version.
+- CentOS 6.x MYSQL 5.x to 5.5 upgrade.
+
+### Fixed
+- Snuffleupagus custom rules issues not setting correctly.
+
 ## [0.3.0] - 2019-09-11
 ### Added
 - Snuffleupagus default rules
