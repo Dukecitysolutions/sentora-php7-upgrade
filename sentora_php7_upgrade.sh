@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SENTORA_UPDATER_VERSION="0.3.0"
+SENTORA_UPDATER_VERSION="0.3.1-BETA"
 PANEL_PATH="/etc/sentora"
 PANEL_DATA="/var/sentora"
 PANEL_CONF="/etc/sentora/configs"
@@ -57,11 +57,22 @@ fi
 # -------------------------------------------------------------------------------
 
 while true; do
-	echo "# -------------------------------------------------------------------------------"
+	echo ""
+	echo "# -----------------------------------------------------------------------------"
 	echo "# THIS CODE IS NOT FOR PRODUCTION SYSTEMS YET. -TESTING ONLY-. USE AT YOUR OWN RISK."
 	echo "# HAPPY SENTORA PHP 7 TESTING. ALL HELP IS NEEDED TO GET THIS OFF THE GROUND AND RELEASED."
-	echo "# -------------------------------------------------------------------------------"
-    read -p "Do you wish to install this program?" yn
+	echo "# -----------------------------------------------------------------------------"
+	echo ""
+	echo "###############################################################################"
+	echo -e "\nPlease make sure the Date/Time is correct. This script will need correct Date/Time to install correctly"
+	echo -e "If you continue with wrong date/time this script/services (phpmyadmin) may not install correctly. DO NOT CONTINUE IF DATE?TIME IS WRONG BELOW"
+	echo ""
+	# show date/time to make sure its correct
+		date
+	echo ""
+	echo "###############################################################################"
+	echo "# -----------------------------------------------------------------------------"
+    read -p "Do you wish to continue installing this program? y/yes or n/no..| " yn
     case $yn in
         [Yy]* ) break;;
         [Nn]* ) exit;;
@@ -71,7 +82,7 @@ done
 
 
 # -------------------------------------------------------------------------------
-## If OS is CENTOS 7 then perform update
+## If OS is CENTOS then perform update
 if [[ "$OS" = "CentOs" ]]; then
 
 	PACKAGE_INSTALLER="yum -y -q install"
@@ -100,6 +111,14 @@ if [[ "$OS" = "CentOs" ]]; then
 	./configure
 	make
 	sudo make install
+	
+	# Fix missing php.ini settings sentora needs
+		echo -e "\nFix missing php.ini settings sentora needs in CentOS 6.x php 7.3 ..."
+		#echo "setting upload_tmp_dir = /var/sentora/temp/"
+		#echo ""
+		#sed -i 's|;upload_tmp_dir =|upload_tmp_dir = /var/sentora/temp/|g' /etc/php.ini
+		echo "Setting session.save_path = /var/sentora/sessions"
+		sed -i 's|session.save_path = "/var/lib/php/sessions"|session.save_path = "/var/sentora/sessions"|g' /etc/php.ini
 	 
 	# Reset home
 	cd ~
@@ -149,12 +168,14 @@ if [[ "$OS" = "CentOs" ]]; then
 	rpm -Uvh remi-release-7.rpm epel-release-latest-7.noarch.rpm
 
 	# Install PHP 7.3 and update modules
+	
+	#yum -y install httpd mod_ssl php php-zip php-fpm php-devel php-gd php-imap php-ldap php-mysql php-odbc php-pear php-xml php-xmlrpc php-pecl-apc php-mbstring php-mcrypt php-soap php-tidy curl curl-devel perl-libwww-perl ImageMagick libxml2 libxml2-devel mod_fcgid php-cli httpd-devel php-fpm php-intl php-imagick php-pspell wget
+	
 	yum -y install yum-utils
 	yum-config-manager --enable remi-php73
 	yum -y update
 	yum -y install php-zip php-mysql php-mcrypt
 	
-	#yum -y install httpd mod_ssl php php-zip php-fpm php-devel php-gd php-imap php-ldap php-mysql php-odbc php-pear php-xml php-xmlrpc php-pecl-apc php-mbstring php-mcrypt php-soap php-tidy curl curl-devel perl-libwww-perl ImageMagick libxml2 libxml2-devel mod_fcgid php-cli httpd-devel php-fpm php-intl php-imagick php-pspell wget
 	
 	# Install php-fpm
 	#yum -y install php-fpm
@@ -193,11 +214,14 @@ if [[ "$OS" = "Ubuntu" ]]; then
 		#deb-src http://ppa.launchpad.net/ondrej/php/ubuntu xenial main
 		
 		# Install PHP 7 and modules
+		#apt install php-pear php7.3-curl php7.3-dev php7.3-gd php7.3-mbstring php7.3-zip php7.3-mysql php7.3-xml php7.3-fpm libapache2-mod-php7.3 php7.3-imagick php7.3-recode php7.3-tidy php7.3-xmlrpc php7.3-intl
+		
 		apt-get -yqq install php7.3 php7.3-common 
 		apt-get -yqq install php7.3-mysql php7.3-mbstring
 		apt-get -yqq install php7.3-zip php7.3-xml php7.3-gd
 		apt-get -yqq install php7.0-dev libapache2-mod-php7.3
 		apt-get -yqq install php7.3-dev
+		apt-get -yqq install php7.3-curl
 		
 		
 		# PHP Mcrypt 1.0.2 install
@@ -212,8 +236,6 @@ if [[ "$OS" = "Ubuntu" ]]; then
 		
 		fi	
 		
-		#apt install php-pear php7.3-curl php7.3-dev php7.3-gd php7.3-mbstring php7.3-zip php7.3-mysql php7.3-xml php7.3-fpm libapache2-mod-php7.3 php7.3-imagick php7.3-recode php7.3-tidy php7.3-xmlrpc php7.3-intl
-
 		# Disable Apache mod_php7.0
 		sudo a2dismod php7.0
 		# Enable Apache mod_php7.3
@@ -352,6 +374,11 @@ fi
 	rm -rf /etc/sentora/panel/modules/apache_admin
 	cp -r  ~/sentora_php7_upgrade/modules/apache_admin $PANEL_PATH/panel/modules/	
 	
+	# Upgrade dns_manager module 1.0.x
+	echo -e "\n--- Updating dns_manager module..."
+	rm -rf /etc/sentora/panel/modules/dns_manager/
+	cp -r  ~/sentora_php7_upgrade/modules/dns_manager $PANEL_PATH/panel/modules/
+	
 	# Upgrade domains_module to 1.0.x
 	echo -e "\nUpdating Domains module..."
 	rm -rf /etc/sentora/panel/modules/domains/
@@ -391,18 +418,36 @@ fi
 	echo -e "Connection mysql ok"
 	mysql -u root -p"$mysqlpassword" < ~/sentora_php7_upgrade/preconf/sql/sentora_1_0_3_1.sql
 	
+	
+	# -------------------------------------------------------------------------------
+	# Start MYSQL 5.x to 5.5 upgrade Below
+	# -------------------------------------------------------------------------------
+	
+	if [[ "$OS" = "CentOs" && ("$VER" = "6") ]]; then
+	
+		echo -e "Starting CentOS 6.x MYSQL 5.x upgrade to MYSQL 5.5 " 
+		
+		# start here
+		rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-6.noarch.rpm
+		rpm -Uvh http://rpms.famillecollet.com/enterprise/remi-release-6.rpm
+		
+		#change repo
+		sed -i 's|mirrorlist=http://cdn.remirepo.net/enterprise/6/remi/mirror|mirrorlist=http://rpms.remirepo.net/enterprise/6/remi/mirror|g' /etc/yum.repos.d/remi.repo
+		sed -i 's|enabled=0|enabled=1|g' /etc/yum.repos.d/remi.repo
+		
+		yum -y update mysql*
+	
+	fi
 		
 	# -------------------------------------------------------------------------------
 	# Start Roundcube-1.3.10 upgrade Below
 	# -------------------------------------------------------------------------------
 	
 	echo -e "\nStarting Roundcube upgrade to 1.3.10..."
-	
 	wget -nv -O roundcubemail-1.3.10.tar.gz https://github.com/roundcube/roundcubemail/releases/download/1.3.10/roundcubemail-1.3.10-complete.tar.gz
 	tar xf roundcubemail-*.tar.gz
 	cd roundcubemail-1.3.10
 	bin/installto.sh /etc/sentora/panel/etc/apps/webmail/
-	
 	chown -R root:root /etc/sentora/panel/etc/apps/webmail
 	
 	
@@ -414,6 +459,108 @@ fi
 	rm -rf /etc/sentora/panel/etc/apps/phpsysinfo/
 	cp -r  ~/sentora_php7_upgrade/etc/apps/phpsysinfo $PANEL_PATH/panel/etc/apps/
 	
+	# -------------------------------------------------------------------------------
+	# Start PHPmyadmin 4.9 upgrade Below - TESTING WHICH VERSION IS BEST HERE.
+	# -------------------------------------------------------------------------------
+	
+	if [[ "$OS" = "CentOs" && ("$VER" = "6") ]]; then
+	
+		echo "Centos PHPmyadmin is not supported at this time. " 
+	
+	fi
+	
+	# for centos 7 and ubuntu 16.04
+		
+	#--- Some functions used many times below
+	# Random password generator function
+	passwordgen() {
+    	l=$1
+    	[ "$l" == "" ] && l=16
+    	tr -dc A-Za-z0-9 < /dev/urandom | head -c ${l} | xargs
+	}
+	
+	echo -e "\n-- Configuring phpMyAdmin 4.9..."
+	phpmyadminsecret=$(passwordgen 32);
+	
+	#echo "password"
+	#echo -e "$phpmyadminsecret"
+	
+	#Version checker function dor Mysql & PHP
+	versioncheck() { 
+		echo "$@" | gawk -F. '{ printf("%03d%03d%03d\n", $1,$2,$3); }'; 
+	}
+
+	# Check the php version installed on the OS.
+	# phpver=php -v |grep -Eow '^PHP [^ ]+' |gawk '{ print $2 }'
+	phpver=`php -r 'echo PHP_VERSION;'`
+
+
+		# Start
+		if [[ "$(versioncheck "$phpver")" < "$(versioncheck "5.5.0")" ]]; then
+			echo -e "\n-- Your current php Version installed is $phpver, you can't upgrade phpMyAdmin to the last stable version. You need php 5.5+ for upgrade."
+		else
+			while true; do
+			read -e -p "PHPmyadmin 4.0.x will not work properly with PHP 7.3. Installer is about to upgrade PHPmyadmin to 4.9.1. Installer will backup current PHPmyadmin 4.x to /phpmyadmin_old incase something goes wrong. Do you want to keep the (O)riginal phpMyAdmin from Sentora or (U)pdate to the last stable version ? UPGRADE IS STRONGLY RECOMMENDED. (O/U)" pma
+			echo ""
+				
+				case $pma in
+        	        [Uu]* )
+            	            PHPMYADMIN_VERSION="STABLE"
+                	        cd  $PANEL_PATH/panel/etc/apps/
+							# backup 	
+                    	    mv phpmyadmin  phpmyadmin_old
+														
+							# empty folder
+							rm -rf /etc/sentora/panel/etc/apps/phpmyadmin
+
+							wget -nv -O phpmyadmin.zip https://github.com/phpmyadmin/phpmyadmin/archive/$PHPMYADMIN_VERSION.zip
+                    	    unzip -q  phpmyadmin.zip
+                        	mv phpmyadmin-$PHPMYADMIN_VERSION phpmyadmin
+											
+                        	#sed -i "s/memory_limit = .*/memory_limit = 512M/" $PHP_INI_PATH
+							#if [[ "$OS" = "CentOs" || "$OS" = "Fedora" ]]; then
+								#echo 'suhosin.executor.include.whitelist = phar' >> $PHP_EXT_PATH/suhosin.ini
+								#systemctl restart $HTTP_SERVICE
+							#fi
+							
+                        	cd phpmyadmin
+							
+                        	php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+                        	php -r "if (hash_file('SHA384', 'composer-setup.php') === 'a5c698ffe4b8e849a443b120cd5ba38043260d5c4023dbf93e1558871f1f07f58274fc6f4c93bcfd858c6bd0775cd8d1') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
+							
+							## Setup composer
+							sudo php composer-setup.php --install-dir=/usr/local/bin --filename=composer
+                        	#php composer-setup.php
+                        	php -r "unlink('composer-setup.php');"
+                        	composer update --no-dev
+							
+							# setup PHPmyadmin 4.9.1
+							composer create-project
+							
+                        	cd $PANEL_PATH/panel/etc/apps/
+                        	chmod -R 755 phpmyadmin
+                        	chown -R $HTTP_USER:$HTTP_USER phpmyadmin
+							rm -rf phpmyadmin/test
+                        	#rm -rf phpmyadmin.zip
+							mv $PANEL_PATH/panel/etc/apps/phpmyadmin_old/robots.txt phpmyadmin/robots.txt
+                        	#rm -rf phpmyadmin.old
+							
+							mkdir -p /etc/sentora/panel/etc/apps/phpmyadmin/tmp
+							chmod -R 777 /etc/sentora/panel/etc/apps/phpmyadmin/tmp
+							ln -s $PANEL_CONF/phpmyadmin/config.inc.php $PANEL_PATH/panel/etc/apps/phpmyadmin/config.inc.php
+							chmod 644 $PANEL_CONF/phpmyadmin/config.inc.php
+							sed -i "s|\$cfg\['blowfish_secret'\] \= '.*';|\$cfg\['blowfish_secret'\] \= '$phpmyadminsecret';|" $PANEL_CONF/phpmyadmin/config.inc.php
+	
+							# Remove phpMyAdmin's setup folder in case it was left behind
+							rm -rf $PANEL_PATH/panel/etc/apps/phpmyadmin/setup
+							
+							
+                	break;;
+                	[oO]* )
+                	break;;
+				esac
+			done
+		fi
 	
 # -------------------------------------------------------------------------------
 # PANEL SERVICE FIXES/UPGRADES BELOW
@@ -451,6 +598,23 @@ fi
 
 	fi	
 	
+	# -------------------------------------------------------------------------------
+	# MYSQL Below
+	# -------------------------------------------------------------------------------
+	
+	# Bug fix under some MySQL 5.7+ about the sql_mode for "NO_ZERO_IN_DATE,NO_ZERO_DATE"
+	# Need to be considere on the next .sql build query version.
+	if [[ "$OS" = "Ubuntu" && ("$VER" = "16.04") ]]; then
+			# sed '/\[mysqld]/a\sql_mode = "NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION"' /etc/mysql/mysql.conf.d/mysqld.cnf
+			# sed 's/^\[mysqld\]/\[mysqld\]\sql_mode = "NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION"/' /etc/mysql/mysql.conf.d/mysqld.cnf
+		if ! grep -q "sql_mode" /etc/mysql/mysql.conf.d/mysqld.cnf; then
+		
+			echo "!includedir /etc/mysql/mysql.conf.d/" >> /etc/mysql/my.cnf;
+        	echo "sql_mode = 'NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION'" >> /etc/mysql/mysql.conf.d/mysqld.cnf;
+			
+				systemctl restart mysql
+    	fi
+	fi
 
 	# -------------------------------------------------------------------------------
 	# POSTFIX Below
@@ -517,7 +681,7 @@ fi
 	
 # Update Sentora APACHE CHANGED
 
-#echo -e "\n--- Setting APACHE_CHANGED to true to set vhost setings..."
+echo -e "\n--- Setting APACHE_CHANGED to true to set vhost setings..."
 # get mysql root password, check it works or ask it
 mysqlpassword=$(cat /etc/sentora/panel/cnf/db.php | grep "pass =" | sed -s "s|.*pass \= '\(.*\)';.*|\1|")
 while ! mysql -u root -p$mysqlpassword -e ";" ; do
