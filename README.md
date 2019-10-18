@@ -27,7 +27,7 @@ Ubuntu 16.04 - Upgraded from 14.04 Prior to running upgrade script. - Details Be
 
 ## CentOS Install:
 ```
-bash <(curl -L -Ss http://zppy-repo.dukecitysolutions.com/repo/sentora-live/php7_upgrade/upgrade.sh)
+bash <(curl -L -Ss http://zppy-repo.dukecitysolutions.com/repo/sentora-live/php7_upgrade/install.sh)
 ```
 
 ## Ubuntu 14.04 to 16.04 Install - Testing Needed:
@@ -38,7 +38,7 @@ bash <(curl -L -Ss http://zppy-repo.dukecitysolutions.com/repo/sentora-live/php7
 
 ### After Ubuntu 14.04 to 16.04 is completed with instructions above. Run code below.
 ```
-bash <(curl -L -Ss http://zppy-repo.dukecitysolutions.com/repo/sentora-live/php7_upgrade/upgrade.sh)
+bash <(curl -L -Ss http://zppy-repo.dukecitysolutions.com/repo/sentora-live/php7_upgrade/install.sh)
 ```
 
 ## Nightly Updating for packages for this install - USE ONLY IF YOU HAVE INSTALLED upgrade.sh script:
