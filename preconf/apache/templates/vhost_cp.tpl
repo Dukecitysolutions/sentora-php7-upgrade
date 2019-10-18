@@ -5,9 +5,11 @@ DocumentRoot "{$cp.server_root}"
 ServerName {$cp.server_name}
 
 <Directory "{$cp.server_root}">
-Options +FollowSymLinks -Indexes
+    Options +FollowSymLinks -Indexes
     AllowOverride All
+{if $cp.grant == '1'}
     Require all granted
+{/if}
 </Directory>
 
 AddType application/x-httpd-php .php
