@@ -5,9 +5,11 @@ ServerAlias {$vh.server_alias}
 ServerAdmin {$vh.server_admiin}
 DocumentRoot "{$vh.static_dir}"
 <Directory "{$vh.static_dir}">
-  Options +FollowSymLinks -Indexes
-  AllowOverride All
-  Require all granted
+    Options +FollowSymLinks -Indexes
+    AllowOverride All
+{if $vh.grant == '1'}
+    Require all granted
+{/if}
 </Directory>
 #AddType application/x-httpd-php .php3 .php
 DirectoryIndex index.html index.htm index.php index.asp index.aspx index.jsp index.jspa index.shtml index.shtm
