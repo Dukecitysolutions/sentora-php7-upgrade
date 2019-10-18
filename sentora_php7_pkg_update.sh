@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SENTORA_UPDATER_VERSION="0.3.0"
+SENTORA_UPDATER_VERSION="0.3.0-BETA"
 PANEL_PATH="/etc/sentora"
 PANEL_DATA="/var/sentora"
 PANEL_CONF="/etc/sentora/configs"
@@ -107,7 +107,12 @@ done
 	rm -rf /etc/sentora/panel/modules/apache_admin
 	cp -r  ~/sentora_php7_upgrade/modules/apache_admin $PANEL_PATH/panel/modules/	
 	
-	# Upgrade domains_module to 1.0.x
+	# Upgrade dns_manager module 1.0.x
+	echo -e "\n--- Updating dns_manager module..."
+	rm -rf /etc/sentora/panel/modules/dns_manager/
+	cp -r  ~/sentora_php7_upgrade/modules/dns_manager $PANEL_PATH/panel/modules/
+	
+	# Upgrade domains module 1.0.x
 	echo -e "\n--- Updating Domains module..."
 	rm -rf /etc/sentora/panel/modules/domains/
 	cp -r  ~/sentora_php7_upgrade/modules/domains $PANEL_PATH/panel/modules/
@@ -133,39 +138,55 @@ done
 	cp -r ~/sentora_php7_upgrade/preconf/apache/templates /etc/sentora/configs/apache/
 	
 	# -------------------------------------------------------------------------------
-	# Start Ubuntu 16.04 Sentora php 7.3 config update
+	# Start all OS Sentora php 7.3 config update
 	# -------------------------------------------------------------------------------
-
-	if [[ "$VER" = "16.04" ]]; then
 	
-	#### FIX - Upgrade Sentora to Sentora Live for PHP 7.x fixes
-	# reset home dir for commands
-	cd ~
+	if [[ "$OS" = "CentOs" && ("$VER" = "6") ]]; then
 	
-	# Fix missing php.ini settings sentora needs
-	echo -e "\nFix missing php.ini settings sentora needs in Ubuntu 16.04 php 7.3 ..."
-	echo "setting upload_tmp_dir = /var/sentora/temp/"
-	echo ""
-	sed -i 's|;upload_tmp_dir =|upload_tmp_dir = /var/sentora/temp/|g' /etc/php/7.3/apache2/php.ini
-	echo "Setting session.save_path = /var/sentora/sessions"
-	sed -i 's|;session.save_path = "/var/lib/php/sessions"|session.save_path = "/var/sentora/sessions"|g' /etc/php/7.3/apache2/php.ini
-	
-	# Install missing php7.3-xml for system and roundcube
-	echo -e "\nInstall missing php7.3-xml for system and roundcube..."
-	apt-get -y install php7.3-xml php7.3-gd
-	
-	# PHP Mcrypt 1.0.2 install
-	if [ ! -f /etc/php/7.3/apache2/conf.d/20-mcrypt.ini ]
-			then
-		echo -e "\nInstalling php mcrypt 1.0.2"
-		sudo apt-get -yqq install gcc make autoconf libc-dev pkg-config
-		sudo apt-get -yqq install libmcrypt-dev
-		echo '' | sudo pecl install mcrypt-1.0.2
-		sudo bash -c "echo extension=mcrypt.so > /etc/php/7.3/mods-available/mcrypt.ini"
-		ln -s /etc/php/7.3/mods-available/mcrypt.ini /etc/php/7.3/apache2/conf.d/20-mcrypt.ini
-		
-		fi					
+			# Fix missing php.ini settings sentora needs
+			echo -e "\nFix missing php.ini settings sentora needs in CentOS 6.x php 7.3 ..."
+			#echo "setting upload_tmp_dir = /var/sentora/temp/"
+			#echo ""
+			#sed -i 's|;upload_tmp_dir =|upload_tmp_dir = /var/sentora/temp/|g' /etc/php.ini
+			echo "Setting session.save_path = /var/sentora/sessions"
+			sed -i 's|session.save_path = "/var/lib/php/sessions"|session.save_path = "/var/sentora/sessions"|g' /etc/php.ini
+						
 	fi
+	
+	----------------------------------------------------------------------------------
+	
+	if [[ "$OS" = "Ubuntu" && ("$VER" = "16.04") ]]; then
+		
+			#### FIX - Upgrade Sentora to Sentora Live for PHP 7.x fixes
+			# reset home dir for commands
+			cd ~
+	
+			# Fix missing php.ini settings sentora needs
+			echo -e "\nFix missing php.ini settings sentora needs in Ubuntu 16.04 php 7.3 ..."
+			echo "setting upload_tmp_dir = /var/sentora/temp/"
+			echo ""
+			sed -i 's|;upload_tmp_dir =|upload_tmp_dir = /var/sentora/temp/|g' /etc/php/7.3/apache2/php.ini
+			echo "Setting session.save_path = /var/sentora/sessions"
+			sed -i 's|;session.save_path = "/var/lib/php/sessions"|session.save_path = "/var/sentora/sessions"|g' /etc/php/7.3/apache2/php.ini
+	
+			# Install missing php7.3-xml for system and roundcube
+			echo -e "\nInstall missing php7.3-xml for system and roundcube..."
+			apt-get -y install php7.3-xml php7.3-gd
+	
+		# PHP Mcrypt 1.0.2 install
+		if [ ! -f /etc/php/7.3/apache2/conf.d/20-mcrypt.ini ]
+				then
+			echo -e "\nInstalling php mcrypt 1.0.2"
+			sudo apt-get -yqq install gcc make autoconf libc-dev pkg-config
+			sudo apt-get -yqq install libmcrypt-dev
+			echo '' | sudo pecl install mcrypt-1.0.2
+			sudo bash -c "echo extension=mcrypt.so > /etc/php/7.3/mods-available/mcrypt.ini"
+			ln -s /etc/php/7.3/mods-available/mcrypt.ini /etc/php/7.3/apache2/conf.d/20-mcrypt.ini
+		fi
+							
+	fi
+	
+
 	
 	# -------------------------------------------------------------------------------
 	# Start Roundcube-1.3.10 upgrade Below
@@ -177,7 +198,6 @@ done
 	tar xf roundcubemail-*.tar.gz
 	cd roundcubemail-1.3.10
 	bin/installto.sh /etc/sentora/panel/etc/apps/webmail/
-	
 	chown -R root:root /etc/sentora/panel/etc/apps/webmail
 	
 	
@@ -241,6 +261,23 @@ done
 
 	fi	
 	
+	# -------------------------------------------------------------------------------
+	# MYSQL Below
+	# -------------------------------------------------------------------------------
+	
+	# Bug fix under some MySQL 5.7+ about the sql_mode for "NO_ZERO_IN_DATE,NO_ZERO_DATE"
+	# Need to be considere on the next .sql build query version.
+	if [[ "$OS" = "Ubuntu" && ("$VER" = "16.04") ]]; then
+			# sed '/\[mysqld]/a\sql_mode = "NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION"' /etc/mysql/mysql.conf.d/mysqld.cnf
+			# sed 's/^\[mysqld\]/\[mysqld\]\sql_mode = "NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION"/' /etc/mysql/mysql.conf.d/mysqld.cnf
+		if ! grep -q "sql_mode" /etc/mysql/mysql.conf.d/mysqld.cnf; then
+		
+			echo "!includedir /etc/mysql/mysql.conf.d/" >> /etc/mysql/my.cnf;
+        	echo "sql_mode = 'NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION'" >> /etc/mysql/mysql.conf.d/mysqld.cnf;
+			
+				systemctl restart $DB_SERVICE
+    	fi
+	fi
 	
 	# -------------------------------------------------------------------------------
 	# POSTFIX Below
