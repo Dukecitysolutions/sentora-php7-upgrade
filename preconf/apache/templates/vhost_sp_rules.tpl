@@ -1,3 +1,6 @@
+
+#### vhost CUSTOM snuffleupagus rules - SAFE TO ADD ABOVE HERE
+
 #### vhost Default snuffleupagus rules - DO NOT EDIT/DELETE BELOW
 sp.disable_function.function("passthru").drop();
 sp.disable_function.function("show_source").drop();
@@ -23,4 +26,3 @@ sp.disable_function.function("escapeshellarg").drop();
 sp.disable_function.function("exec").drop();
 #### vhost Default snuffleupagus rules - DO NOT EDIT/DELETE ABOVE
 
-#### vhost CUSTOM snuffleupagus rules - SAFE TO ADD BELOW
