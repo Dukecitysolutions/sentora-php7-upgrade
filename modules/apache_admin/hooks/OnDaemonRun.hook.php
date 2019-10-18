@@ -78,6 +78,12 @@ function WriteVhostConfigFile()
 	//$smarty->setConfigDir('smarty/configs/');
 	//$smarty->setCacheDir('smarty/cache/');
 	
+	if ((double) sys_versions::ShowApacheVersion() < 2.4) {
+        $apgrant = "0";
+    } else {
+        $apgrant = "1";
+    }
+	
     //Get email for server admin of Sentora
     $getserveremail = $zdbh->query("SELECT ac_email_vc FROM x_accounts where ac_id_pk=1")->fetch();
     $serveremail = ( $getserveremail['ac_email_vc'] != "" ) ? $getserveremail['ac_email_vc'] : "postmaster@" . ctrl_options::GetSystemOption('sentora_domain');
@@ -147,7 +153,8 @@ function WriteVhostConfigFile()
 					'server_root' => $server_root,
 					'server_admin' => $serveremail,
 					'server_name' => $server_name,
-					'log_dir' => $server_log_dir
+					'log_dir' => $server_log_dir,
+					'grant' => $apgrant
 					); 
 					
 	$smarty->assign('cp', $cpsearch);
@@ -297,8 +304,10 @@ function WriteVhostConfigFile()
 				
 				// TEST build if statment to add custom sp values
 				//if($rowvhost['vh_custom_sp_tx'] != null) {
-				$linesp = $smarty->fetch("vhost_sp_rules.tpl") . fs_filehandler::NewLine();
 				$linesp .= $rowvhost['vh_custom_sp_tx'];
+				$linesp = fs_filehandler::NewLine();
+				$linesp = $smarty->fetch("vhost_sp_rules.tpl") . fs_filehandler::NewLine();
+				
 					
 				//*********Write to file
 				writetofile($vh_snuff_path . $vh_vhostuser . "/" . $rowvhost['vh_name_vc'] . '.rules'  , $linesp);
@@ -340,7 +349,8 @@ function WriteVhostConfigFile()
 						'ssl_tx' => $rowvhost['vh_ssl_tx'],
 						'ssl_port_in' => $rowvhost['vh_ssl_port_in'],
 						'hosted_dir' => ctrl_options::GetSystemOption('hosted_dir'),
-						'vhost_user' => $vh_vhostuser
+						'vhost_user' => $vh_vhostuser,
+						'grant' => $apgrant
 						);
 				
 		$smarty->assign('vh', $vhsearch);
