@@ -462,14 +462,6 @@ fi
 	# -------------------------------------------------------------------------------
 	# Start PHPmyadmin 4.9 upgrade Below - TESTING WHICH VERSION IS BEST HERE.
 	# -------------------------------------------------------------------------------
-	
-	if [[ "$OS" = "CentOs" && ("$VER" = "6") ]]; then
-	
-		echo "Centos PHPmyadmin is not supported at this time. " 
-	
-	fi
-	
-	# for centos 7 and ubuntu 16.04
 		
 	#--- Some functions used many times below
 	# Random password generator function
