@@ -62,11 +62,12 @@ while true; do
 	echo "# THIS CODE IS NOT FOR PRODUCTION SYSTEMS YET. -TESTING ONLY-. USE AT YOUR OWN RISK."
 	echo "# HAPPY SENTORA PHP 7 TESTING. ALL HELP IS NEEDED TO GET THIS OFF THE GROUND AND RELEASED."
 	echo "# -----------------------------------------------------------------------------"
-	echo ""
+	echo -e ""
 	echo "###############################################################################"
 	echo -e "\nPlease make sure the Date/Time is correct. This script will need correct Date/Time to install correctly"
 	echo -e "If you continue with wrong date/time this script/services (phpmyadmin) may not install correctly. DO NOT CONTINUE IF DATE?TIME IS WRONG BELOW"
 	echo ""
+	echo -e "n\nSet Date/time with this command here - date -s \"19 APR 2012 11:14:00\" "
 	# show date/time to make sure its correct
 		date
 	echo ""
@@ -79,7 +80,6 @@ while true; do
         * ) echo "Please answer yes or no.";;
     esac
 done
-
 
 # -------------------------------------------------------------------------------
 ## If OS is CENTOS then perform update
@@ -132,6 +132,10 @@ if [[ "$OS" = "CentOs" ]]; then
 	# Restart Apache
 	service httpd restart
 		
+	#Check for updates
+	yum -y update
+	yum -y upgrade
+		
 	# END
 	# -------------------------------------------------------------------------------
 
@@ -162,7 +166,6 @@ if [[ "$OS" = "CentOs" ]]; then
 		exit 1
 	fi
 	
-	
 	#wget https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 	#wget http://rpms.remirepo.net/enterprise/remi-release-7.rpm
 	rpm -Uvh remi-release-7.rpm epel-release-latest-7.noarch.rpm
@@ -176,7 +179,6 @@ if [[ "$OS" = "CentOs" ]]; then
 	yum -y update
 	yum -y install php-zip php-mysql php-mcrypt
 	
-	
 	# Install php-fpm
 	#yum -y install php-fpm
 	
@@ -185,7 +187,6 @@ if [[ "$OS" = "CentOs" ]]; then
 	
 	# Install git
 	yum -y install git
-	
 	
     fi
 fi	
@@ -201,7 +202,6 @@ if [[ "$OS" = "Ubuntu" ]]; then
 	# -------------------------------------------------------------------------------
 		echo "Starting PHP 7.3 with Packages update on Ubuntu 16.04"
 	# -------------------------------------------------------------------------------	
-
 
         # START HERE
 		
@@ -222,7 +222,6 @@ if [[ "$OS" = "Ubuntu" ]]; then
 		apt-get -yqq install php7.0-dev libapache2-mod-php7.3
 		apt-get -yqq install php7.3-dev
 		apt-get -yqq install php7.3-curl
-		
 		
 		# PHP Mcrypt 1.0.2 install
 		if [ ! -f /etc/php/7.3/apache2/conf.d/20-mcrypt.ini ]
@@ -253,12 +252,15 @@ if [[ "$OS" = "Ubuntu" ]]; then
 		sed -i 's|;session.save_path = "/var/lib/php/sessions"|session.save_path = "/var/sentora/sessions"|g' /etc/php/7.3/apache2/php.ini
 		
 		
+		sudo apt-get -yqq update
+		sudo apt-get -yqq upgrade
+		
     fi
 fi
 
+
 	# END
 	# -------------------------------------------------------------------------------
-	
 	
 	##### Check php 7 was installed or quit installer.
 	PHPVERFULL=$(php -r 'echo phpversion();')
@@ -273,11 +275,9 @@ fi
 		exit 1
 	fi
 	
-	
 	# -------------------------------------------------------------------------------
 	# Start Snuffleupagus install Below
 	# -------------------------------------------------------------------------------
-	
 	
 	# Install Snuffleupagus
 	#yum -y install git
@@ -334,6 +334,117 @@ fi
 		systemctl restart apache2
     fi
 	
+# -------------------------------------------------------------------------------
+# PANEL SERVICE FIXES/UPGRADES BELOW
+# -------------------------------------------------------------------------------
+	
+	# BIND/NAMED DNS Below
+	# -------------------------------------------------------------------------------
+	
+	# reset home dir for commands
+	cd ~
+	
+	# Fix Ubuntu 16.04 DNS 
+	if [[ "$OS" = "Ubuntu" && ("$VER" = "16.04") ]]; then
+	
+		# Ubuntu DNS fix now starting fix
+		# Update Snuff Default rules to fix panel timeout
+		echo -e "\nUpdating Ubuntu DNS fix..."
+		rm -rf /etc/apparmor.d/usr.sbin.named
+		cp -r  ~/sentora_php7_upgrade/preconf/apparmor.d/usr.sbin.named /etc/apparmor.d/
+		#chown -R root:root /etc/apparmor.d/usr.sbin.named 
+		#chmod 0644 /etc/apparmor.d/usr.sbin.named 
+		
+		# DELETING maybe or using later ################
+		# DNS now starting fix
+		#file="/etc/apparmor.d/usr.sbin.named"
+		#TARGET_STRING="/etc/sentora/configs/bind/etc/** rw,"
+		#grep -q $TARGET_STRING $file
+		#if [ ! $? -eq 0 ]
+		#	then
+    	#		echo "Apparmor does not include DNS fix. Updating..."
+    	#	sed -i '\~/var/cache/bind/ rw,~a   /etc/sentora/configs/bind/etc/** rw,' /etc/apparmor.d/usr.sbin.named
+		#	sed -i '\~/var/cache/bind/ rw,~a   /var/sentora/logs/bind/** rw,' /etc/apparmor.d/usr.sbin.named
+		#fi
+		###############################
+
+	fi	
+	
+	# -------------------------------------------------------------------------------
+	# MYSQL Below
+	# -------------------------------------------------------------------------------
+	
+	if [[ "$OS" = "CentOs" && ("$VER" = "6") ]]; then
+	
+		echo -e "Starting CentOS 6.x MYSQL 5.x upgrade to MYSQL 5.5 " 
+		
+		# start here
+		rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-6.noarch.rpm
+		rpm -Uvh http://rpms.famillecollet.com/enterprise/remi-release-6.rpm
+		
+		#change repo
+		sed -i 's|mirrorlist=http://cdn.remirepo.net/enterprise/6/remi/mirror|mirrorlist=http://rpms.remirepo.net/enterprise/6/remi/mirror|g' /etc/yum.repos.d/remi.repo
+		sed -i 's|enabled=0|enabled=1|g' /etc/yum.repos.d/remi.repo
+		
+		yum -y update mysql*
+	
+	fi
+	
+	# Bug fix under some MySQL 5.7+ about the sql_mode for "NO_ZERO_IN_DATE,NO_ZERO_DATE"
+	# Need to be considere on the next .sql build query version.
+	if [[ "$OS" = "Ubuntu" && ("$VER" = "16.04") ]]; then
+			# sed '/\[mysqld]/a\sql_mode = "NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION"' /etc/mysql/mysql.conf.d/mysqld.cnf
+			# sed 's/^\[mysqld\]/\[mysqld\]\sql_mode = "NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION"/' /etc/mysql/mysql.conf.d/mysqld.cnf
+		if ! grep -q "sql_mode" /etc/mysql/mysql.conf.d/mysqld.cnf; then
+		
+			echo "!includedir /etc/mysql/mysql.conf.d/" >> /etc/mysql/my.cnf;
+        	echo "sql_mode = 'NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION'" >> /etc/mysql/mysql.conf.d/mysqld.cnf;
+			
+				systemctl restart mysql
+    	fi
+	fi
+
+	# -------------------------------------------------------------------------------
+	# POSTFIX Below
+	# -------------------------------------------------------------------------------
+	
+	# Fix postfix not working after upgrade to 16.04
+	if [[ "$OS" = "Ubuntu" && ("$VER" = "16.04") ]]; then
+		echo -e "\nFixing postfix not working after upgrade to 16.04..."
+		
+		# disable postfix daemon_directory for now to allow startup after update
+		sed -i 's|daemon_directory = /usr/lib/postfix|#daemon_directory = /usr/lib/postfix|g' /etc/sentora/configs/postfix/main.cf
+				
+		systemctl restart postfix
+		
+	fi
+	
+	# -------------------------------------------------------------------------------
+	# ProFTPd Below
+	# -------------------------------------------------------------------------------
+
+	if [[ "$OS" = "CentOs" && ("$VER" = "7") ]]; then
+		echo -e "\n-- Installing ProFTPD if not installed"
+		
+		PACKAGE_INSTALLER="yum -y -q install"
+		
+    	$PACKAGE_INSTALLER proftpd proftpd-mysql 
+    	FTP_CONF_PATH='/etc/proftpd.conf'
+    	sed -i "s|nogroup|nobody|" $PANEL_CONF/proftpd/proftpd-mysql.conf
+		
+		# Setup proftpd base file to call sentora config
+		rm -f "$FTP_CONF_PATH"
+		#touch "$FTP_CONF_PATH"
+		#echo "include $PANEL_CONF/proftpd/proftpd-mysql.conf" >> "$FTP_CONF_PATH";
+		ln -s "$PANEL_CONF/proftpd/proftpd-mysql.conf" "$FTP_CONF_PATH"
+		
+		systemctl enable proftpd
+		
+	fi
+	
+# -------------------------------------------------------------------------------
+# Start Sentora upgrade Below
+# -------------------------------------------------------------------------------
 	
 	# -------------------------------------------------------------------------------
 	# Download Sentora Upgrader files Now
@@ -352,11 +463,10 @@ fi
 	echo -e "\n--- Unzipping files..."
 	unzip -oq sentora_php7_upgrade.zip
 	
+	# -------------------------------------------------------------------------------
+	# Start
+	# -------------------------------------------------------------------------------
 
-	# -------------------------------------------------------------------------------
-	# Start Sentora upgrade Below
-	# -------------------------------------------------------------------------------
-		
 	# ####### start here   Upgrade __autoloader() to x__autoloader()
 	# rm -rf $PANEL_PATH/panel/dryden/loader.inc.php
 	# cd 
@@ -408,7 +518,6 @@ fi
 	# install Smarty files
 	cp -r ~/sentora_php7_upgrade/etc/lib/smarty /etc/sentora/panel/etc/lib/
 	
-	
 	# Update Sentora Core Mysql tables
 	# get mysql root password, check it works or ask it
 	mysqlpassword=$(cat /etc/sentora/panel/cnf/db.php | grep "pass =" | sed -s "s|.*pass \= '\(.*\)';.*|\1|")
@@ -417,27 +526,6 @@ fi
 	done
 	echo -e "Connection mysql ok"
 	mysql -u root -p"$mysqlpassword" < ~/sentora_php7_upgrade/preconf/sql/sentora_1_0_3_1.sql
-	
-	
-	# -------------------------------------------------------------------------------
-	# Start MYSQL 5.x to 5.5 upgrade Below
-	# -------------------------------------------------------------------------------
-	
-	if [[ "$OS" = "CentOs" && ("$VER" = "6") ]]; then
-	
-		echo -e "Starting CentOS 6.x MYSQL 5.x upgrade to MYSQL 5.5 " 
-		
-		# start here
-		rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-6.noarch.rpm
-		rpm -Uvh http://rpms.famillecollet.com/enterprise/remi-release-6.rpm
-		
-		#change repo
-		sed -i 's|mirrorlist=http://cdn.remirepo.net/enterprise/6/remi/mirror|mirrorlist=http://rpms.remirepo.net/enterprise/6/remi/mirror|g' /etc/yum.repos.d/remi.repo
-		sed -i 's|enabled=0|enabled=1|g' /etc/yum.repos.d/remi.repo
-		
-		yum -y update mysql*
-	
-	fi
 		
 	# -------------------------------------------------------------------------------
 	# Start Roundcube-1.3.10 upgrade Below
@@ -449,7 +537,6 @@ fi
 	cd roundcubemail-1.3.10
 	bin/installto.sh /etc/sentora/panel/etc/apps/webmail/
 	chown -R root:root /etc/sentora/panel/etc/apps/webmail
-	
 	
 	# -------------------------------------------------------------------------------
 	# Start PHPsysinfo 3.3.1 upgrade Below
@@ -485,7 +572,6 @@ fi
 	# Check the php version installed on the OS.
 	# phpver=php -v |grep -Eow '^PHP [^ ]+' |gawk '{ print $2 }'
 	phpver=`php -r 'echo PHP_VERSION;'`
-
 
 		# Start
 		if [[ "$(versioncheck "$phpver")" < "$(versioncheck "5.5.0")" ]]; then
@@ -552,102 +638,7 @@ fi
                 	break;;
 				esac
 			done
-		fi
-	
-# -------------------------------------------------------------------------------
-# PANEL SERVICE FIXES/UPGRADES BELOW
-# -------------------------------------------------------------------------------
-	
-	# BIND/NAMED DNS Below
-	# -------------------------------------------------------------------------------
-	
-	# reset home dir for commands
-	cd ~
-	
-	# Fix Ubuntu 16.04 DNS 
-	if [[ "$OS" = "Ubuntu" && ("$VER" = "16.04") ]]; then
-	
-		# Ubuntu DNS fix now starting fix
-		# Update Snuff Default rules to fix panel timeout
-		echo -e "\nUpdating Ubuntu DNS fix..."
-		rm -rf /etc/apparmor.d/usr.sbin.named
-		cp -r  ~/sentora_php7_upgrade/preconf/apparmor.d/usr.sbin.named /etc/apparmor.d/
-		#chown -R root:root /etc/apparmor.d/usr.sbin.named 
-		#chmod 0644 /etc/apparmor.d/usr.sbin.named 
-		
-		# DELETING maybe or using later ################
-		# DNS now starting fix
-		#file="/etc/apparmor.d/usr.sbin.named"
-		#TARGET_STRING="/etc/sentora/configs/bind/etc/** rw,"
-		#grep -q $TARGET_STRING $file
-		#if [ ! $? -eq 0 ]
-		#	then
-    	#		echo "Apparmor does not include DNS fix. Updating..."
-    	#	sed -i '\~/var/cache/bind/ rw,~a   /etc/sentora/configs/bind/etc/** rw,' /etc/apparmor.d/usr.sbin.named
-		#	sed -i '\~/var/cache/bind/ rw,~a   /var/sentora/logs/bind/** rw,' /etc/apparmor.d/usr.sbin.named
-		#fi
-		###############################
-
-	fi	
-	
-	# -------------------------------------------------------------------------------
-	# MYSQL Below
-	# -------------------------------------------------------------------------------
-	
-	# Bug fix under some MySQL 5.7+ about the sql_mode for "NO_ZERO_IN_DATE,NO_ZERO_DATE"
-	# Need to be considere on the next .sql build query version.
-	if [[ "$OS" = "Ubuntu" && ("$VER" = "16.04") ]]; then
-			# sed '/\[mysqld]/a\sql_mode = "NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION"' /etc/mysql/mysql.conf.d/mysqld.cnf
-			# sed 's/^\[mysqld\]/\[mysqld\]\sql_mode = "NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION"/' /etc/mysql/mysql.conf.d/mysqld.cnf
-		if ! grep -q "sql_mode" /etc/mysql/mysql.conf.d/mysqld.cnf; then
-		
-			echo "!includedir /etc/mysql/mysql.conf.d/" >> /etc/mysql/my.cnf;
-        	echo "sql_mode = 'NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION'" >> /etc/mysql/mysql.conf.d/mysqld.cnf;
-			
-				systemctl restart mysql
-    	fi
-	fi
-
-	# -------------------------------------------------------------------------------
-	# POSTFIX Below
-	# -------------------------------------------------------------------------------
-	
-	# Fix postfix not working after upgrade to 16.04
-	if [[ "$OS" = "Ubuntu" && ("$VER" = "16.04") ]]; then
-		echo -e "\nFixing postfix not working after upgrade to 16.04..."
-		
-		# disable postfix daemon_directory for now to allow startup after update
-		sed -i 's|daemon_directory = /usr/lib/postfix|#daemon_directory = /usr/lib/postfix|g' /etc/sentora/configs/postfix/main.cf
-				
-		systemctl restart postfix
-		
-	fi
-	
-	# -------------------------------------------------------------------------------
-	# ProFTPd Below
-	# -------------------------------------------------------------------------------
-
-	
-	if [[ "$OS" = "CentOs" && ("$VER" = "7") ]]; then
-		echo -e "\n-- Installing ProFTPD if not installed"
-		
-		PACKAGE_INSTALLER="yum -y -q install"
-		
-    	$PACKAGE_INSTALLER proftpd proftpd-mysql 
-    	FTP_CONF_PATH='/etc/proftpd.conf'
-    	sed -i "s|nogroup|nobody|" $PANEL_CONF/proftpd/proftpd-mysql.conf
-		
-		# Setup proftpd base file to call sentora config
-		rm -f "$FTP_CONF_PATH"
-		#touch "$FTP_CONF_PATH"
-		#echo "include $PANEL_CONF/proftpd/proftpd-mysql.conf" >> "$FTP_CONF_PATH";
-		ln -s "$PANEL_CONF/proftpd/proftpd-mysql.conf" "$FTP_CONF_PATH"
-		
-		systemctl enable proftpd
-		
-	fi
-
-	
+		fi	
 	
 	# -------------------------------------------------------------------------------
 	# Start Sentora system premission upgrade Below
@@ -667,7 +658,6 @@ fi
 	#chmod 0770 /var/sentora/hostdata
 	#chmod 0770 /var/sentora/hostdata/*/public_html
 	#chmod 0770 /var/sentora/hostdata/*/public_html/tmp
-	
 	
 # -------------------------------------------------------------------------------
 	
