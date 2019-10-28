@@ -5,7 +5,7 @@
 - [x]  Add Snuffleupagus support to needed modules (apache_admin,domain,parked,sub_domains)
 - [x]  Update Roundcube to 1.3.10
 - [x]  Update PHPSysinfo to 3.3.2
-- [ ]  Update PHPMyAdmin to 4.9.x
+- [x]  Update PHPMyAdmin to 4.9.x
 - [ ]  Merge Sentora Github 1.0.x core updated files
 - [ ]  Security check and overhaul if needed after testing
 - [ ]  Fix Sentora panel/vhost folder Premissions for secure php-fpm setup
