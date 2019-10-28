@@ -10,7 +10,7 @@ echo ""
 echo "###############################################################################################"
 echo "#  Welcome to the Unofficial Sentora PHP 7 PKG updater. Installer v.$SENTORA_UPDATER_VERSION  #"
 echo "###############################################################################################"
-
+echo ""
 echo -e "\n- Checking that minimal requirements are ok"
 
 # Check if the user is 'root' before updating
@@ -57,11 +57,22 @@ fi
 # -------------------------------------------------------------------------------
 
 while true; do
-	echo "# -------------------------------------------------------------------------------"
+	echo ""
+	echo "# -----------------------------------------------------------------------------"
 	echo "# THIS CODE IS NOT FOR PRODUCTION SYSTEMS YET. -TESTING ONLY-. USE AT YOUR OWN RISK."
 	echo "# HAPPY SENTORA PHP 7 TESTING. ALL HELP IS NEEDED TO GET THIS OFF THE GROUND AND RELEASED."
-	echo "# -------------------------------------------------------------------------------"
-    read -p "Do you wish to install this program?" yn
+	echo "# -----------------------------------------------------------------------------"
+	echo ""
+	echo "###############################################################################"
+	echo -e "\nPlease make sure the Date/Time is correct. This script will need correct Date/Time to install correctly"
+	echo -e "If you continue with wrong date/time this script/services (phpmyadmin) may not install correctly. DO NOT CONTINUE IF DATE?TIME IS WRONG BELOW"
+	echo ""
+	# show date/time to make sure its correct
+		date
+	echo ""
+	echo "###############################################################################"
+	echo "# -----------------------------------------------------------------------------"
+    read -p "Do you wish to continue updating this program? y/yes or n/no..| " yn
     case $yn in
         [Yy]* ) break;;
         [Nn]* ) exit;;
@@ -69,162 +80,6 @@ while true; do
     esac
 done
 
-
-	# -------------------------------------------------------------------------------
-	# Download Sentora Upgrader files Now
-	# -------------------------------------------------------------------------------
-	
-	#### FIX - Upgrade Sentora to Sentora Live for PHP 7.x fixes
-	# reset home dir for commands
-	cd ~
-		
-	# Download Sentora upgrade packages
-	echo -e "\nDownloading Updated package files..." 
-	rm -rf sentora_php7_upgrade
-	mkdir -p sentora_php7_upgrade
-	cd sentora_php7_upgrade
-	wget -nv -O sentora_php7_upgrade.zip http://zppy-repo.dukecitysolutions.com/repo/sentora-live/php7_upgrade/sentora_php7_upgrade.zip
-	
-	echo -e "\n--- Unzipping files..."
-	unzip -oq sentora_php7_upgrade.zip
-	
-
-	# -------------------------------------------------------------------------------	
-	# Start Sentora php 7.3 module package update Below
-	# -------------------------------------------------------------------------------
-	
-	echo -e "\nStarting PHP 7.3 with Snuffaluffagus packages updates"
-		
-		
-	# Update Snuff Default rules to fix panel timeout
-	echo -e "\n--- Updating Snuffleupagus default rules..."
-	rm -rf /etc/sentora/configs/php/sp/snuffleupagus.rules
-	cp -r  ~/sentora_php7_upgrade/preconf/php/snuffleupagus.rules /etc/sentora/configs/php/sp/snuffleupagus.rules
-	cp -r  ~/sentora_php7_upgrade/preconf/php/sentora.rules /etc/sentora/configs/php/sp/sentora.rules
-	
-	# Upgrade apache_admin with apache_admin 1.0.x
-	echo -e "\n--- Updating Apache_admin module..."
-	rm -rf /etc/sentora/panel/modules/apache_admin
-	cp -r  ~/sentora_php7_upgrade/modules/apache_admin $PANEL_PATH/panel/modules/	
-	
-	# Upgrade dns_manager module 1.0.x
-	echo -e "\n--- Updating dns_manager module..."
-	rm -rf /etc/sentora/panel/modules/dns_manager/
-	cp -r  ~/sentora_php7_upgrade/modules/dns_manager $PANEL_PATH/panel/modules/
-	
-	# Upgrade domains module 1.0.x
-	echo -e "\n--- Updating Domains module..."
-	rm -rf /etc/sentora/panel/modules/domains/
-	cp -r  ~/sentora_php7_upgrade/modules/domains $PANEL_PATH/panel/modules/
-	
-	# Upgrade ftp_management module 1.0.x
-	echo -e "\n--- Updating FTP_management module..."
-	rm -rf /etc/sentora/panel/modules/ftp_management/
-	cp -r  ~/sentora_php7_upgrade/modules/ftp_management $PANEL_PATH/panel/modules/
-		
-	# Upgrade parked_Domains module 1.0.x
-	echo -e "\n--- Updating Parked_Domains module..."
-	rm -rf /etc/sentora/panel/modules/parked_domains/
-	cp -r  ~/sentora_php7_upgrade/modules/parked_domains $PANEL_PATH/panel/modules/
-	
-	# Upgrade Sub_Domains module 1.0.x
-	echo -e "\n--- Updating Sub_Domains module..."
-	rm -rf /etc/sentora/panel/modules/sub_domains/
-	cp -r  ~/sentora_php7_upgrade/modules/sub_domains $PANEL_PATH/panel/modules/
-	
-	# Copy New Apache config template files
-	echo -e "\n--- Updating Sentora vhost templates..."
-	rm -rf /etc/sentora/configs/apache/templates/
-	cp -r ~/sentora_php7_upgrade/preconf/apache/templates /etc/sentora/configs/apache/
-	
-	# -------------------------------------------------------------------------------
-	# Start all OS Sentora php 7.3 config update
-	# -------------------------------------------------------------------------------
-	
-	if [[ "$OS" = "CentOs" && ("$VER" = "6") ]]; then
-	
-			# Fix missing php.ini settings sentora needs
-			echo -e "\nFix missing php.ini settings sentora needs in CentOS 6.x php 7.3 ..."
-			#echo "setting upload_tmp_dir = /var/sentora/temp/"
-			#echo ""
-			#sed -i 's|;upload_tmp_dir =|upload_tmp_dir = /var/sentora/temp/|g' /etc/php.ini
-			echo "Setting session.save_path = /var/sentora/sessions"
-			sed -i 's|session.save_path = "/var/lib/php/sessions"|session.save_path = "/var/sentora/sessions"|g' /etc/php.ini
-						
-	fi
-	
-	----------------------------------------------------------------------------------
-	
-	if [[ "$OS" = "Ubuntu" && ("$VER" = "16.04") ]]; then
-		
-			#### FIX - Upgrade Sentora to Sentora Live for PHP 7.x fixes
-			# reset home dir for commands
-			cd ~
-	
-			# Fix missing php.ini settings sentora needs
-			echo -e "\nFix missing php.ini settings sentora needs in Ubuntu 16.04 php 7.3 ..."
-			echo "setting upload_tmp_dir = /var/sentora/temp/"
-			echo ""
-			sed -i 's|;upload_tmp_dir =|upload_tmp_dir = /var/sentora/temp/|g' /etc/php/7.3/apache2/php.ini
-			echo "Setting session.save_path = /var/sentora/sessions"
-			sed -i 's|;session.save_path = "/var/lib/php/sessions"|session.save_path = "/var/sentora/sessions"|g' /etc/php/7.3/apache2/php.ini
-	
-			# Install missing php7.3-xml for system and roundcube
-			echo -e "\nInstall missing php7.3-xml for system and roundcube..."
-			apt-get -y install php7.3-xml php7.3-gd
-	
-		# PHP Mcrypt 1.0.2 install
-		if [ ! -f /etc/php/7.3/apache2/conf.d/20-mcrypt.ini ]
-				then
-			echo -e "\nInstalling php mcrypt 1.0.2"
-			sudo apt-get -yqq install gcc make autoconf libc-dev pkg-config
-			sudo apt-get -yqq install libmcrypt-dev
-			echo '' | sudo pecl install mcrypt-1.0.2
-			sudo bash -c "echo extension=mcrypt.so > /etc/php/7.3/mods-available/mcrypt.ini"
-			ln -s /etc/php/7.3/mods-available/mcrypt.ini /etc/php/7.3/apache2/conf.d/20-mcrypt.ini
-		fi
-							
-	fi
-	
-
-	
-	# -------------------------------------------------------------------------------
-	# Start Roundcube-1.3.10 upgrade Below
-	# -------------------------------------------------------------------------------
-	
-	echo -e "\n--- Starting Roundcube upgrade to 1.3.10..."
-	cd sentora_php7_upgrade
-	wget -nv -O roundcubemail-1.3.10.tar.gz https://github.com/roundcube/roundcubemail/releases/download/1.3.10/roundcubemail-1.3.10-complete.tar.gz
-	tar xf roundcubemail-*.tar.gz
-	cd roundcubemail-1.3.10
-	bin/installto.sh /etc/sentora/panel/etc/apps/webmail/
-	chown -R root:root /etc/sentora/panel/etc/apps/webmail
-	
-	
-	# -------------------------------------------------------------------------------
-	# Start PHPsysinfo 3.3.1 upgrade Below
-	# -------------------------------------------------------------------------------
-	
-	echo -e "\n--- Starting PHPsysinfo upgrade to 3.3.1..."
-	rm -rf /etc/sentora/panel/etc/apps/phpsysinfo/
-	cp -r  ~/sentora_php7_upgrade/etc/apps/phpsysinfo $PANEL_PATH/panel/etc/apps/
-	
-	
-	# -------------------------------------------------------------------------------
-	# Start PHPmyadmin 4.9 upgrade Below - TESTING WHICH VERSION IS BEST HERE.
-	# -------------------------------------------------------------------------------
-	
-	#echo -e "\n--- Starting PHPmyadmin upgrade to 4.9..."
-	#mkdir -p /etc/sentora/panel/etc/apps/phpmyadmin-old
-	#cp -rf /etc/sentora/panel/etc/apps/phpmyadmin/* /etc/sentora/panel/etc/apps/phpmyadmin-old
-	#rm -rf /etc/sentora/panel/etc/apps/phpmyadmin/*
-	
-	# copy original conf bak to phpmyadmin
-	#cp -r /etc/sentora/panel/etc/apps/phpmyadmin-old/config.inc.php /etc/sentora/panel/etc/apps/phpmyadmin/
-	# copy new PHPmyadmin 4.9 files to PHPmyadmin dir
-	#cp -r  ~/sentora_php7_upgrade/etc/apps/phpmyadmin/* $PANEL_PATH/panel/etc/apps/phpmyadmin
-	
-	
 # -------------------------------------------------------------------------------
 # PANEL SERVICE FIXES/UPGRADES BELOW
 # -------------------------------------------------------------------------------
@@ -316,8 +171,163 @@ done
 		systemctl enable proftpd
 		
 	fi
+
+# -------------------------------------------------------------------------------	
+# Start Sentora php 7.3 module package(s) update Below
+# -------------------------------------------------------------------------------
+
+	# -------------------------------------------------------------------------------
+	# Download Sentora Upgrader files Now
+	# -------------------------------------------------------------------------------
+	
+	#### FIX - Upgrade Sentora to Sentora Live for PHP 7.x fixes
+	# reset home dir for commands
+	cd ~
+		
+	# Download Sentora upgrade packages
+	echo -e "\nDownloading Updated package files..." 
+	rm -rf sentora_php7_upgrade
+	mkdir -p sentora_php7_upgrade
+	cd sentora_php7_upgrade
+	wget -nv -O sentora_php7_upgrade.zip http://zppy-repo.dukecitysolutions.com/repo/sentora-live/php7_upgrade/sentora_php7_upgrade.zip
+	
+	echo -e "\n--- Unzipping files..."
+	unzip -oq sentora_php7_upgrade.zip
 	
 
+	# -------------------------------------------------------------------------------	
+	# Start
+	# -------------------------------------------------------------------------------
+	
+	echo -e "\nStarting PHP 7.3 with Snuffaluffagus packages updates"
+		
+	# Update Snuff Default rules to fix panel timeout
+	echo -e "\n--- Updating Snuffleupagus default rules..."
+	rm -rf /etc/sentora/configs/php/sp/snuffleupagus.rules
+	cp -r  ~/sentora_php7_upgrade/preconf/php/snuffleupagus.rules /etc/sentora/configs/php/sp/snuffleupagus.rules
+	cp -r  ~/sentora_php7_upgrade/preconf/php/sentora.rules /etc/sentora/configs/php/sp/sentora.rules
+	
+	# Upgrade apache_admin with apache_admin 1.0.x
+	echo -e "\n--- Updating Apache_admin module..."
+	rm -rf /etc/sentora/panel/modules/apache_admin
+	cp -r  ~/sentora_php7_upgrade/modules/apache_admin $PANEL_PATH/panel/modules/	
+	
+	# Upgrade dns_manager module 1.0.x
+	echo -e "\n--- Updating dns_manager module..."
+	rm -rf /etc/sentora/panel/modules/dns_manager/
+	cp -r  ~/sentora_php7_upgrade/modules/dns_manager $PANEL_PATH/panel/modules/
+	
+	# Upgrade domains module 1.0.x
+	echo -e "\n--- Updating Domains module..."
+	rm -rf /etc/sentora/panel/modules/domains/
+	cp -r  ~/sentora_php7_upgrade/modules/domains $PANEL_PATH/panel/modules/
+	
+	# Upgrade ftp_management module 1.0.x
+	echo -e "\n--- Updating FTP_management module..."
+	rm -rf /etc/sentora/panel/modules/ftp_management/
+	cp -r  ~/sentora_php7_upgrade/modules/ftp_management $PANEL_PATH/panel/modules/
+		
+	# Upgrade parked_Domains module 1.0.x
+	echo -e "\n--- Updating Parked_Domains module..."
+	rm -rf /etc/sentora/panel/modules/parked_domains/
+	cp -r  ~/sentora_php7_upgrade/modules/parked_domains $PANEL_PATH/panel/modules/
+	
+	# Upgrade Sub_Domains module 1.0.x
+	echo -e "\n--- Updating Sub_Domains module..."
+	rm -rf /etc/sentora/panel/modules/sub_domains/
+	cp -r  ~/sentora_php7_upgrade/modules/sub_domains $PANEL_PATH/panel/modules/
+	
+	# Copy New Apache config template files
+	echo -e "\n--- Updating Sentora vhost templates..."
+	rm -rf /etc/sentora/configs/apache/templates/
+	cp -r ~/sentora_php7_upgrade/preconf/apache/templates /etc/sentora/configs/apache/
+	
+	# -------------------------------------------------------------------------------
+	# Start all OS Sentora php 7.3 config update
+	# -------------------------------------------------------------------------------
+	
+	if [[ "$OS" = "CentOs" && ("$VER" = "6") ]]; then
+	
+			# Fix missing php.ini settings sentora needs
+			echo -e "\nFix missing php.ini settings sentora needs in CentOS 6.x php 7.3 ..."
+			#echo "setting upload_tmp_dir = /var/sentora/temp/"
+			#echo ""
+			#sed -i 's|;upload_tmp_dir =|upload_tmp_dir = /var/sentora/temp/|g' /etc/php.ini
+			echo "Setting session.save_path = /var/sentora/sessions"
+			sed -i 's|session.save_path = "/var/lib/php/sessions"|session.save_path = "/var/sentora/sessions"|g' /etc/php.ini
+						
+	fi
+	
+	# ----------------------------------------------------------------------------------
+	
+	if [[ "$OS" = "Ubuntu" && ("$VER" = "16.04") ]]; then
+		
+			#### FIX - Upgrade Sentora to Sentora Live for PHP 7.x fixes
+			# reset home dir for commands
+			cd ~
+	
+			# Fix missing php.ini settings sentora needs
+			echo -e "\nFix missing php.ini settings sentora needs in Ubuntu 16.04 php 7.3 ..."
+			echo "setting upload_tmp_dir = /var/sentora/temp/"
+			echo ""
+			sed -i 's|;upload_tmp_dir =|upload_tmp_dir = /var/sentora/temp/|g' /etc/php/7.3/apache2/php.ini
+			echo "Setting session.save_path = /var/sentora/sessions"
+			sed -i 's|;session.save_path = "/var/lib/php/sessions"|session.save_path = "/var/sentora/sessions"|g' /etc/php/7.3/apache2/php.ini
+	
+			# Install missing php7.3-xml for system and roundcube
+			echo -e "\nInstall missing php7.3-xml for system and roundcube..."
+			apt-get -y install php7.3-xml php7.3-gd
+	
+		# PHP Mcrypt 1.0.2 install
+		if [ ! -f /etc/php/7.3/apache2/conf.d/20-mcrypt.ini ]
+				then
+			echo -e "\nInstalling php mcrypt 1.0.2"
+			sudo apt-get -yqq install gcc make autoconf libc-dev pkg-config
+			sudo apt-get -yqq install libmcrypt-dev
+			echo '' | sudo pecl install mcrypt-1.0.2
+			sudo bash -c "echo extension=mcrypt.so > /etc/php/7.3/mods-available/mcrypt.ini"
+			ln -s /etc/php/7.3/mods-available/mcrypt.ini /etc/php/7.3/apache2/conf.d/20-mcrypt.ini
+		fi
+							
+	fi
+	
+	# -------------------------------------------------------------------------------
+	# Start Roundcube-1.3.10 upgrade Below
+	# -------------------------------------------------------------------------------
+	
+	echo -e "\n--- Starting Roundcube upgrade to 1.3.10..."
+	cd sentora_php7_upgrade
+	wget -nv -O roundcubemail-1.3.10.tar.gz https://github.com/roundcube/roundcubemail/releases/download/1.3.10/roundcubemail-1.3.10-complete.tar.gz
+	tar xf roundcubemail-*.tar.gz
+	cd roundcubemail-1.3.10
+	bin/installto.sh /etc/sentora/panel/etc/apps/webmail/
+	chown -R root:root /etc/sentora/panel/etc/apps/webmail
+	
+	# -------------------------------------------------------------------------------
+	# Start PHPsysinfo 3.3.1 upgrade Below
+	# -------------------------------------------------------------------------------
+	
+	echo -e "\n--- Starting PHPsysinfo upgrade to 3.3.1..."
+	rm -rf /etc/sentora/panel/etc/apps/phpsysinfo/
+	cp -r  ~/sentora_php7_upgrade/etc/apps/phpsysinfo $PANEL_PATH/panel/etc/apps/
+	
+	# -------------------------------------------------------------------------------
+	# Start PHPmyadmin 4.9 upgrade Below - TESTING WHICH VERSION IS BEST HERE.
+	# -------------------------------------------------------------------------------
+	
+	#echo -e "\n--- Starting PHPmyadmin upgrade to 4.9..."
+	#mkdir -p /etc/sentora/panel/etc/apps/phpmyadmin-old
+	#cp -rf /etc/sentora/panel/etc/apps/phpmyadmin/* /etc/sentora/panel/etc/apps/phpmyadmin-old
+	#rm -rf /etc/sentora/panel/etc/apps/phpmyadmin/*
+	
+	# copy original conf bak to phpmyadmin
+	#cp -r /etc/sentora/panel/etc/apps/phpmyadmin-old/config.inc.php /etc/sentora/panel/etc/apps/phpmyadmin/
+	# copy new PHPmyadmin 4.9 files to PHPmyadmin dir
+	#cp -r  ~/sentora_php7_upgrade/etc/apps/phpmyadmin/* $PANEL_PATH/panel/etc/apps/phpmyadmin
+	
+	
+# -------------------------------------------------------------------------------
+	
 # -------------------------------------------------------------------------------
 	
 # Update Sentora APACHE CHANGED
