@@ -294,7 +294,10 @@ function WriteVhostConfigFile()
 				if ( !is_dir( $vh_snuff_path . $vh_vhostuser ) ) {
 					fs_director::CreateDirectory( $vh_snuff_path . $vh_vhostuser );
 				}
-  				$linesp = $smarty->fetch("vhost_sp_rules.tpl") . fs_filehandler::NewLine();
+  				//$linesp = $smarty->fetch("vhost_sp_rules.tpl") . fs_filehandler::NewLine();
+				$linesp = $rowvhost['vh_custom_sp_tx'];
+				$linesp .= fs_filehandler::NewLine();
+				$linesp .= $smarty->fetch("vhost_sp_rules.tpl") . fs_filehandler::NewLine();
 
 				//*********Write to file
 				writetofile($vh_snuff_path . $vh_vhostuser . "/" . $rowvhost['vh_name_vc'] . '.rules'  , $linesp);
@@ -304,11 +307,10 @@ function WriteVhostConfigFile()
 				
 				// TEST build if statment to add custom sp values
 				//if($rowvhost['vh_custom_sp_tx'] != null) {
-				$linesp .= $rowvhost['vh_custom_sp_tx'];
-				$linesp = fs_filehandler::NewLine();
-				$linesp = $smarty->fetch("vhost_sp_rules.tpl") . fs_filehandler::NewLine();
+				$linesp = $rowvhost['vh_custom_sp_tx'];
+				$linesp .= fs_filehandler::NewLine();
+				$linesp .= $smarty->fetch("vhost_sp_rules.tpl") . fs_filehandler::NewLine();
 				
-					
 				//*********Write to file
 				writetofile($vh_snuff_path . $vh_vhostuser . "/" . $rowvhost['vh_name_vc'] . '.rules'  , $linesp);
 				//***********
