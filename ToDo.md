@@ -6,6 +6,7 @@
 - [x]  Update Roundcube to 1.3.10
 - [x]  Update PHPSysinfo to 3.3.2
 - [x]  Update PHPMyAdmin to 4.9.x
+- [x]  PHP 7.3.0 bug CVE-2019-11043 - SAFE with Apache 2.4, PHP 7.3.10 or greater. Our code has no issues found after testing
 - [ ]  Hope to have a STABLE RELEASE HERE after FULL Security/Penetration testing for Suhosin/Snuffleupagus recoding :-)
 - [ ]  Fix/Secure zsudo issue if possiable or recode for PHP-FPM :-)
 - [ ]  Merge Sentora Github 1.0.x core updated files
