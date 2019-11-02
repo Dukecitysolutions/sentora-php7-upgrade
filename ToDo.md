@@ -1,8 +1,8 @@
 ## 📑 ToDo check list
 - [x]  Update PHP 5.x to 7.3
-- [x]  Add PHP 7.3 Snuffleupagus support
+- [x]  Add PHP 7.3 Snuffleupagus 0.5.x support
 - [x]  Add Apache vhost templating configs for Apache_admin module
-- [x]  Add Snuffleupagus support to needed modules (apache_admin,domain,parked,sub_domains)
+- [x]  Add Snuffleupagus 0.5.x support to needed modules (apache_admin,domain,parked,sub_domains)
 - [x]  Update Roundcube to 1.3.10
 - [x]  Update PHPSysinfo to 3.3.2
 - [x]  Update PHPMyAdmin to 4.9.x
