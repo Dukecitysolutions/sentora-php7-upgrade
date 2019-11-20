@@ -6,9 +6,13 @@
 - [x]  Update Roundcube to 1.3.10
 - [x]  Update PHPSysinfo to 3.3.2
 - [x]  Update PHPMyAdmin to 4.9.x
+- [ ]  Add Fail2ban to Sentora Services (Apache,Dovecot,Postfix,Proftpd,Sshd etc...) for proper security control
+- [ ]  Add Firewall Service to control incoming services ( all ports ).
 - [x]  PHP 7.3.0 bug CVE-2019-11043 - SAFE with Apache 2.4, PHP 7.3.10 or greater. Our code has no issues found after testing
-- [ ]  Hope to have a STABLE RELEASE HERE after FULL Security/Penetration testing for Suhosin/Snuffleupagus recoding :-)
-- [ ]  Fix/Secure zsudo issue if possiable or recode for PHP-FPM :-)
+
+- [ ]  -- Hope to have a STABLE RELEASE HERE after FULL Security/Penetration testing for Suhosin 0.9.x/Snuffleupagus 0.5.x recoding :-) 
+
+- [ ]  Fix/Secure/drop zsudo issue if possiable or recode for PHP-FPM :-)
 - [ ]  Merge Sentora Github 1.0.x core updated files
 - [ ]  Security check and overhaul if needed after testing
 - [ ]  Fix Sentora panel/vhost folder Premissions for secure PHP-FPM setup

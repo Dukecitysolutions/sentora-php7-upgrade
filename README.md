@@ -1,10 +1,14 @@
 # Sentora PHP 7.3 upgrade - \*Testing ONLY\*
 
+* COMMERCIAL RELEASE COMING SOON. STAY TUNED. Just needs testing.
+
 * Version: 0.3.1 - Beta
 * [Bug Tracker](https://github.com/Dukecitysolutions/sentora-php7-upgrade/issues) for any bugs or security related issues.
 * [CHANGELOG](https://github.com/Dukecitysolutions/sentora-php7-upgrade/blob/master/CHANGELOG.md) for viewing changes to this build.
+* [SUPPORT PAGE] COMING SSON.
 
-## THIS CODE IS NOT FOR PRODUCTION SYSTEMS YET. NEEDS TESTING. USE AT YOUR OWN RISK.
+
+## THIS CODE IS NOT FOR PRODUCTION/COMMERCIAL SYSTEMS YET. NEEDS FULL/SECURITY TESTING. USE AT YOUR OWN RISK.
 
 ## About this upgrade script:
 * Created this upgrade script to help get PHP 7.x support to Sentora users Quickly, Safely and SECURELY.
