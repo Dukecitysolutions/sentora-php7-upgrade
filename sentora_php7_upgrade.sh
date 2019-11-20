@@ -573,7 +573,10 @@ fi
 	# phpver=php -v |grep -Eow '^PHP [^ ]+' |gawk '{ print $2 }'
 	phpver=`php -r 'echo PHP_VERSION;'`
 
-		# Start
+	PHPMYADMIN_OLD="/etc/sentora/panel/apps/phpmyadmin_old"
+
+	if [ ! -d "$PHPMYADMIN_OLD" ]; then		
+	# Start
 		if [[ "$(versioncheck "$phpver")" < "$(versioncheck "5.5.0")" ]]; then
 			echo -e "\n-- Your current php Version installed is $phpver, you can't upgrade phpMyAdmin to the last stable version. You need php 5.5+ for upgrade."
 		else
@@ -639,6 +642,8 @@ fi
 				esac
 			done
 		fi	
+		
+	fi
 	
 	# -------------------------------------------------------------------------------
 	# Start Sentora system premission upgrade Below
