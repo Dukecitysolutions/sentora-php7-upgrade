@@ -619,7 +619,7 @@ fi
 							composer create-project
 							
                         	cd $PANEL_PATH/panel/etc/apps/
-                        	chmod -R 755 phpmyadmin
+                        	chmod -R 777 phpmyadmin
                         	chown -R $HTTP_USER:$HTTP_USER phpmyadmin
 							rm -rf phpmyadmin/test
                         	#rm -rf phpmyadmin.zip
