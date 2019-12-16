@@ -5,7 +5,7 @@
 * Version: 0.3.1 - Beta
 * [Bug Tracker](https://github.com/Dukecitysolutions/sentora-php7-upgrade/issues) for any bugs or security related issues.
 * [CHANGELOG](https://github.com/Dukecitysolutions/sentora-php7-upgrade/blob/master/CHANGELOG.md) for viewing changes to this build.
-* [SUPPORT PAGE](http://sentora.dukecitysolutions) for forum support by our staff and community members.
+* [SUPPORT PAGE](http://sentora.dukecitysolutions.com) for forum support by our staff and community members.
 
 
 ## THIS CODE IS NOT FOR PRODUCTION/COMMERCIAL SYSTEMS YET. NEEDS FULL/SECURITY TESTING. USE AT YOUR OWN RISK.
