@@ -65,10 +65,11 @@ while true; do
 	echo -e ""
 	echo "###############################################################################"
 	echo -e "\nPlease make sure the Date/Time is correct. This script will need correct Date/Time to install correctly"
-	echo -e "If you continue with wrong date/time this script/services (phpmyadmin) may not install correctly. DO NOT CONTINUE IF DATE?TIME IS WRONG BELOW"
+	echo -e "If you continue with wrong date/time this script/services (phpmyadmin) may not install correctly. DO NOT CONTINUE IF DATE/TIME IS WRONG BELOW"
 	echo ""
-	echo -e "n\nSet Date/time with this command here - date -s \"19 APR 2012 11:14:00\" "
+	echo -e "\nSet Date/time with this command here - date -s \"19 APR 2012 11:14:00\" "
 	# show date/time to make sure its correct
+	echo ""
 		date
 	echo ""
 	echo "###############################################################################"
@@ -485,7 +486,7 @@ fi
 	cp -r  ~/sentora_php7_upgrade/modules/apache_admin $PANEL_PATH/panel/modules/	
 	
 	# Upgrade dns_manager module 1.0.x
-	echo -e "\n--- Updating dns_manager module..."
+	echo -e "\nUpdating dns_manager module..."
 	rm -rf /etc/sentora/panel/modules/dns_manager/
 	cp -r  ~/sentora_php7_upgrade/modules/dns_manager $PANEL_PATH/panel/modules/
 	
@@ -586,7 +587,10 @@ fi
 				
 				case $pma in
         	        [Uu]* )
-            	            PHPMYADMIN_VERSION="STABLE"
+							## START Install here
+							
+            	            #PHPMYADMIN_VERSION="STABLE"
+							PHPMYADMIN_VERSION="4.9.2-all-languages"
                 	        cd  $PANEL_PATH/panel/etc/apps/
 							# backup 	
                     	    mv phpmyadmin  phpmyadmin_old
@@ -594,9 +598,12 @@ fi
 							# empty folder
 							rm -rf /etc/sentora/panel/etc/apps/phpmyadmin
 
-							wget -nv -O phpmyadmin.zip https://github.com/phpmyadmin/phpmyadmin/archive/$PHPMYADMIN_VERSION.zip
+							# Download/Get PHPmyadmin 4.9.2
+							#wget -nv -O phpmyadmin.zip https://github.com/phpmyadmin/phpmyadmin/archive/$PHPMYADMIN_VERSION.zip
+							cp -r  ~/sentora_php7_upgrade/etc/apps/phpmyadmin.zip phpmyadmin.zip
+							
                     	    unzip -q  phpmyadmin.zip
-                        	mv phpmyadmin-$PHPMYADMIN_VERSION phpmyadmin
+                        	mv phpMyAdmin-$PHPMYADMIN_VERSION phpmyadmin
 											
                         	#sed -i "s/memory_limit = .*/memory_limit = 512M/" $PHP_INI_PATH
 							#if [[ "$OS" = "CentOs" || "$OS" = "Fedora" ]]; then
@@ -606,36 +613,53 @@ fi
 							
                         	cd phpmyadmin
 							
-                        	php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-                        	php -r "if (hash_file('SHA384', 'composer-setup.php') === 'a5c698ffe4b8e849a443b120cd5ba38043260d5c4023dbf93e1558871f1f07f58274fc6f4c93bcfd858c6bd0775cd8d1') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
+							##
+							#echo "start composer"
+                        	                        	
+							#EXPECTED_SIGNATURE="$(wget -q -O - https://composer.github.io/installer.sig)"
+							#php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+							#ACTUAL_SIGNATURE="$(php -r "echo hash_file('sha384', 'composer-setup.php');")"
+
+							#if [ "$EXPECTED_SIGNATURE" != "$ACTUAL_SIGNATURE" ]
+								#then
+    							#>&2 echo 'ERROR: Invalid installer signature'
+   								# rm composer-setup.php
+    							#exit 1
+							#fi
+
+							#php composer-setup.php --quiet
+							#RESULT=$?
+							#rm composer-setup.php
+							#exit $RESULT
 							
 							## Setup composer
-							sudo php composer-setup.php --install-dir=/usr/local/bin --filename=composer
+							#sudo php composer-setup.php --install-dir=/usr/local/bin --filename=composer
                         	#php composer-setup.php
-                        	php -r "unlink('composer-setup.php');"
-                        	composer update --no-dev
+                        	#php -r "unlink('composer-setup.php');"
+							
+                        	#composer update --no-dev
 							
 							# setup PHPmyadmin 4.9.1
-							composer create-project
+							#composer create-project
 							
                         	cd $PANEL_PATH/panel/etc/apps/
                         	chmod -R 777 phpmyadmin
                         	chown -R $HTTP_USER:$HTTP_USER phpmyadmin
-							rm -rf phpmyadmin/test
-                        	#rm -rf phpmyadmin.zip
-							mv $PANEL_PATH/panel/etc/apps/phpmyadmin_old/robots.txt phpmyadmin/robots.txt
-                        	#rm -rf phpmyadmin.old
 							
+							#mv $PANEL_PATH/panel/etc/apps/phpmyadmin_old/robots.txt phpmyadmin/robots.txt
+                        	
 							mkdir -p /etc/sentora/panel/etc/apps/phpmyadmin/tmp
 							chmod -R 777 /etc/sentora/panel/etc/apps/phpmyadmin/tmp
 							ln -s $PANEL_CONF/phpmyadmin/config.inc.php $PANEL_PATH/panel/etc/apps/phpmyadmin/config.inc.php
 							chmod 644 $PANEL_CONF/phpmyadmin/config.inc.php
 							sed -i "s|\$cfg\['blowfish_secret'\] \= '.*';|\$cfg\['blowfish_secret'\] \= '$phpmyadminsecret';|" $PANEL_CONF/phpmyadmin/config.inc.php
 	
-							# Remove phpMyAdmin's setup folder in case it was left behind
-							rm -rf $PANEL_PATH/panel/etc/apps/phpmyadmin/setup
-							
-							
+							# Remove phpMyAdmin's setup folders in case they were left behind.
+							rm -rf phpmyadmin/setup
+							rm -rf phpmyadmin/sql
+							rm -rf phpmyadmin/test
+                        	rm -rf phpmyadmin.zip
+							#rm -rf phpmyadmin_old
                 	break;;
                 	[oO]* )
                 	break;;
