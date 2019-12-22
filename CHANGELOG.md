@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ## [0.3.1] - 2019-10-17
 ### Changed
-- PHPMyAdmin 4.x to 4.9.1 current version.
+- PHPMyAdmin 4.x to 4.9.2 current version.
 - CentOS 6.x MYSQL 5.x to 5.5 upgrade.
 
 ### Fixed
