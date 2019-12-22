@@ -6,7 +6,7 @@
 - [x]  Update Roundcube to 1.3.10
 - [x]  Update PHPSysinfo to 3.3.2
 - [x]  Update PHPMyAdmin to 4.9.2
-- [P]  Add Fail2ban to Sentora Services (Apache,Dovecot,Postfix,Proftpd,Sshd etc...) for proper security control
+- [ ]  Add Fail2ban to Sentora Services (Apache,Dovecot,Postfix,Proftpd,Sshd etc...) for proper security control
 - [ ]  Add Firewall Service to control incoming services ( all ports ).
 - [x]  PHP 7.3.0 bug CVE-2019-11043 - SAFE with Apache 2.4, PHP 7.3.10 or greater. Our code has no issues found after testing
 
