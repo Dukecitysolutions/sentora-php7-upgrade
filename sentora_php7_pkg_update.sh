@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SENTORA_UPDATER_VERSION="0.3.0-BETA"
+SENTORA_UPDATER_VERSION="0.3.2-BETA"
 PANEL_PATH="/etc/sentora"
 PANEL_DATA="/var/sentora"
 PANEL_CONF="/etc/sentora/configs"
@@ -8,7 +8,7 @@ PANEL_CONF="/etc/sentora/configs"
 #--- Display the 'welcome' splash/user warning info..
 echo ""
 echo "###############################################################################################"
-echo "#  Welcome to the Unofficial Sentora PHP 7 PKG updater. Installer v.$SENTORA_UPDATER_VERSION  #"
+echo "#  Welcome to the Unofficial Sentora PHP 7.3 PKG updater. Installer v.$SENTORA_UPDATER_VERSION  #"
 echo "###############################################################################################"
 echo ""
 echo -e "\n- Checking that minimal requirements are ok"
@@ -81,9 +81,36 @@ while true; do
 done
 
 # -------------------------------------------------------------------------------
+# Installer Logging
+#--- Set custom logging methods so we create a log file in the current working directory.
+
+logfile=$(date +%Y-%m-%d_%H.%M.%S_php7_update.log)
+touch "$logfile"
+exec > >(tee "$logfile")
+exec 2>&1
+
+# -------------------------------------------------------------------------------
 # PANEL SERVICE FIXES/UPGRADES BELOW
 # -------------------------------------------------------------------------------
+
+	# -------------------------------------------------------------------------------
+	# Download Sentora Upgrader files Now
+	# -------------------------------------------------------------------------------	
 	
+		#### FIX - Upgrade Sentora to Sentora Live for PHP 7.x fixes
+	# reset home dir for commands
+	cd ~
+		
+	# Download Sentora upgrade packages
+	echo -e "\nDownloading Updated package files..." 
+	mkdir -p sentora_php7_upgrade
+	cd sentora_php7_upgrade
+	wget -nv -O sentora_php7_upgrade.zip http://zppy-repo.dukecitysolutions.com/repo/sentora-live/php7_upgrade/sentora_php7_upgrade.zip
+	
+	echo -e "\n--- Unzipping files..."
+	unzip -oq sentora_php7_upgrade.zip
+	
+	# -------------------------------------------------------------------------------	
 	# BIND/NAMED DNS Below
 	# -------------------------------------------------------------------------------
 	
@@ -115,6 +142,17 @@ done
 		###############################
 
 	fi	
+		
+	# -------------------------------------------------------------------------------
+	# CRON Below
+	# -------------------------------------------------------------------------------
+	
+		# prepare daemon crontab
+		# sed -i "s|!USER!|$CRON_USER|" "$PANEL_CONF/cron/zdaemon" #it screw update search!#
+		rm -rf /etc/cron.d/zdaemon
+		cp -r ~/sentora_php7_upgrade/preconf/cron/zdaemon /etc/cron.d/zdaemon
+		sed -i "s|!USER!|root|" "/etc/cron.d/zdaemon"
+		chmod 644 /etc/cron.d/zdaemon
 	
 	# -------------------------------------------------------------------------------
 	# MYSQL Below
@@ -176,25 +214,6 @@ done
 # Start Sentora php 7.3 module package(s) update Below
 # -------------------------------------------------------------------------------
 
-	# -------------------------------------------------------------------------------
-	# Download Sentora Upgrader files Now
-	# -------------------------------------------------------------------------------
-	
-	#### FIX - Upgrade Sentora to Sentora Live for PHP 7.x fixes
-	# reset home dir for commands
-	cd ~
-		
-	# Download Sentora upgrade packages
-	echo -e "\nDownloading Updated package files..." 
-	rm -rf sentora_php7_upgrade
-	mkdir -p sentora_php7_upgrade
-	cd sentora_php7_upgrade
-	wget -nv -O sentora_php7_upgrade.zip http://zppy-repo.dukecitysolutions.com/repo/sentora-live/php7_upgrade/sentora_php7_upgrade.zip
-	
-	echo -e "\n--- Unzipping files..."
-	unzip -oq sentora_php7_upgrade.zip
-	
-
 	# -------------------------------------------------------------------------------	
 	# Start
 	# -------------------------------------------------------------------------------
@@ -204,6 +223,7 @@ done
 	# Update Snuff Default rules to fix panel timeout
 	echo -e "\n--- Updating Snuffleupagus default rules..."
 	rm -rf /etc/sentora/configs/php/sp/snuffleupagus.rules
+	rm -rf /etc/sentora/configs/php/sp/sentora.rules
 	cp -r  ~/sentora_php7_upgrade/preconf/php/snuffleupagus.rules /etc/sentora/configs/php/sp/snuffleupagus.rules
 	cp -r  ~/sentora_php7_upgrade/preconf/php/sentora.rules /etc/sentora/configs/php/sp/sentora.rules
 	
@@ -211,6 +231,9 @@ done
 	echo -e "\n--- Updating Apache_admin module..."
 	rm -rf /etc/sentora/panel/modules/apache_admin
 	cp -r  ~/sentora_php7_upgrade/modules/apache_admin $PANEL_PATH/panel/modules/	
+	
+		# Set new sentora panel logs dir
+		mkdir -p /var/sentora/logs/panel
 	
 	# Upgrade dns_manager module 1.0.x
 	echo -e "\n--- Updating dns_manager module..."
@@ -296,8 +319,8 @@ done
 	# -------------------------------------------------------------------------------
 	
 	echo -e "\n--- Starting Roundcube upgrade to 1.3.10..."
-	cd sentora_php7_upgrade
-	wget -nv -O roundcubemail-1.3.10.tar.gz https://github.com/roundcube/roundcubemail/releases/download/1.3.10/roundcubemail-1.3.10-complete.tar.gz
+	cd ~/sentora_php7_upgrade
+	wget --no-check-certificate -nv -O roundcubemail-1.3.10.tar.gz https://github.com/roundcube/roundcubemail/releases/download/1.3.10/roundcubemail-1.3.10-complete.tar.gz
 	tar xf roundcubemail-*.tar.gz
 	cd roundcubemail-1.3.10
 	bin/installto.sh /etc/sentora/panel/etc/apps/webmail/
@@ -440,15 +463,9 @@ done
 	
 # Update Sentora APACHE CHANGED
 
-echo -e "\n--- Setting APACHE_CHANGED to true to set vhost setings..."
-# get mysql root password, check it works or ask it
-mysqlpassword=$(cat /etc/sentora/panel/cnf/db.php | grep "pass =" | sed -s "s|.*pass \= '\(.*\)';.*|\1|")
-while ! mysql -u root -p$mysqlpassword -e ";" ; do
-	read -p "Cant connect to mysql, please give root password or press ctrl-C to abort: " mysqlpassword
-done
-echo -e "\nConnection mysql ok"
-mysql -u root -p"$mysqlpassword" < ~/sentora_php7_upgrade/preconf/sql/sen_apache_changed.sql	
-	
+	# make the daemon to build vhosts file.
+	$PANEL_PATH/panel/bin/setso --set apache_changed "true"
+	php -d "sp.configuration_file=/etc/sentora/configs/php/sp/sentora.rules" -q $PANEL_PATH/panel/bin/daemon.php	
 	
 # -------------------------------------------------------------------------------
 	
