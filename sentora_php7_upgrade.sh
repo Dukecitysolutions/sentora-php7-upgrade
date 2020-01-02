@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SENTORA_UPDATER_VERSION="0.3.1-BETA"
+SENTORA_UPDATER_VERSION="0.3.2-BETA"
 PANEL_PATH="/etc/sentora"
 PANEL_DATA="/var/sentora"
 PANEL_CONF="/etc/sentora/configs"
@@ -8,7 +8,7 @@ PANEL_CONF="/etc/sentora/configs"
 #--- Display the 'welcome' splash/user warning info..
 echo ""
 echo "############################################################################################"
-echo "#  Welcome to the Unofficial Sentora PHP 7 upgrader. Installer v.$SENTORA_UPDATER_VERSION  #"
+echo "#  Welcome to the Unofficial Sentora PHP 7.3 upgrader. Installer v.$SENTORA_UPDATER_VERSION  #"
 echo "############################################################################################"
 echo ""
 echo -e "\n- Checking that minimal requirements are ok"
@@ -83,6 +83,16 @@ while true; do
 done
 
 # -------------------------------------------------------------------------------
+# Installer Logging
+#--- Set custom logging methods so we create a log file in the current working directory.
+
+logfile=$(date +%Y-%m-%d_%H.%M.%S_php7_upgrade.log)
+touch "$logfile"
+exec > >(tee "$logfile")
+exec 2>&1
+
+# -------------------------------------------------------------------------------
+
 ## If OS is CENTOS then perform update
 if [[ "$OS" = "CentOs" ]]; then
 
@@ -92,7 +102,7 @@ if [[ "$OS" = "CentOs" ]]; then
     
 	# START
 	# -------------------------------------------------------------------------------
-	echo "Starting PHP 7.3 with Packages update on Centos 6.*"	
+	echo -e "n\Starting PHP 7.3 with Packages update on Centos 6.*"	
 	# -------------------------------------------------------------------------------
 
 	yum clean all
@@ -102,7 +112,16 @@ if [[ "$OS" = "CentOs" ]]; then
 	
 	rpm -Uvh http://rpms.famillecollet.com/enterprise/remi-release-6.rpm
 	
+	#Check for updates
+	yum -y update
+	yum -y upgrade
+	
+	# Remove PHP 5.3 first
+	#yum -y remove php
+	
+	# Install PHP 7.3
 	yum -y --enablerepo=remi-php73 install php
+	
 	# yum --enablerepo=remi-php73 install php-xml php-soap php-xmlrpc php-mbstring php-json php-gd php-mcrypt
 	
 	# Fix autoconf issues
@@ -133,9 +152,7 @@ if [[ "$OS" = "CentOs" ]]; then
 	# Restart Apache
 	service httpd restart
 		
-	#Check for updates
-	yum -y update
-	yum -y upgrade
+
 		
 	# END
 	# -------------------------------------------------------------------------------
@@ -155,9 +172,9 @@ if [[ "$OS" = "CentOs" ]]; then
 		exit 1
 	fi
         
-	# START
 	# -------------------------------------------------------------------------------
-	echo "Starting PHP 7.3 with Packages update on Centos 7.*"	
+	echo -e "n\Starting PHP 7.3 with Packages update on Centos 7.*"	
+	# -------------------------------------------------------------------------------
 	
 	if wget --spider http://rpms.remirepo.net/enterprise/remi-release-7.rpm 2>/dev/null; then
 		echo -e "\nRepo *remi-release-7.rpm* is available procced ..."
@@ -201,7 +218,7 @@ if [[ "$OS" = "Ubuntu" ]]; then
 	
 	# START
 	# -------------------------------------------------------------------------------
-		echo "Starting PHP 7.3 with Packages update on Ubuntu 16.04"
+		echo -e "n\Starting PHP 7.3 with Packages update on Ubuntu 16.04"
 	# -------------------------------------------------------------------------------	
 
         # START HERE
@@ -339,6 +356,24 @@ fi
 # PANEL SERVICE FIXES/UPGRADES BELOW
 # -------------------------------------------------------------------------------
 	
+	# -------------------------------------------------------------------------------
+	# Download Sentora Upgrader files Now
+	# -------------------------------------------------------------------------------	
+	
+		#### FIX - Upgrade Sentora to Sentora Live for PHP 7.x fixes
+	# reset home dir for commands
+	cd ~
+		
+	# Download Sentora upgrade packages
+	echo -e "\nDownloading Updated package files..." 
+	mkdir -p sentora_php7_upgrade
+	cd sentora_php7_upgrade
+	wget -nv -O sentora_php7_upgrade.zip http://zppy-repo.dukecitysolutions.com/repo/sentora-live/php7_upgrade/sentora_php7_upgrade.zip
+	
+	echo -e "\n--- Unzipping files..."
+	unzip -oq sentora_php7_upgrade.zip
+	
+	# -------------------------------------------------------------------------------
 	# BIND/NAMED DNS Below
 	# -------------------------------------------------------------------------------
 	
@@ -370,6 +405,17 @@ fi
 		###############################
 
 	fi	
+	
+	# -------------------------------------------------------------------------------
+	# CRON Below
+	# -------------------------------------------------------------------------------
+	
+		# prepare daemon crontab
+		# sed -i "s|!USER!|$CRON_USER|" "$PANEL_CONF/cron/zdaemon" #it screw update search!#
+		rm -rf /etc/cron.d/zdaemon
+		cp -r ~/sentora_php7_upgrade/preconf/cron/zdaemon /etc/cron.d/zdaemon
+		sed -i "s|!USER!|root|" "/etc/cron.d/zdaemon"
+		chmod 644 /etc/cron.d/zdaemon
 	
 	# -------------------------------------------------------------------------------
 	# MYSQL Below
@@ -446,24 +492,7 @@ fi
 # -------------------------------------------------------------------------------
 # Start Sentora upgrade Below
 # -------------------------------------------------------------------------------
-	
-	# -------------------------------------------------------------------------------
-	# Download Sentora Upgrader files Now
-	# -------------------------------------------------------------------------------	
-	
-		#### FIX - Upgrade Sentora to Sentora Live for PHP 7.x fixes
-	# reset home dir for commands
-	cd ~
 		
-	# Download Sentora upgrade packages
-	echo -e "\nDownloading Updated package files..." 
-	mkdir -p sentora_php7_upgrade
-	cd sentora_php7_upgrade
-	wget -nv -O sentora_php7_upgrade.zip http://zppy-repo.dukecitysolutions.com/repo/sentora-live/php7_upgrade/sentora_php7_upgrade.zip
-	
-	echo -e "\n--- Unzipping files..."
-	unzip -oq sentora_php7_upgrade.zip
-	
 	# -------------------------------------------------------------------------------
 	# Start
 	# -------------------------------------------------------------------------------
@@ -475,16 +504,20 @@ fi
 	sed -i 's/__autoload/x__autoload/g' /etc/sentora/panel/dryden/loader.inc.php
 	
 	# Update Snuff Default rules to fix panel timeout
-	echo -e "\nUpdating Snuffleupagus default rules..."
+	echo -e "\n--- Updating Snuffleupagus default rules..."
 	rm -rf /etc/sentora/configs/php/sp/snuffleupagus.rules
+	rm -rf /etc/sentora/configs/php/sp/sentora.rules
 	cp -r  ~/sentora_php7_upgrade/preconf/php/snuffleupagus.rules /etc/sentora/configs/php/sp/snuffleupagus.rules
 	cp -r  ~/sentora_php7_upgrade/preconf/php/sentora.rules /etc/sentora/configs/php/sp/sentora.rules
 	
 	# Upgrade apache_admin with apache_admin 1.0.x
 	echo -e "\nUpdating Apache_admin module..."
 	rm -rf /etc/sentora/panel/modules/apache_admin
-	cp -r  ~/sentora_php7_upgrade/modules/apache_admin $PANEL_PATH/panel/modules/	
-	
+	cp -r  ~/sentora_php7_upgrade/modules/apache_admin $PANEL_PATH/panel/modules/
+		
+		# Set new sentora panel logs dir
+		mkdir -p /var/sentora/logs/panel
+		
 	# Upgrade dns_manager module 1.0.x
 	echo -e "\nUpdating dns_manager module..."
 	rm -rf /etc/sentora/panel/modules/dns_manager/
@@ -533,7 +566,8 @@ fi
 	# -------------------------------------------------------------------------------
 	
 	echo -e "\nStarting Roundcube upgrade to 1.3.10..."
-	wget -nv -O roundcubemail-1.3.10.tar.gz https://github.com/roundcube/roundcubemail/releases/download/1.3.10/roundcubemail-1.3.10-complete.tar.gz
+	cd ~/sentora_php7_upgrade
+	wget --no-check-certificate -nv -O roundcubemail-1.3.10.tar.gz https://github.com/roundcube/roundcubemail/releases/download/1.3.10/roundcubemail-1.3.10-complete.tar.gz
 	tar xf roundcubemail-*.tar.gz
 	cd roundcubemail-1.3.10
 	bin/installto.sh /etc/sentora/panel/etc/apps/webmail/
@@ -690,17 +724,11 @@ fi
 	
 # -------------------------------------------------------------------------------
 	
-# Update Sentora APACHE CHANGED
+# Update Sentora APACHE CHANGED and run daemon
 
-echo -e "\n--- Setting APACHE_CHANGED to true to set vhost setings..."
-# get mysql root password, check it works or ask it
-mysqlpassword=$(cat /etc/sentora/panel/cnf/db.php | grep "pass =" | sed -s "s|.*pass \= '\(.*\)';.*|\1|")
-while ! mysql -u root -p$mysqlpassword -e ";" ; do
-	read -p "Cant connect to mysql, please give root password or press ctrl-C to abort: " mysqlpassword
-done
-echo -e "Connection mysql ok"
-mysql -u root -p"$mysqlpassword" < ~/sentora_php7_upgrade/preconf/sql/sen_apache_changed.sql		
-	
+	# make the daemon to build vhosts file.
+	$PANEL_PATH/panel/bin/setso --set apache_changed "true"
+	php -d "sp.configuration_file=/etc/sentora/configs/php/sp/sentora.rules" -q $PANEL_PATH/panel/bin/daemon.php		
 	
 # -------------------------------------------------------------------------------
 
