@@ -286,7 +286,7 @@ function WriteVhostConfigFile()
 		if (extension_loaded('suhosin') == true ) {	
 			$func_blklist_sys = ($rowvhost['vh_suhosin_in'] <> 0) ? ctrl_options::GetSystemOption('suhosin_value') : '';
 		} else {
-			$func_blklist_sys = ($rowvhost['vh_suhosin_in'] <> 0) ? 'php_admin_value sp.configuration_file ' . $vh_snuff_path . $vh_vhostuser . "/" . $rowvhost['vh_name_vc'] . '.rules' : '';
+			$func_blklist_sys = ($rowvhost['vh_suhosin_in'] <> 0) ? 'php_admin_value sp.configuration_file "' . $vh_snuff_path . $vh_vhostuser . "/" . $rowvhost['vh_name_vc'] . '.rules"' : '';
 					
 			// Check sp user path exists if not make folder for sp vhost configs
 			if(!is_file($vh_snuff_path . $vh_vhostuser . "/" . $rowvhost['vh_name_vc'] . '.rules')) {
