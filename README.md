@@ -2,7 +2,7 @@
 
 * COMMERCIAL RELEASE COMING SOON. STAY TUNED. Just needs testing.
 
-* Version: 0.3.1 - Beta
+* Version: 0.3.2 - BETA - 2020-01-01
 * [Bug Tracker](https://github.com/Dukecitysolutions/sentora-php7-upgrade/issues) for any bugs or security related issues.
 * [CHANGELOG](https://github.com/Dukecitysolutions/sentora-php7-upgrade/blob/master/CHANGELOG.md) for viewing changes to this build.
 * [TODO](https://github.com/Dukecitysolutions/sentora-php7-upgrade/blob/master/ToDo.md) List of changes to be made.
