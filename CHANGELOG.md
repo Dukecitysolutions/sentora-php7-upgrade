@@ -5,15 +5,28 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-## [0.3.1] - 2019-10-17
+## [0.3.2-BETA] - 2020-01-01
+### Fixed
+- PHPMyAdmin 500 error DB issue. (Snuffleupagus config was the cause).
+- Zdaemon not running/finishing with Snuffleupagus default rules.
+- CentOS 6 upgrader script not installing PHP 7 issue.
+
+### Changed
+- Snuffleupagus updated (default Rules) for better default PHP/VHOST security.
+- Snuffleupagus updated (Sentora default Rules) for better control panel security.
+- Apache_admin updated templates (vhost_cp/vhost_cp_ssl) preparing for Sentora CP PHP (openbase_dir) lockdown.
+- Cron (Zdaemon) changed/updated for Snuffleupagus rules.
+- Changed/Updated/Cleaned upgrader/update.sh scripts for issues/fixes/typos
+
+## [0.3.1-BETA] - 2019-10-17
 ### Changed
 - PHPMyAdmin 4.x to 4.9.2 current version.
 - CentOS 6.x MYSQL 5.x to 5.5 upgrade.
 
 ### Fixed
-- Snuffleupagus custom rules issues not setting correctly.
+- Snuffleupagus custom rules issues not setting correctly for control panel.
 
-## [0.3.0] - 2019-09-11
+## [0.3.0-BETA] - 2019-09-11
 ### Added
 - Snuffleupagus default rules
 - Sentora panel Snuffleupagus default rules
@@ -34,7 +47,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed ftp_management module not creating proftpd user in proftpd database
 - Cleaned up upgrader script and added Fail points with errors
 
-## [0.2.0] - 2019-09-09
+## [0.2.0-BETA] - 2019-09-09
 ### Added
 - Added Nightly package update script to update core build files.
 - Added CHANGELOG.md to log all changes of builds.
@@ -45,7 +58,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - PHPsysinfo 3.3.1 upgraded.
 - Roundcube 1.3.10 upgraded.
 
-## [0.1.0] - 2019-09-06
+## [0.1.0-BETA] - 2019-09-06
 ### Added
 - Initial upload of starting core files.
 - CentOS 6 & 7 and Ubuntu 16.04 supported
