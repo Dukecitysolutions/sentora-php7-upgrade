@@ -487,6 +487,27 @@ fi
 		
 		systemctl enable proftpd
 		
+	elif [[ "$OS" = "Ubuntu" && ("$VER" = "16.04") ]]; then
+		
+		echo -e "\n-- Reinstall ProFTPD to fix Ubuntu issues"
+		
+		# Remove Proftpd for reinstall
+		apt-get -y remove proftpd-basic
+
+		# Reinstall Proftpd and proftpd-mysql
+		apt-get -y install proftpd proftpd-mod-mysql
+
+		FTP_CONF_PATH='/etc/proftpd/proftpd.conf'
+
+		# Setup proftpd base file to call sentora config
+		rm -f "$FTP_CONF_PATH"
+		#touch "$FTP_CONF_PATH"
+		#echo "include $PANEL_CONF/proftpd/proftpd-mysql.conf" >> "$FTP_CONF_PATH";
+		ln -s "$PANEL_CONF/proftpd/proftpd-mysql.conf" "$FTP_CONF_PATH"
+
+		# Restart Proftpd
+		service proftpd restart
+		
 	fi
 	
 # -------------------------------------------------------------------------------
