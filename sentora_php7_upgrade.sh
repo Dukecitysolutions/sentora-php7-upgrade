@@ -86,10 +86,10 @@ done
 # Installer Logging
 #--- Set custom logging methods so we create a log file in the current working directory.
 
-logfile=$(date +%Y-%m-%d_%H.%M.%S_php7_upgrade.log)
-touch "$logfile"
-exec > >(tee "$logfile")
-exec 2>&1
+	logfile=$(date +%Y-%m-%d_%H.%M.%S_php7_upgrade.log)
+	touch "$logfile"
+	exec > >(tee "$logfile")
+	exec 2>&1
 
 # -------------------------------------------------------------------------------
 
