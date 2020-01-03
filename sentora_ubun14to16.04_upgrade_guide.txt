@@ -9,7 +9,7 @@ sudo do-release-upgrade
 ------------------------------------------------------------------------
 ## upgrade will start downloading files
 It will say "Installing the upgrade can take serverals hours. Once the download has finished, the process cannot be canceled"
-Press y - then press Enter.
+Press [y] - then press Enter.
 ------------------------------------------------------------------------
 
 ## Continues downloading files...
