@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - PHPMyAdmin 500 error DB issue. (Snuffleupagus config was the cause).
 - Zdaemon not running/finishing with Snuffleupagus default rules.
 - CentOS 6 upgrader script not installing PHP 7 issue.
+- Ubuntu 16.04 Proftpd not working after install/upgrade.
 
 ### Changed
 - Snuffleupagus updated (default Rules) for better default PHP/VHOST security.
