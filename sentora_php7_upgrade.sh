@@ -5,6 +5,16 @@ PANEL_PATH="/etc/sentora"
 PANEL_DATA="/var/sentora"
 PANEL_CONF="/etc/sentora/configs"
 
+# -------------------------------------------------------------------------------
+# Installer Logging
+#--- Set custom logging methods so we create a log file in the current working directory.
+
+	logfile=$(date +%Y-%m-%d_%H.%M.%S_sentora_php7_install.log)
+	touch "$logfile"
+	exec > >(tee "$logfile")
+	exec 2>&1
+# -------------------------------------------------------------------------------	
+	
 #--- Display the 'welcome' splash/user warning info..
 echo ""
 echo "############################################################################################"
@@ -81,15 +91,6 @@ while true; do
         * ) echo "Please answer yes or no.";;
     esac
 done
-
-# -------------------------------------------------------------------------------
-# Installer Logging
-#--- Set custom logging methods so we create a log file in the current working directory.
-
-	logfile=$(date +%Y-%m-%d_%H.%M.%S_php7_upgrade.log)
-	touch "$logfile"
-	exec > >(tee "$logfile")
-	exec 2>&1
 
 # -------------------------------------------------------------------------------
 
