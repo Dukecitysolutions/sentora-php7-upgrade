@@ -5,6 +5,16 @@ PANEL_PATH="/etc/sentora"
 PANEL_DATA="/var/sentora"
 PANEL_CONF="/etc/sentora/configs"
 
+# -------------------------------------------------------------------------------
+# Installer Logging
+#--- Set custom logging methods so we create a log file in the current working directory.
+
+	logfile=$(date +%Y-%m-%d_%H.%M.%S_sentora_php7_update.log)
+	touch "$logfile"
+	exec > >(tee "$logfile")
+	exec 2>&1
+# -------------------------------------------------------------------------------	
+	
 #--- Display the 'welcome' splash/user warning info..
 echo ""
 echo "###############################################################################################"
@@ -54,6 +64,27 @@ else
     exit 1
 fi
 
+### Ensure that sentora_1.0.3.1 PHP7_upgrade is installed to run this update
+#if [ -d /etc/sentora ]; then
+#    echo "- Found Sentora v1.0.3.1 with PHP 7.3, processing..."
+#else
+#    echo "Sentora v1.0.3.1 with PHP 7.3 is not installed, aborting..."
+#    exit 1
+#fi
+
+##### Check php 7 was installed or quit installer.
+	PHPVERFULL=$(php -r 'echo phpversion();')
+	PHPVER=${PHPVERFULL:0:3} # return 5.x or 7.x
+
+	echo -e "\nDetected PHP: $PHPVER "
+
+	if  [[ "$PHPVER" = "7.3" ]]; then
+    	echo -e "\nPHP 7.3 installed. Procced installing ..."
+	else
+		echo -e "\nPHP 7.3 not installed. Exiting installer. Please contact script admin"
+		exit 1
+	fi
+
 # -------------------------------------------------------------------------------
 
 while true; do
@@ -79,15 +110,6 @@ while true; do
         * ) echo "Please answer yes or no.";;
     esac
 done
-
-# -------------------------------------------------------------------------------
-# Installer Logging
-#--- Set custom logging methods so we create a log file in the current working directory.
-
-	logfile=$(date +%Y-%m-%d_%H.%M.%S_php7_update.log)
-	touch "$logfile"
-	exec > >(tee "$logfile")
-	exec 2>&1
 
 # -------------------------------------------------------------------------------
 # PANEL SERVICE FIXES/UPGRADES BELOW
@@ -122,6 +144,7 @@ done
 	
 		# Ubuntu DNS fix now starting fix
 		# Update Snuff Default rules to fix panel timeout
+		
 		echo -e "\n--- Updating Ubuntu DNS fix..."
 		rm -rf /etc/apparmor.d/usr.sbin.named
 		cp -r  ~/sentora_php7_upgrade/preconf/apparmor.d/usr.sbin.named /etc/apparmor.d/
@@ -149,6 +172,8 @@ done
 	
 		# prepare daemon crontab
 		# sed -i "s|!USER!|$CRON_USER|" "$PANEL_CONF/cron/zdaemon" #it screw update search!#
+		
+		echo -e "\n--- Updating Sentora Zdeamon..."
 		rm -rf /etc/cron.d/zdaemon
 		cp -r ~/sentora_php7_upgrade/preconf/cron/zdaemon /etc/cron.d/zdaemon
 		sed -i "s|!USER!|root|" "/etc/cron.d/zdaemon"
@@ -161,6 +186,9 @@ done
 	# Bug fix under some MySQL 5.7+ about the sql_mode for "NO_ZERO_IN_DATE,NO_ZERO_DATE"
 	# Need to be considere on the next .sql build query version.
 	if [[ "$OS" = "Ubuntu" && ("$VER" = "16.04") ]]; then
+	
+	echo -e "\n--- Appling MySQL fix..."
+	
 			# sed '/\[mysqld]/a\sql_mode = "NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION"' /etc/mysql/mysql.conf.d/mysqld.cnf
 			# sed 's/^\[mysqld\]/\[mysqld\]\sql_mode = "NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION"/' /etc/mysql/mysql.conf.d/mysqld.cnf
 		if ! grep -q "sql_mode" /etc/mysql/mysql.conf.d/mysqld.cnf; then
