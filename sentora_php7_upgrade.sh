@@ -1,9 +1,18 @@
 #!/bin/bash
 
-SENTORA_UPDATER_VERSION="0.3.2-BETA"
+SENTORA_UPDATER_VERSION="1.0.3.1-Build 0.3.3-BETA"
 PANEL_PATH="/etc/sentora"
 PANEL_DATA="/var/sentora"
 PANEL_CONF="/etc/sentora/configs"
+
+# Bash Color
+red='\e[0;31m'
+green='\e[0;32m'
+yellow='\e[0;33m'
+bold='\e[1m'
+underlined='\e[4m'
+NC='\e[0m' # No Color
+COLUMNS=$(tput cols)
 
 # -------------------------------------------------------------------------------
 # Installer Logging
@@ -103,7 +112,7 @@ if [[ "$OS" = "CentOs" ]]; then
     
 	# START
 	# -------------------------------------------------------------------------------
-	echo -e "n\Starting PHP 7.3 with Packages update on Centos 6.*"	
+	echo -e "\nStarting PHP 7.3 with Packages update on Centos 6.*"	
 	# -------------------------------------------------------------------------------
 
 	yum clean all
@@ -174,7 +183,7 @@ if [[ "$OS" = "CentOs" ]]; then
 	fi
         
 	# -------------------------------------------------------------------------------
-	echo -e "n\Starting PHP 7.3 with Packages update on Centos 7.*"	
+	echo -e "\nStarting PHP 7.3 with Packages update on Centos 7.*"	
 	# -------------------------------------------------------------------------------
 	
 	if wget --spider http://rpms.remirepo.net/enterprise/remi-release-7.rpm 2>/dev/null; then
@@ -219,7 +228,7 @@ if [[ "$OS" = "Ubuntu" ]]; then
 	
 	# START
 	# -------------------------------------------------------------------------------
-		echo -e "n\Starting PHP 7.3 with Packages update on Ubuntu 16.04"
+		echo -e "\nStarting PHP 7.3 with Packages update on Ubuntu 16.04"
 	# -------------------------------------------------------------------------------	
 
         # START HERE
@@ -228,6 +237,9 @@ if [[ "$OS" = "Ubuntu" ]]; then
 		sudo apt-get -yqq update
 		sudo apt-get -yqq upgrade
 		
+		# Disable PHP 7.4 package tell we can test.
+		apt-mark hold php7.4
+
 		# Add repos
 		#deb http://ppa.launchpad.net/ondrej/php/ubuntu xenial main
 		#deb-src http://ppa.launchpad.net/ondrej/php/ubuntu xenial main
@@ -746,10 +758,15 @@ fi
 	
 # -------------------------------------------------------------------------------
 	
-# Update Sentora APACHE CHANGED and run daemon
+# Update Sentora APACHE_CHANGED, DBVERSION and run DAEMON
 
-	# make the daemon to build vhosts file.
+	# Set apache daemon to build vhosts file.
 	$PANEL_PATH/panel/bin/setso --set apache_changed "true"
+	
+	# Set dbversion
+	$PANEL_PATH/panel/bin/setso --set dbversion "$SENTORA_UPDATER_VERSION"
+	
+	# Run Daemon
 	php -d "sp.configuration_file=/etc/sentora/configs/php/sp/sentora.rules" -q $PANEL_PATH/panel/bin/daemon.php		
 	
 # -------------------------------------------------------------------------------
