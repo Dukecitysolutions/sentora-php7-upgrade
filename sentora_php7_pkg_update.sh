@@ -1,9 +1,18 @@
 #!/bin/bash
 
-SENTORA_UPDATER_VERSION="0.3.2-BETA"
+SENTORA_UPDATER_VERSION="1.0.3.1-Build 0.3.3-BETA"
 PANEL_PATH="/etc/sentora"
 PANEL_DATA="/var/sentora"
 PANEL_CONF="/etc/sentora/configs"
+
+# Bash Colour
+red='\e[0;31m'
+green='\e[0;32m'
+yellow='\e[0;33m'
+bold='\e[1m'
+underlined='\e[4m'
+NC='\e[0m' # No Color
+COLUMNS=$(tput cols)
 
 # -------------------------------------------------------------------------------
 # Installer Logging
@@ -334,6 +343,12 @@ done
 	# ----------------------------------------------------------------------------------
 	
 	if [[ "$OS" = "Ubuntu" && ("$VER" = "16.04") ]]; then
+	
+			# Check PHP 7.4 is not installed and remove
+			sudo apt-get purge php7.4-common
+	
+			# Disable PHP 7.4 package tell we can test.
+			apt-mark hold php7.4
 		
 			#### FIX - Upgrade Sentora to Sentora Live for PHP 7.x fixes
 			# reset home dir for commands
@@ -511,10 +526,15 @@ done
 	
 # -------------------------------------------------------------------------------
 	
-# Update Sentora APACHE CHANGED
+# Update Sentora APACHE_CHANGED, DBVERSION and run DAEMON
 
-	# make the daemon to build vhosts file.
+	# Set apache daemon to build vhosts file.
 	$PANEL_PATH/panel/bin/setso --set apache_changed "true"
+	
+	# Set dbversion
+	$PANEL_PATH/panel/bin/setso --set dbversion "$SENTORA_UPDATER_VERSION"
+	
+	# Run Daemon
 	php -d "sp.configuration_file=/etc/sentora/configs/php/sp/sentora.rules" -q $PANEL_PATH/panel/bin/daemon.php	
 	
 # -------------------------------------------------------------------------------
