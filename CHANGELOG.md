@@ -5,6 +5,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [0.3.3-BETA] - 2020-01-09
+### Fixed
+- PHP 7.4 removed package tell futher testing.
+- Wordpress SSL issue with curl_opt (Snuffleupagus config was the cause). Need to check later for security issues.
+
+### Added
+- Sentora Live will now show BUILD verison in Update Module
+
+### Changed
+- Upgrade/update script to change Sentora DBVERSION differently. 
+
 ## [0.3.2-BETA] - 2020-01-01
 ### Fixed
 - PHPMyAdmin 500 error DB issue. (Snuffleupagus config was the cause).
