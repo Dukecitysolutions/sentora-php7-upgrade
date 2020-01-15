@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SENTORA_UPDATER_VERSION="1.0.3.1-Build 0.3.3-BETA"
+SENTORA_UPDATER_VERSION="1.0.3.1-Build 0.3.4-BETA"
 PANEL_PATH="/etc/sentora"
 PANEL_DATA="/var/sentora"
 PANEL_CONF="/etc/sentora/configs"
