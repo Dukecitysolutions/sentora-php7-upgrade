@@ -329,6 +329,14 @@ done
 	rm -rf /etc/sentora/configs/apache/templates/
 	cp -r ~/sentora_php7_upgrade/preconf/apache/templates /etc/sentora/configs/apache/
 	
+	# Replace .htaccess with new file
+	rm -r $PANEL_PATH/panel/.htaccess
+	cp -r ~/sentora_php7_upgrade/.htaccess $PANEL_PATH/panel/
+	
+	# Replace /inc/init.inc.php with new file
+	rm -r $PANEL_PATH/panel/inc/init.inc.php
+	cp -r ~/sentora_php7_upgrade/inc/init.inc.php $PANEL_PATH/panel/inc/
+	
 	# -------------------------------------------------------------------------------
 	# Start all OS Sentora php 7.3 config update
 	# -------------------------------------------------------------------------------

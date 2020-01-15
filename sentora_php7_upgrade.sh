@@ -591,6 +591,14 @@ fi
 	# install Smarty files
 	cp -r ~/sentora_php7_upgrade/etc/lib/smarty /etc/sentora/panel/etc/lib/
 	
+	# Replace .htaccess with new file
+	rm -r $PANEL_PATH/panel/.htaccess
+	cp -r ~/sentora_php7_upgrade/.htaccess $PANEL_PATH/panel/
+	
+	# Replace /inc/init.inc.php with new file
+	rm -r $PANEL_PATH/panel/inc/init.inc.php
+	cp -r ~/sentora_php7_upgrade/inc/init.inc.php $PANEL_PATH/panel/inc/
+	
 	# Update Sentora Core Mysql tables
 	# get mysql root password, check it works or ask it
 	mysqlpassword=$(cat /etc/sentora/panel/cnf/db.php | grep "pass =" | sed -s "s|.*pass \= '\(.*\)';.*|\1|")
