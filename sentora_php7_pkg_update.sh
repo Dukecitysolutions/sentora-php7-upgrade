@@ -154,7 +154,7 @@ done
 	cd ~
 	
 	# Fix Ubuntu 16.04 DNS 
-	if [[ "$OS" = "Ubuntu" && ("$VER" = "16.04") ]]; then
+	if [[ "$OS" = "Ubuntu" && ("$VER" = "16.04" || "$VER" = "18.04" ) ]]; then
 	
 		# Ubuntu DNS fix now starting fix
 		# Update Snuff Default rules to fix panel timeout
@@ -210,7 +210,7 @@ done
 		fi
 	fi
 	
-	if [[ "$OS" = "Ubuntu" && ("$VER" = "16.04") ]]; then
+	if [[ "$OS" = "Ubuntu" && ("$VER" = "16.04" || "$VER" = "18.04") ]]; then
 	
 	echo -e "\n--- Appling MySQL fix..."
 	
@@ -230,7 +230,7 @@ done
 	# -------------------------------------------------------------------------------
 	
 	# Fix postfix not working after upgrade to 16.04
-	if [[ "$OS" = "Ubuntu" && ("$VER" = "16.04") ]]; then
+	if [[ "$OS" = "Ubuntu" && ( "$VER" = "16.04" || "$VER" = "18.04" ) ]]; then
 		echo -e "\n--- Fixing postfix not working after upgrade to 16.04..."
 		
 		# disable postfix daemon_directory for now to allow startup after update
@@ -261,7 +261,7 @@ done
 		
 		systemctl enable proftpd
 		
-	elif [[ "$OS" = "Ubuntu" && ("$VER" = "16.04") ]]; then
+	elif [[ "$OS" = "Ubuntu" && ("$VER" = "16.04" || "$VER" = "18.04") ]]; then
 		
 		echo -e "\n-- Reinstall ProFTPD to fix Ubuntu issues"
 		
@@ -376,7 +376,7 @@ done
 	
 	# ----------------------------------------------------------------------------------
 	
-	if [[ "$OS" = "Ubuntu" && ("$VER" = "16.04") ]]; then
+	if [[ "$OS" = "Ubuntu" && ( "$VER" = "16.04" || "$VER" = "18.04" ) ]]; then
 	
 			# Check PHP 7.4 is not installed and remove
 			sudo apt-get purge php7.4-common
@@ -389,7 +389,7 @@ done
 			cd ~
 	
 			# Fix missing php.ini settings sentora needs
-			echo -e "\nFix missing php.ini settings sentora needs in Ubuntu 16.04 php 7.3 ..."
+			echo -e "\nFix missing php.ini settings sentora needs in Ubuntu 16.04 & 18.04 php 7.3 ..."
 			echo "setting upload_tmp_dir = /var/sentora/temp/"
 			echo ""
 			sed -i 's|;upload_tmp_dir =|upload_tmp_dir = /var/sentora/temp/|g' /etc/php/7.3/apache2/php.ini
