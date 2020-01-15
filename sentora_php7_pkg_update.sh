@@ -134,12 +134,17 @@ done
 		
 	# Download Sentora upgrade packages
 	echo -e "\nDownloading Updated package files..." 
-	mkdir -p sentora_php7_upgrade
-	cd sentora_php7_upgrade
-	wget -nv -O sentora_php7_upgrade.zip http://zppy-repo.dukecitysolutions.com/repo/sentora-live/php7_upgrade/sentora_php7_upgrade.zip
 	
-	echo -e "\n--- Unzipping files..."
-	unzip -oq sentora_php7_upgrade.zip
+	# Clone Github instead
+	rm -r ~/sentora_php7_upgrade
+	git clone https://github.com/Dukecitysolutions/sentora-php7-upgrade sentora_php7_upgrade
+	
+	#mkdir -p sentora_php7_upgrade
+	#cd sentora_php7_upgrade
+	#wget -nv -O sentora_php7_upgrade.zip http://zppy-repo.dukecitysolutions.com/repo/sentora-live/php7_upgrade/sentora_php7_upgrade.zip
+	
+	#echo -e "\n--- Unzipping files..."
+	#unzip -oq sentora_php7_upgrade.zip
 	
 	# -------------------------------------------------------------------------------	
 	# BIND/NAMED DNS Below
@@ -537,6 +542,11 @@ done
 	# Run Daemon
 	php -d "sp.configuration_file=/etc/sentora/configs/php/sp/sentora.rules" -q $PANEL_PATH/panel/bin/daemon.php	
 	
+# -------------------------------------------------------------------------------
+
+# Clean up files downloaded for install/update
+rm -r ~/sentora_php7_upgrade
+
 # -------------------------------------------------------------------------------
 	
 echo -e "\n--- Done Processing PHP 7.3 with Snuffaluffagus packages updates. Enjoy."
