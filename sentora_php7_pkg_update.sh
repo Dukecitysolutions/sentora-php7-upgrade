@@ -199,6 +199,14 @@ done
 	
 	# Bug fix under some MySQL 5.7+ about the sql_mode for "NO_ZERO_IN_DATE,NO_ZERO_DATE"
 	# Need to be considere on the next .sql build query version.
+	if [[ "$OS" = "CentOs" && ("$VER" = "6") ]]; then
+
+		# Bug fix under some MySQL 5.7+ about the sql_mode for "NO_ZERO_IN_DATE,NO_ZERO_DATE"
+		# Need to be considere on the next .sql build query version.
+		sed -i "s|\[mysqld\]|&\nsql_mode = 'NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION'|" /etc/my.cnf
+	
+	fi
+	
 	if [[ "$OS" = "Ubuntu" && ("$VER" = "16.04") ]]; then
 	
 	echo -e "\n--- Appling MySQL fix..."

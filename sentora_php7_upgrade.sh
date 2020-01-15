@@ -452,6 +452,10 @@ fi
 		sed -i 's|enabled=0|enabled=1|g' /etc/yum.repos.d/remi.repo
 		
 		yum -y update mysql*
+		
+		# Bug fix under some MySQL 5.7+ about the sql_mode for "NO_ZERO_IN_DATE,NO_ZERO_DATE"
+		# Need to be considere on the next .sql build query version.
+		sed -i "s|\[mysqld\]|&\nsql_mode = 'NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION'|" /etc/my.cnf
 	
 	fi
 	
