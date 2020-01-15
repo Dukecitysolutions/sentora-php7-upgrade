@@ -455,8 +455,11 @@ fi
 		
 		# Bug fix under some MySQL 5.7+ about the sql_mode for "NO_ZERO_IN_DATE,NO_ZERO_DATE"
 		# Need to be considere on the next .sql build query version.
-		sed -i "s|\[mysqld\]|&\nsql_mode = 'NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION'|" /etc/my.cnf
-	
+		if ! grep -q "sql_mode" /etc/my.cnf; then
+		
+			sed -i "s|\[mysqld\]|&\nsql_mode = 'NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION'|" /etc/my.cnf
+			
+		fi
 	fi
 	
 	# Bug fix under some MySQL 5.7+ about the sql_mode for "NO_ZERO_IN_DATE,NO_ZERO_DATE"
