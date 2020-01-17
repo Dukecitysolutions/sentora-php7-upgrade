@@ -451,8 +451,17 @@ fi
 		sed -i 's|mirrorlist=http://cdn.remirepo.net/enterprise/6/remi/mirror|mirrorlist=http://rpms.remirepo.net/enterprise/6/remi/mirror|g' /etc/yum.repos.d/remi.repo
 		sed -i 's|enabled=0|enabled=1|g' /etc/yum.repos.d/remi.repo
 		
+		# Upgrade Mysql to 5.7.*
 		yum -y update mysql*
 		
+		# Run Mysql_upgrade to check/fix any issues.
+		mysqlpassword=$(cat /etc/sentora/panel/cnf/db.php | grep "pass =" | sed -s "s|.*pass \= '\(.*\)';.*|\1|")
+		while ! mysql -u root -p$mysqlpassword -e ";" ; do
+		read -p "Cant connect to mysql, please give root password or press ctrl-C to abort: " mysqlpassword
+		done
+		echo -e "Connection mysql ok"
+		mysql_upgrade --force -uroot -p"$mysqlpassword"
+
 		# Bug fix under some MySQL 5.7+ about the sql_mode for "NO_ZERO_IN_DATE,NO_ZERO_DATE"
 		# Need to be considere on the next .sql build query version.
 		if ! grep -q "sql_mode" /etc/my.cnf; then
