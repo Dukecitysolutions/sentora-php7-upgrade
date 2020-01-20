@@ -654,8 +654,8 @@ class module_controller extends ctrl_module
 
         $urlvars = $controller->GetAllControllerRequests('URL');
 
-        // Verify if Current user can Edit FTP Account.
-        // This shall avoid exposing ftp username based on ID lookups.
+        // Verify if Current user can Edit MySQL Account.
+        // This shall avoid exposing mysql username based on ID lookups.
         $currentuser = ctrl_users::GetUserDetail($uid);
 
     	$sql = "SELECT * FROM x_mysql_users WHERE mu_acc_fk=:userid AND mu_id_pk=:editedUsrID AND mu_deleted_ts IS NULL";
@@ -681,8 +681,8 @@ class module_controller extends ctrl_module
 
         $urlvars     = $controller->GetAllControllerRequests('URL');
 
-        // Verify if Current user can Edit FTP Account.
-        // This shall avoid exposing ftp username based on ID lookups.
+        // Verify if Current user can Edit MySQL Account.
+        // This shall avoid exposing mysql username based on ID lookups.
         $currentuser = ctrl_users::GetUserDetail($uid);
 
     	$sql = "SELECT * FROM x_mysql_users WHERE mu_acc_fk=:userid AND mu_id_pk=:editedUsrID AND mu_deleted_ts IS NULL";
