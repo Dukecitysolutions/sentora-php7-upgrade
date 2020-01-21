@@ -5,6 +5,29 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [0.3.5-BETA] - 2020-01-20
+### Fixed
+- Sentora MYSQL_USERS module security issue. Sentora_core issue #338.
+- Sentora MAILBOXES module security issue. Sentora_core issue #NEED to submit.
+- CentOS 6.x Apache 2.2 NameVirtualHost error resolved.
+- PHP set Curl/Openssl (curl.cainfo & openssl.cafile) CERT in php.ini for PHP curl_opt- 
+  (man-in-the-middle attacks) protection with Snuffleupagus.
+
+### Added
+- PHP 7.3 rebuild of php.ini file with shipped version (php.ini.rpmnew) for CentOS. PHP.ini backup to php.ini.OLD
+
+## [0.3.4-BETA] - 2020-01-15
+### Fixed
+- Sentora DNS_ADMIN module security issue. Sentora_core issue #344.
+- Issue with CentOS 6 Mysql upgrade corrupting mysql_users table.
+- Adjusted install/update scripts for better compatibilty.
+
+### Added
+- Updated update script ONLY for Ubuntu 18.04 support - STILL NEEDS TESTING!
+
+### Changed
+- Changed install/update scripts to use GIT clone instead of wget for v1.0.3.1 core upgrade files.
+
 ## [0.3.3-BETA] - 2020-01-09
 ### Fixed
 - PHP 7.4 removed package tell futher testing.
