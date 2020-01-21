@@ -181,6 +181,12 @@ function WriteVhostConfigFile()
     $line .= "################################################################" . fs_filehandler::NewLine();
     $line .= fs_filehandler::NewLine();
 
+	# NameVirtualHost is still needed for Apache 2.2 but must be removed for apache 2.3
+    if ((double) sys_versions::ShowApacheVersion() < 2.3) {
+        foreach ($customPortList as $port) {
+            $line .= "NameVirtualHost *:" . $port . fs_filehandler::NewLine();
+        }
+    }
 
     # Listen is mandatory for each port <> 80 (80 is defined in system config)
     foreach ($customPortList as $port) {
