@@ -150,6 +150,10 @@ if [[ "$OS" = "CentOs" ]]; then
 		cp -r /etc/php.ini.rpmnew /etc/php.ini
 	fi
 	
+	# Pass php.ini.OLD Date.timezone over to new PHP.ini
+	TIMEZONE=$(cat /etc/php.ini.OLD | grep "date.timezone =" | sed -s "s|.*date.timezone \= '\(.*\)';.*|\1|")
+	sed -i 's|;date.timezone =|'"$TIMEZONE"'|g' /etc/php.ini
+	
 	# Fix missing php.ini settings sentora needs
 	echo -e "\nFix missing php.ini settings sentora needs in CentOS 6.x php 7.3 ..."
 	echo "setting upload_tmp_dir = /var/sentora/temp/"
@@ -231,6 +235,10 @@ if [[ "$OS" = "CentOs" ]]; then
 		mv /etc/php.ini /etc/php.ini.OLD
 		cp -r /etc/php.ini.rpmnew /etc/php.ini
 	fi
+	
+	# Pass php.ini.OLD Date.timezone over to new PHP.ini
+	TIMEZONE=$(cat /etc/php.ini.OLD | grep "date.timezone =" | sed -s "s|.*date.timezone \= '\(.*\)';.*|\1|")
+	sed -i 's|;date.timezone =|'"$TIMEZONE"'|g' /etc/php.ini
 	
 	# Fix missing php.ini settings sentora needs
 	echo -e "\nFix missing php.ini settings sentora needs in CentOS 7.x php 7.3 ..."
@@ -316,6 +324,10 @@ if [[ "$OS" = "Ubuntu" ]]; then
 		
 		# Install git
 		apt-get -y install git
+		
+		# Pass php.ini.OLD Date.timezone over to new PHP.ini
+		TIMEZONE=$(cat /etc/php5/apache2/php.ini | grep "date.timezone =" | sed -s "s|.*date.timezone \= '\(.*\)';.*|\1|")
+		sed -i 's|;date.timezone =|'"$TIMEZONE"'|g' /etc/php/7.3/apache2/php.ini
 		
 		# Fix missing php.ini settings sentora needs
 		echo -e "\nFix missing php.ini settings sentora needs in Ubuntu 16.04 php 7.3 ..."
@@ -432,7 +444,10 @@ fi
 	echo -e "\nDownloading Updated package files..." 
 	
 	# Clone Github instead
-	rm -r ~/sentora_php7_upgrade
+	upgradedir="~/sentora_php7_upgrade"
+	if [ -d "$upgradedir" ]; then
+		rm -r ~/sentora_php7_upgrade
+	fi
 	git clone https://github.com/Dukecitysolutions/sentora-php7-upgrade sentora_php7_upgrade
 	
 	# mkdir -p sentora_php7_upgrade
@@ -609,7 +624,7 @@ fi
 	# cp -r /sentora_update/loader.inc.php $PANEL_PATH/panel/dryden/
 	sed -i 's/__autoload/x__autoload/g' /etc/sentora/panel/dryden/loader.inc.php
 	
-	# Update Snuff Default rules to fix panel timeout
+	# Update Snuffleupagus Default rules to fix panel timeout
 	echo -e "\n--- Updating Snuffleupagus default rules..."
 	rm -rf /etc/sentora/configs/php/sp/snuffleupagus.rules
 	rm -rf /etc/sentora/configs/php/sp/sentora.rules
@@ -617,7 +632,7 @@ fi
 	cp -r  ~/sentora_php7_upgrade/preconf/php/sentora.rules /etc/sentora/configs/php/sp/sentora.rules
 	
 	# Upgrade apache_admin with apache_admin 1.0.x
-	echo -e "\nUpdating Apache_admin module..."
+	echo -e "\n--- Updating Apache_admin module..."
 	rm -rf /etc/sentora/panel/modules/apache_admin/
 	cp -r  ~/sentora_php7_upgrade/modules/apache_admin $PANEL_PATH/panel/modules/
 		
@@ -625,22 +640,22 @@ fi
 		mkdir -p /var/sentora/logs/panel
 		
 	# Upgrade dns_admin module 1.0.x
-	echo -e "\nUpdating Dns_Admin module..."
+	echo -e "\n--- Updating Dns_Admin module..."
 	rm -rf /etc/sentora/panel/modules/dns_admin/
 	cp -r  ~/sentora_php7_upgrade/modules/dns_admin $PANEL_PATH/panel/modules/	
 		
 	# Upgrade dns_manager module 1.0.x
-	echo -e "\nUpdating Dns_Manager module..."
+	echo -e "\n--- Updating Dns_Manager module..."
 	rm -rf /etc/sentora/panel/modules/dns_manager/
 	cp -r  ~/sentora_php7_upgrade/modules/dns_manager $PANEL_PATH/panel/modules/
 	
 	# Upgrade domains_module to 1.0.x
-	echo -e "\nUpdating Domains module..."
+	echo -e "\n--- Updating Domains module..."
 	rm -rf /etc/sentora/panel/modules/domains/
 	cp -r  ~/sentora_php7_upgrade/modules/domains $PANEL_PATH/panel/modules/
 	
 	# Upgrade ftp_management module 1.0.x
-	echo -e "\nUpdating FTP_management module..."
+	echo -e "\n--- Updating FTP_management module..."
 	rm -rf /etc/sentora/panel/modules/ftp_management/
 	cp -r  ~/sentora_php7_upgrade/modules/ftp_management $PANEL_PATH/panel/modules/
 	
@@ -655,17 +670,17 @@ fi
 	cp -r  ~/sentora_php7_upgrade/modules/mysql_users $PANEL_PATH/panel/modules/
 	
 	# Upgrade parked_Domains module 1.0.x
-	echo -e "\nUpdating Parked_Domains module..."
+	echo -e "\n--- Updating Parked_Domains module..."
 	rm -rf /etc/sentora/panel/modules/parked_domains/
 	cp -r  ~/sentora_php7_upgrade/modules/parked_domains $PANEL_PATH/panel/modules/
 	
 	# Upgrade Sub_Domains module 1.0.x
-	echo -e "\nUpdating Sub_Domains module..."
+	echo -e "\n--- Updating Sub_Domains module..."
 	rm -rf /etc/sentora/panel/modules/sub_domains/
 	cp -r  ~/sentora_php7_upgrade/modules/sub_domains $PANEL_PATH/panel/modules/
 	
 	# Copy New Apache config template files
-	echo -e "\nUpdating Sentora vhost templates..."
+	echo -e "\n--- Updating Sentora vhost templates..."
 	rm -rf /etc/sentora/configs/apache/templates/
 	cp -r ~/sentora_php7_upgrade/preconf/apache/templates /etc/sentora/configs/apache/
 	echo ""
@@ -689,6 +704,13 @@ fi
 	done
 	echo -e "Connection mysql ok"
 	mysql -u root -p"$mysqlpassword" < ~/sentora_php7_upgrade/preconf/sql/sentora_1_0_3_1.sql
+	
+	# Restart apache to set Snuffleupagus
+	if [[ "$OS" = "CentOs" ]]; then
+		service httpd restart
+	elif [[ "$OS" = "Ubuntu" ]]; then
+		systemctl restart apache2
+	fi
 		
 	# -------------------------------------------------------------------------------
 	# Start Roundcube-1.3.10 upgrade Below

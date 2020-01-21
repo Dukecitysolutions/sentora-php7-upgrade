@@ -136,7 +136,10 @@ done
 	echo -e "\nDownloading Updated package files..." 
 	
 	# Clone Github instead
-	rm -r ~/sentora_php7_upgrade
+	upgradedir="~/sentora_php7_upgrade"
+	if [ -d "$upgradedir" ]; then
+		rm -r ~/sentora_php7_upgrade
+	fi
 	git clone https://github.com/Dukecitysolutions/sentora-php7-upgrade sentora_php7_upgrade
 	
 	#mkdir -p sentora_php7_upgrade
@@ -319,7 +322,7 @@ done
 		mkdir -p /var/sentora/logs/panel
 	
 	# Upgrade dns_admin module 1.0.x
-	echo -e "\nUpdating Dns_Admin module..."
+	echo -e "\n--- Updating Dns_Admin module..."
 	rm -rf /etc/sentora/panel/modules/dns_admin/
 	cp -r  ~/sentora_php7_upgrade/modules/dns_admin $PANEL_PATH/panel/modules/	
 	
@@ -371,6 +374,13 @@ done
 	rm -r $PANEL_PATH/panel/inc/init.inc.php
 	cp -r ~/sentora_php7_upgrade/inc/init.inc.php $PANEL_PATH/panel/inc/
 	
+	# Restart apache to set Snuffleupagus
+	if [[ "$OS" = "CentOs" ]]; then
+		service httpd restart
+	elif [[ "$OS" = "Ubuntu" ]]; then
+		systemctl restart apache2
+	fi
+	
 	# -------------------------------------------------------------------------------
 	# Start all OS Sentora php 7.3 config update
 	# -------------------------------------------------------------------------------
@@ -384,6 +394,10 @@ done
 			cp -r /etc/php.ini.rpmnew /etc/php.ini
 		fi
 	
+		# Pass php.ini.OLD Date.timezone over to new PHP.ini
+		TIMEZONE=$(cat /etc/php.ini.OLD | grep "date.timezone =" | sed -s "s|.*date.timezone \= '\(.*\)';.*|\1|")
+		sed -i 's|;date.timezone =|'"$TIMEZONE"'|g' /etc/php.ini
+		
 		# Fix missing php.ini settings sentora needs
 		echo -e "\nFix missing php.ini settings sentora needs in CentOS 6.x php 7.3 ..."
 		echo "setting upload_tmp_dir = /var/sentora/temp/"
@@ -417,6 +431,10 @@ done
 			#### FIX - Upgrade Sentora to Sentora Live for PHP 7.x fixes
 			# reset home dir for commands
 			cd ~
+	
+			# Pass php.ini.OLD Date.timezone over to new PHP.ini
+			TIMEZONE=$(cat /etc/php5/apache2/php.ini | grep "date.timezone =" | sed -s "s|.*date.timezone \= '\(.*\)';.*|\1|")
+			sed -i 's|;date.timezone =|'"$TIMEZONE"'|g' /etc/php/7.3/apache2/php.ini
 	
 			# Fix missing php.ini settings sentora needs
 			echo -e "\nFix missing php.ini settings sentora needs in Ubuntu 16.04 & 18.04 php 7.3 ..."
