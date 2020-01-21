@@ -1,6 +1,6 @@
 # Sentora PHP 7.3 upgrade - \*Testing ONLY\*
 
-* COMMERCIAL RELEASE COMING SOON. STAY TUNED. Just needs testing.
+* PRODUCTION/LIVE RELEASE COMING SOON. STAY TUNED. Just needs testing.
 
 * Version: 0.3.5 - BETA - 2020-01-20
 * [BUG TRACKER](https://github.com/Dukecitysolutions/sentora-php7-upgrade/issues) for any bugs or security related issues.
