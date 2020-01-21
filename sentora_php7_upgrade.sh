@@ -144,8 +144,11 @@ if [[ "$OS" = "CentOs" ]]; then
 	
 	
 	## Setup PHP 7.3 new PHP.INI file shipped with PHP and rename old PHP.INI
-	mv /etc/php.ini /etc/php.ini.OLD
-	cp -r /etc/php.ini.rpmnew /etc/php.ini
+	file="/etc/php.ini.OLD"
+	if [ ! -f "$file" ]; then
+		mv /etc/php.ini /etc/php.ini.OLD
+		cp -r /etc/php.ini.rpmnew /etc/php.ini
+	fi
 	
 	# Fix missing php.ini settings sentora needs
 	echo -e "\nFix missing php.ini settings sentora needs in CentOS 6.x php 7.3 ..."
@@ -223,8 +226,11 @@ if [[ "$OS" = "CentOs" ]]; then
 	
 	
 	## Setup PHP 7.3 new PHP.INI file shipped with PHP and rename old PHP.INI
-	mv /etc/php.ini /etc/php.ini.OLD
-	cp -r /etc/php.ini.rpmnew /etc/php.ini
+	file="/etc/php.ini.OLD"
+	if [ ! -f "$file" ]; then
+		mv /etc/php.ini /etc/php.ini.OLD
+		cp -r /etc/php.ini.rpmnew /etc/php.ini
+	fi
 	
 	# Fix missing php.ini settings sentora needs
 	echo -e "\nFix missing php.ini settings sentora needs in CentOS 7.x php 7.3 ..."
