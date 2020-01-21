@@ -385,7 +385,7 @@ done
 	# Start all OS Sentora php 7.3 config update
 	# -------------------------------------------------------------------------------
 	
-	if [[ "$OS" = "CentOs" && ( "$VER" = "6" | "$VER" = "7" ) ]]; then
+	if [[ "$OS" = "CentOs" && ( "$VER" = "6" || "$VER" = "7" ) ]]; then
 	
 		## Setup PHP 7.3 new PHP.INI file shipped with PHP and rename old PHP.INI
 		file="/etc/php.ini.OLD"
