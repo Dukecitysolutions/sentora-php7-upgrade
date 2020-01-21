@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SENTORA_UPDATER_VERSION="1.0.3.1-Build 0.3.4-BETA"
+SENTORA_UPDATER_VERSION="1.0.3.1-Build 0.3.5-BETA"
 PANEL_PATH="/etc/sentora"
 PANEL_DATA="/var/sentora"
 PANEL_CONF="/etc/sentora/configs"
@@ -338,6 +338,11 @@ done
 	rm -rf /etc/sentora/panel/modules/ftp_management/
 	cp -r  ~/sentora_php7_upgrade/modules/ftp_management $PANEL_PATH/panel/modules/
 	
+	# Upgrade mailboxes module 1.0.x
+	echo -e "\n--- Updating Mailboxes module..."
+	rm -rf /etc/sentora/panel/modules/mailboxes/
+	cp -r  ~/sentora_php7_upgrade/modules/mailboxes $PANEL_PATH/panel/modules/
+	
 	# Upgrade mysql_users module 1.0.x
 	echo -e "\n--- Updating Mysql_users module..."
 	rm -rf /etc/sentora/panel/modules/mysql_users/
@@ -370,15 +375,27 @@ done
 	# Start all OS Sentora php 7.3 config update
 	# -------------------------------------------------------------------------------
 	
-	if [[ "$OS" = "CentOs" && ("$VER" = "6") ]]; then
+	if [[ "$OS" = "CentOs" && ( "$VER" = "6" | "$VER" = "7" ) ]]; then
 	
-			# Fix missing php.ini settings sentora needs
-			echo -e "\nFix missing php.ini settings sentora needs in CentOS 6.x php 7.3 ..."
-			#echo "setting upload_tmp_dir = /var/sentora/temp/"
-			#echo ""
-			#sed -i 's|;upload_tmp_dir =|upload_tmp_dir = /var/sentora/temp/|g' /etc/php.ini
-			echo "Setting session.save_path = /var/sentora/sessions"
-			sed -i 's|session.save_path = "/var/lib/php/sessions"|session.save_path = "/var/sentora/sessions"|g' /etc/php.ini
+		## Setup PHP 7.3 new PHP.INI file shipped with PHP and rename old PHP.INI
+		mv /etc/php.ini /etc/php.ini.OLD
+		cp -r /etc/php.ini.rpmnew /etc/php.ini
+	
+		# Fix missing php.ini settings sentora needs
+		echo -e "\nFix missing php.ini settings sentora needs in CentOS 6.x php 7.3 ..."
+		echo "setting upload_tmp_dir = /var/sentora/temp/"
+		echo ""
+		sed -i 's|;upload_tmp_dir =|upload_tmp_dir = /var/sentora/temp/|g' /etc/php.ini
+		echo "Setting session.save_path = /var/sentora/sessions"
+		sed -i 's|;session.save_path = "/tmp"|session.save_path = "/var/sentora/sessions"|g' /etc/php.ini
+	
+		# Curl CERT Setup in PHP.ini files
+		echo -e "\nSetting up PHP.ini curl CERT..."
+		wget https://curl.haxx.se/ca/cacert.pem
+		mkdir -p /etc/php.d/curl_cert
+		mv cacert.pem /etc/php.d/curl_cert/cacert.pem
+		sed -i 's|;curl.cainfo =|curl.cainfo = "/etc/php.d/curl_cert/cacert.pem"|g' /etc/php.ini
+		sed -i 's|;openssl.cafile=|openssl.cafile = "/etc/php.d/curl_cert/cacert.pem"|g' /etc/php.ini
 						
 	fi
 	
@@ -409,6 +426,13 @@ done
 			# Install missing php7.3-xml for system and roundcube
 			echo -e "\nInstall missing php7.3-xml for system and roundcube..."
 			apt-get -y install php7.3-xml php7.3-gd
+			
+			# Curl CERT Setup in PHP.ini files for PHP CURL_OPT
+			echo -e "\nSetting up PHP.ini curl CERT..."
+			wget https://curl.haxx.se/ca/cacert.pem
+			mv cacert.pem /etc/php/7.3/cacert.pem
+			sed -i 's|;curl.cainfo =|curl.cainfo = "/etc/php/7.3/cacert.pem"|g' /etc/php/7.3/apache2/php.ini
+			sed -i 's|;openssl.cafile=|openssl.cafile = "/etc/php/7.3/cacert.pem"|g' /etc/php/7.3/apache2/php.ini
 	
 		# PHP Mcrypt 1.0.2 install
 		if [ ! -f /etc/php/7.3/apache2/conf.d/20-mcrypt.ini ]
