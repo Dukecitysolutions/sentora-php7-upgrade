@@ -3,7 +3,7 @@
 * PRODUCTION/LIVE RELEASE COMING SOON. STAY TUNED. Just needs testing.
 
 * Version: 0.3.5 - BETA - 2020-01-20
-* [BUG TRACKER](https://github.com/Dukecitysolutions/sentora-php7-upgrade/issues) for any bugs or security related issues.
+* [BUG TRACKER](https://github.com/Dukecitysolutions/sentora-php7-upgrade/issues) for any bugs or security related issues. [HOW TO USE](https://github.com/Dukecitysolutions/sentora-php7-upgrade/blob/master/.github/ISSUE_TEMPLATE.md) 
 * [CHANGELOG](https://github.com/Dukecitysolutions/sentora-php7-upgrade/blob/master/CHANGELOG.md) for viewing changes to this build.
 * [TODO](https://github.com/Dukecitysolutions/sentora-php7-upgrade/blob/master/ToDo.md) List of changes to be made.
 * [SUPPORT PAGE](http://sentora.dukecitysolutions.com) for forum support by our staff and community members.
