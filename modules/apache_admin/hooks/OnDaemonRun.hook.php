@@ -285,8 +285,8 @@ function WriteVhostConfigFile()
 		$use_suhosin = ctrl_options::GetSystemOption('use_suhosin');
 		$obasedir_in = $rowvhost['vh_obasedir_in']; 
 		$suhosin_in = $rowvhost['vh_suhosin_in'];
-		$vh_vhostuser = $vhost		$vh_snuff_path = "/etc/sentora/configs/php/sp/";
-user['username'];
+		$vh_snuff_path = "/etc/sentora/configs/php/sp/";
+		$vh_vhostuser = $vhostuser['username'];
 		
 		# PHP Disable_functions protection system ( suhison or Ssnuffleupagus )
 		if (extension_loaded('suhosin') == true ) {	
@@ -294,7 +294,7 @@ user['username'];
 		} else {
 			$func_blklist_sys = ($rowvhost['vh_suhosin_in'] <> 0) ? 'php_admin_value sp.configuration_file "' . $vh_snuff_path . $vh_vhostuser . "/" . $rowvhost['vh_name_vc'] . '.rules"' : '';
 			
-			$func_blklist_sys = ($rowvhost['vh_suhosin_in'] <> 1) ? 'php_admin_value sp.configuration_file /etc/sentora/configs/php/sp/disable.rules' : '';
+			$func_blklist_sys = ($rowvhost['vh_suhosin_in'] <> 1) ? 'php_admin_value sp.configuration_file "/etc/sentora/configs/php/sp/disable.rules"' : '';
 			
 			// Check sp user path exists if not make folder for sp vhost configs
 			if(!is_file($vh_snuff_path . $vh_vhostuser . "/" . $rowvhost['vh_name_vc'] . '.rules')) {
