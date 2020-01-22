@@ -25,11 +25,8 @@ DirectoryIndex index.html index.htm index.php index.asp index.aspx index.jsp ind
 php_admin_value open_basedir {$vh.php_values}
 {/if}
 {/if}
-{if $vh.use_suhosin == "true"}
 {if $vh.suhosin_in <> 0}
 {$vh.php_func_blacklist}
-{/if}
-{/if}
 php_admin_value upload_tmp_dir {$vh.php_upload_dir}
 php_admin_value session.save_path {$vh.php_session_path}
 
