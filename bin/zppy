@@ -1,0 +1,2 @@
+#!/bin/bash
+php -d "sp.configuration_file=/etc/sentora/configs/php/sp/sentora.rules" /etc/sentora/panel/bin/zppy.php $@
