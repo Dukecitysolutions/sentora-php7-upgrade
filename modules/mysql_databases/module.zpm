@@ -1,0 +1,89 @@
+<div class="zmodule_content panel" id="zmodule_header_<@ ModuleName @>">
+    <div class="panel-heading">
+        <img src="<@ ModuleIcon @>" width="35" height="35" border="0" alt="<@ ModuleName @>">
+
+        <div class="zmodule_title">
+            <@ ModuleName @>
+        </div>
+
+        <div class="zmodule_desc" id="zmodule_desc_<@ ModuleName @>"><@ ModuleDesc @></div>
+
+    </div>
+
+    <@ Result @>
+
+    <% if isDeleteDatabase %>
+    <div class="zform_wrapper alert alert-danger">
+        <h2><: Delete database :>: <@ EditCurrentDatabaseName @> ?</h2>
+        <p><: Please confirm that you want to delete this database. :></p>
+        <form action="./?module=mysql_databases&action=ConfirmDeleteDatabase" method="post">
+            <table class="none" cellpadding="0" cellspacing="0">
+                <tr>
+                    <td colspan="2" align="right">
+                        <input type="hidden" name="inDelete" value="<@ EditCurrentDatabaseID @>">
+                        <button class="button-loader delete btn btn-danger" type="submit" ><: Delete :></button>
+                        <button class="button-loader btn btn-default" type="button" onclick="window.location.href='./?module=mysql_databases';return false;"><: Cancel :></button>
+                    </td>
+                </tr>
+            </table>
+            <@ CSFR_Tag @>
+        </form>
+    </div>
+    <% endif %>
+
+    <div class="zgrid_wrapper">
+        <h2><: Current MySQL&reg; Databases :></h2>
+        <% if DatabaseList %>
+        <form action="./?module=mysql_databases&action=DeleteDatabase" method="post">
+            <table class="table table-striped">
+                <tr>
+                    <th><: Database name :></th>
+                    <th><: Size :></th>
+                    <th><: Users :></th>
+                    <th></th>
+                </tr>
+                <% loop DatabaseList %>
+                <tr>
+                    <td><& mysqlname &></td>
+                    <td><& mysqlfriendlysize &></td>
+                    <td><& totaldb &></td>
+                    <td><button class="button-loader delete btn btn-danger" type="submit" name="inDelete_<& mysqlid &>" id="inDelete_<& mysqlid &>" value="<& mysqlid &>"><: Delete :></button></td>
+                </tr>
+                <% endloop %>
+            </table>
+            <@ CSFR_Tag @>
+        </form>
+        <% else %>
+        <: You have no databases at this time. Create a database using the form below. :>
+        <% endif %>
+    </div>
+
+    <% if isCreateDatabase %>
+    <div class="zform_wrapper">
+        <table class="none" width="100%" cellborder="0" cellspacing="0">
+            <tr valign="top">
+                <td>
+                    <h2><: Create a new MySQL&reg; database :></h2>
+                    <% if QuotaLimit %>
+                    <form action="./?module=mysql_databases&action=CreateDatabase" method="post">
+                        <table class="table table-striped">
+                            <tr>
+                                <th nowrap="nowrap"><: Database name :>:</th>
+                                <td nowrap="nowrap"><@ CurrentUserName @>_<input name="inDatabase" type="text" id="inDatabase" size="30" /></td>
+                            </tr>
+                            <tr>
+                                <th colspan="2" align="right">
+                                    <@ CSFR_Tag @><button class="button-loader btn btn-primary" type="submit" ><: Create :></button></th>
+                            </tr>
+                        </table>
+                    </form>
+                    <% else %>
+                    <: You have reached your MySQL database limit! :>
+                    <% endif %>
+                </td>
+                <td align="right"><@ MysqlUsagepChart @></td>
+            </tr></table>
+    </div>
+    <% endif %>
+
+</div>
