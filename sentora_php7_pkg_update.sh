@@ -316,7 +316,7 @@ done
 	# Upgrade apache_admin with apache_admin 1.0.x
 	echo -e "\n--- Updating Apache_admin module..."
 	rm -rf /etc/sentora/panel/modules/apache_admin/
-	cp -r  ~/sentora_php7_upgrade/modules/apache_admin $PANEL_PATH/panel/modules/	
+	cp -r  ~/sentora_php7_upgrade/modules/apache_admin $PANEL_PATH/panel/modules/
 	
 		# Set new sentora panel logs dir
 		mkdir -p /var/sentora/logs/panel
@@ -324,7 +324,7 @@ done
 	# Upgrade dns_admin module 1.0.x
 	echo -e "\n--- Updating Dns_Admin module..."
 	rm -rf /etc/sentora/panel/modules/dns_admin/
-	cp -r  ~/sentora_php7_upgrade/modules/dns_admin $PANEL_PATH/panel/modules/	
+	cp -r  ~/sentora_php7_upgrade/modules/dns_admin $PANEL_PATH/panel/modules/
 	
 	# Upgrade dns_manager module 1.0.x
 	echo -e "\n--- Updating Dns_Manager module..."
@@ -350,7 +350,7 @@ done
 	echo -e "\n--- Updating Mysql_users module..."
 	rm -rf /etc/sentora/panel/modules/mysql_users/
 	cp -r  ~/sentora_php7_upgrade/modules/mysql_users $PANEL_PATH/panel/modules/
-	
+		
 	# Upgrade parked_Domains module 1.0.x
 	echo -e "\n--- Updating Parked_Domains module..."
 	rm -rf /etc/sentora/panel/modules/parked_domains/
