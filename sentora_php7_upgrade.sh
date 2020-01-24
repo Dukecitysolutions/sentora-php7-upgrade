@@ -642,7 +642,7 @@ fi
 	# Upgrade dns_admin module 1.0.x
 	echo -e "\n--- Updating Dns_Admin module..."
 	rm -rf /etc/sentora/panel/modules/dns_admin/
-	cp -r  ~/sentora_php7_upgrade/modules/dns_admin $PANEL_PATH/panel/modules/	
+	cp -r  ~/sentora_php7_upgrade/modules/dns_admin $PANEL_PATH/panel/modules/
 		
 	# Upgrade dns_manager module 1.0.x
 	echo -e "\n--- Updating Dns_Manager module..."
@@ -663,7 +663,7 @@ fi
 	echo -e "\n--- Updating Mailboxes module..."
 	rm -rf /etc/sentora/panel/modules/mailboxes/
 	cp -r  ~/sentora_php7_upgrade/modules/mailboxes $PANEL_PATH/panel/modules/
-	
+		
 	# Upgrade mysql_users module 1.0.x
 	echo -e "\n--- Updating Mysql_users module..."
 	rm -rf /etc/sentora/panel/modules/mysql_users/
