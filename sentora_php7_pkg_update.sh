@@ -520,7 +520,7 @@ done
 	# phpver=php -v |grep -Eow '^PHP [^ ]+' |gawk '{ print $2 }'
 	phpver=`php -r 'echo PHP_VERSION;'`
 
-	PHPMYADMIN_OLD="/etc/sentora/panel/apps/phpmyadmin_old"
+	PHPMYADMIN_OLD="/etc/sentora/panel/etc/apps/phpmyadmin_old"
 
 	if [ ! -d "$PHPMYADMIN_OLD" ]; then		
 	# Start
