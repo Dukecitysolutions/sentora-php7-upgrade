@@ -1,4 +1,4 @@
-# Sentora PHP 7.3 upgrade - \*Testing ONLY\*
+# Sentora PHP 7.3 upgrade - BETA \*TESTING ONLY\*
 
 * PRODUCTION/LIVE RELEASE COMING SOON. STAY TUNED. Just needs testing.
 
@@ -17,6 +17,7 @@
 * Replaces Suhosin 0.9.3x with Snuffleupagus for DISABLED_FUNCTIONS rules per vhost.
 * Apache_admin - Upgraded to support SSL, Snuffleupagus disable_functions, vhosts file written with Smarty .tpl files.
 * Adds Smarty template lib to /etc/sentora/panel/etc/libs/smarty
+* Updated third-party applications ( PHPmyadmin, PHPsysinfo, Roundcube )
 * NEEDS Security testing to make sure PHP 7 w/Snuffleupagus upgrade did not uninstall packages we need.(Except for Suhosin)
 * Check out [CHANGELOG](https://github.com/Dukecitysolutions/sentora-php7-upgrade/blob/master/CHANGELOG.md) to view changes/details about this build.
 * More details to come soon.
