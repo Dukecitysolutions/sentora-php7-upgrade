@@ -663,7 +663,12 @@ fi
 	echo -e "\n--- Updating Mailboxes module..."
 	rm -rf /etc/sentora/panel/modules/mailboxes/
 	cp -r  ~/sentora_php7_upgrade/modules/mailboxes $PANEL_PATH/panel/modules/
-		
+	
+	# Upgrade mysql_databases module 1.0.x
+	echo -e "\n--- Updating Mysql_databases module..."
+	rm -rf /etc/sentora/panel/modules/mysql_databases/
+	cp -r  ~/sentora_php7_upgrade/modules/mysql_databases $PANEL_PATH/panel/modules/
+	
 	# Upgrade mysql_users module 1.0.x
 	echo -e "\n--- Updating Mysql_users module..."
 	rm -rf /etc/sentora/panel/modules/mysql_users/
