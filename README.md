@@ -21,6 +21,7 @@
 * NEEDS Security testing to make sure PHP 7 w/Snuffleupagus upgrade did not uninstall packages we need.(Except for Suhosin)
 * Check out [CHANGELOG](https://github.com/Dukecitysolutions/sentora-php7-upgrade/blob/master/CHANGELOG.md) to view changes/details about this build.
 * More details to come soon.
+* PLEASE NOTE: Some third-party modules may not work. This is due to PHP 7. The modules will need to be updated to work.
 
 ### Supported OS:
 
