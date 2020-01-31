@@ -425,13 +425,30 @@ done
 	
 	if [[ "$OS" = "Ubuntu" && ( "$VER" = "16.04" || "$VER" = "18.04" ) ]]; then
 	
-			# Check PHP 7.4 is not installed and remove
-			sudo apt-get remove php7.4-common
-			sudo apt-get purge php7.4-common
+			# Check if PHP 7.1, 7.2, 7.4 is installed and remove
+			sudo apt-get -yqq remove php7.1*
+			sudo apt-get -yqq purge php7.1*
+			sudo apt-get -yqq remove php7.2*
+			sudo apt-get -yqq purge php7.2*
+			sudo apt-get -yqq remove php7.4*
+			sudo apt-get -yqq purge php7.4*
 	
-			# Disable PHP 7.2 & 7.4 package tell we can test.
-			#apt-mark hold php7.2
-			apt-mark hold php7.4
+			# Disable PHP 7.1, 7.2, 7.4 packages tell we can test.
+			sudo apt-mark hold php7.1
+			sudo apt-mark hold php7.2
+			sudo apt-mark hold php7.4
+			
+			# Disable Apache mod_php7.0-7.2 & 7.4
+			sudo a2dismod php7.0
+			sudo a2dismod php7.1
+			sudo a2dismod php7.2
+			sudo a2dismod php7.4
+		
+			# Enable Apache mod_php7.3
+			sudo a2enmod php7.3
+			
+			# SET Default PHP version to 7.3
+			update-alternatives --set php /usr/bin/php7.3
 		
 			#### FIX - Upgrade Sentora to Sentora Live for PHP 7.x fixes
 			# reset home dir for commands

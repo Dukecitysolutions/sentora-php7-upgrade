@@ -283,13 +283,25 @@ if [[ "$OS" = "Ubuntu" ]]; then
 	# -------------------------------------------------------------------------------	
 
         # START HERE
+				
+		# Disable PHP 7.1, 7.2, 7.4 package tell we can test.
+		sudo apt-mark hold php7.1
+		sudo apt-mark hold php7.2
+		sudo apt-mark hold php7.4
 		
-		sudo add-apt-repository ppa:ondrej/php
+		# Add Ondrej Repos
+		sudo add-apt-repository -y ppa:ondrej/apache2
+		sudo add-apt-repository -y ppa:ondrej/php
 		sudo apt-get -yqq update
 		sudo apt-get -yqq upgrade
 		
-		# Disable PHP 7.4 package tell we can test.
-		apt-mark hold php7.4
+		# Check if PHP 7.1, 7.2, 7.4 is installed and remove
+		sudo apt-get -yqq remove php7.1*
+		sudo apt-get -yqq purge php7.1*
+		sudo apt-get -yqq remove php7.2*
+		sudo apt-get -yqq purge php7.2*
+		sudo apt-get -yqq remove php7.4*
+		sudo apt-get -yqq purge php7.4*
 
 		# Add repos
 		#deb http://ppa.launchpad.net/ondrej/php/ubuntu xenial main
@@ -317,8 +329,12 @@ if [[ "$OS" = "Ubuntu" ]]; then
 		
 		fi	
 		
-		# Disable Apache mod_php7.0
+		# Disable Apache mod_php7.0-7.2 & 7.4
 		sudo a2dismod php7.0
+		sudo a2dismod php7.1
+		sudo a2dismod php7.2
+		sudo a2dismod php7.4
+		
 		# Enable Apache mod_php7.3
 		sudo a2enmod php7.3
 		
@@ -895,6 +911,11 @@ fi
 
 # Clean up files downloaded for install/update
 rm -r ~/sentora_php7_upgrade
+
+# Disable PHP 7.1, 7.2, 7.4 package tell we can test. AGAIN to make ubuntu 16.04 didnt override during install(ISSUE)
+sudo apt-mark hold php7.1
+sudo apt-mark hold php7.2
+sudo apt-mark hold php7.4
 
 # -------------------------------------------------------------------------------
 
