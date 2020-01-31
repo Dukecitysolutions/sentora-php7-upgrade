@@ -166,8 +166,18 @@ done
 		rm -rf /etc/apparmor.d/usr.sbin.named
 		cp -r  ~/sentora_php7_upgrade/preconf/apparmor.d/usr.sbin.named /etc/apparmor.d/
 		#chown -R root:root /etc/apparmor.d/usr.sbin.named 
-		#chmod 0644 /etc/apparmor.d/usr.sbin.named 
+		#chmod 0644 /etc/apparmor.d/usr.sbin.named
 		
+		if ! grep -q "managed-keys-directory" /etc/bind/named.conf; then
+			echo -e "\nUpdating named.conf with managed-keys-directory for Ubuntu 16 & 18\n"
+			sed -i '\~dnssec-lookaside auto;~a   managed-keys-directory "/var/named/dynamic";' /etc/bind/named.conf
+			
+			# Delete Default empty managed-keys.bind.jnl file
+			rm -rf /var/named/dymanic/managed-keys.bind
+			rm -rf /var/named/dymanic/managed-keys.bind.jnl
+			
+		fi
+
 		# DELETING maybe or using later ################
 		# DNS now starting fix
 		#file="/etc/apparmor.d/usr.sbin.named"

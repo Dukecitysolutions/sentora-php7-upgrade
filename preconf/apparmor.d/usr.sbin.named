@@ -22,7 +22,8 @@
   /var/cache/bind/** lrw,
   /var/cache/bind/ rw,
   /var/sentora/logs/bind/** rw,
-  /etc/sentora/configs/bind/etc/** rw,
+  /etc/sentora/configs/bind/** rw,
+  /var/named/** rw,
 
   # gssapi
   /etc/krb5.keytab kr,
