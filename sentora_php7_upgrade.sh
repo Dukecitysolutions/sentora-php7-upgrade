@@ -516,6 +516,25 @@ fi
 		cp -r ~/sentora_php7_upgrade/preconf/cron/zdaemon /etc/cron.d/zdaemon
 		sed -i "s|!USER!|root|" "/etc/cron.d/zdaemon"
 		chmod 644 /etc/cron.d/zdaemon
+		
+		# Fix Sentora user CRON_MANAGER Module
+		if [[ "$OS" = "CentOs" ]]; then
+		
+			chown apache:apache /var/spool/cron
+			chmod 0770 /var/spool/cron
+			
+			chown apache:apache /var/spool/cron/apache
+			chmod 0770 /var/spool/cron/apache
+			
+		elif [[ "$OS" = "Ubuntu" ]]; then
+		
+			chown www-data:www-data /var/spool/cron
+			chmod 0770 /var/spool/cron
+			
+			chown www-data:www-data /var/spool/cron/crontabs
+			chmod 0770 /var/spool/cron/crontabs
+		
+		fi
 	
 	# -------------------------------------------------------------------------------
 	# MYSQL Below
