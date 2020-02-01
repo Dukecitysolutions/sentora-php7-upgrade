@@ -8,7 +8,7 @@
 - [x]  Update PHPSysinfo to 3.3.2.
 - [x]  Update PHPMyAdmin to 4.9.2.
 - [ ]  Add Fail2ban to Sentora Services (Apache,Dovecot,Postfix,Proftpd,Sshd etc...) for proper security control.
-- [ ]  Add Firewall Service to control incoming services ( all ports ).
+- [ ]  Add Firewall Service to control incoming/outgoing services ( all ports ).
 - [x]  PHP 7.3.0 bug CVE-2019-11043 - SAFE with Apache 2.4, PHP 7.3.10 or greater. Our code has no issues found after testing.
 - [ ]  Merge Sentora Github 1.0.4 core updated files to this upgrade script if any.
 ----------------------------------------------------------------------------------------
