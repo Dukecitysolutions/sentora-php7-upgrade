@@ -5,11 +5,24 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [0.3.6-BETA] - 2020-01-31
+### Fixed
+- Sentora MYSQL_DATABASE module security issue.
+- Ubuntu installing/updating to other PHP 7 versions during update. Might still need work.
+- Ubuntu 16.04 Bind issue not loading zones due to managed-keys not set correctly.
+- Cron module to use Snuffleupagus.rules for PHP function security.
+- Ubuntu not adding user cron to crontabs file. CentOS for some reason still has issues.
+
+### Added
+- Apache service to stop while upgrade/update is processing to avoid user side issues.
+- Ubuntu PHP pkg Hold on PHP 7.1, 7.2 & 7.4 tell futher testing. Helps avoid updates installing other versions.
+- Ubuntu added ppa:ondrej/apache2 repo to update apache modules.
+
 ## [0.3.5-BETA] - 2020-01-20
 ### Fixed
 - Sentora MYSQL_USERS module security issue. Sentora_core issue #338.
 - Sentora MAILBOXES module security issue. Sentora_core issue #NEED to submit.
-- CentOS 6.x Apache 2.2 NameVirtualHost error resolved.
+- CentOS 6.x Apache 2.2 NameVirtualHost error resolved. (Redirect to panel issue)
 - PHP set Curl/Openssl (curl.cainfo & openssl.cafile) CERT in php.ini for PHP curl_opt- 
   (man-in-the-middle attacks) protection with Snuffleupagus.
 
@@ -82,7 +95,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed ftp_management module not creating proftpd user in proftpd database
 - Cleaned up upgrader script and added Fail points with errors
 
-## [0.2.0-BETA] - 2019-09-09
+## [0.2.0-ALPHA] - 2019-09-09
 ### Added
 - Added Nightly package update script to update core build files.
 - Added CHANGELOG.md to log all changes of builds.
@@ -93,7 +106,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - PHPsysinfo 3.3.1 upgraded.
 - Roundcube 1.3.10 upgraded.
 
-## [0.1.0-BETA] - 2019-09-06
+## [0.1.0-PRE-ALPHA] - 2019-09-06
 ### Added
 - Initial upload of starting core files.
 - CentOS 6 & 7 and Ubuntu 16.04 supported
