@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SENTORA_UPDATER_VERSION="1.0.3.1-Build 0.3.5-BETA"
+SENTORA_UPDATER_VERSION="1.0.3.1-Build 0.3.6-BETA"
 PANEL_PATH="/etc/sentora"
 PANEL_DATA="/var/sentora"
 PANEL_CONF="/etc/sentora/configs"
@@ -114,7 +114,10 @@ if [[ "$OS" = "CentOs" ]]; then
 	# -------------------------------------------------------------------------------
 	echo -e "\nStarting PHP 7.3 with Packages update on Centos 6.*"	
 	# -------------------------------------------------------------------------------
-
+	
+	# Stop Apache services to prevent users experiencing issues during Upgrade
+	service httpd stop
+	
 	yum clean all
 	rm -rf /var/cache/yum/*
 	
@@ -170,7 +173,6 @@ if [[ "$OS" = "CentOs" ]]; then
 	sed -i 's|;curl.cainfo =|curl.cainfo = "/etc/php.d/curl_cert/cacert.pem"|g' /etc/php.ini
 	sed -i 's|;openssl.cafile=|openssl.cafile = "/etc/php.d/curl_cert/cacert.pem"|g' /etc/php.ini
 	
-	 
 	# Reset home
 	cd ~
 	
@@ -182,14 +184,15 @@ if [[ "$OS" = "CentOs" ]]; then
 	
 	# Restart Apache
 	service httpd restart
-		
-
-		
+			
 	# END
 	# -------------------------------------------------------------------------------
 
     elif [[ "$VER" = "7" ]]; then
 	# -------------------------------------------------------------------------------
+	
+	# Stop Apache services to prevent users experiencing issues during Upgrade
+	systemctl stop httpd
 	
 	yum clean all
 	rm -rf /var/cache/yum/*
@@ -256,8 +259,6 @@ if [[ "$OS" = "CentOs" ]]; then
 	sed -i 's|;curl.cainfo =|curl.cainfo = "/etc/php.d/curl_cert/cacert.pem"|g' /etc/php.ini
 	sed -i 's|;openssl.cafile=|openssl.cafile = "/etc/php.d/curl_cert/cacert.pem"|g' /etc/php.ini	
 	
-	
-	
 	# Install php-fpm
 	#yum -y install php-fpm
 	
@@ -266,6 +267,9 @@ if [[ "$OS" = "CentOs" ]]; then
 	
 	# Install git
 	yum -y install git
+	
+	# Restart Apache
+	systemctl restart httpd
 	
     fi
 fi	
@@ -284,13 +288,16 @@ if [[ "$OS" = "Ubuntu" ]]; then
 
         # START HERE
 				
+		# Stop Apache services to prevent users experiencing issues during Upgrade
+		systemctl stop apache2
+			
 		# Disable PHP 7.1, 7.2, 7.4 package tell we can test.
 		sudo apt-mark hold php7.1
 		sudo apt-mark hold php7.2
 		sudo apt-mark hold php7.4
 		
 		# Add Ondrej Repos
-		sudo add-apt-repository -y ppa:ondrej/apache2
+		#sudo add-apt-repository -y ppa:ondrej/apache2
 		sudo add-apt-repository -y ppa:ondrej/php
 		sudo apt-get -yqq update
 		sudo apt-get -yqq upgrade
@@ -360,7 +367,9 @@ if [[ "$OS" = "Ubuntu" ]]; then
 		sed -i 's|;curl.cainfo =|curl.cainfo = "/etc/php/7.3/cacert.pem"|g' /etc/php/7.3/apache2/php.ini
 		sed -i 's|;openssl.cafile=|openssl.cafile = "/etc/php/7.3/cacert.pem"|g' /etc/php/7.3/apache2/php.ini
 	
-	
+		# Restart Apache
+		systemctl restart apache2
+		
 		# Run update & upgrade
 		sudo apt-get -yqq update
 		sudo apt-get -yqq upgrade
@@ -496,9 +505,8 @@ fi
 			sed -i '\~dnssec-lookaside auto;~a   managed-keys-directory "/var/named/dynamic";' /etc/bind/named.conf
 			
 			# Delete Default empty managed-keys.bind.jnl file
-			rm -rf /var/named/dymanic/managed-keys.bind
-			rm -rf /var/named/dymanic/managed-keys.bind.jnl
-			
+			rm -rf /var/named/dynamic/managed-keys.bind
+						
 		fi
 
 		# DELETING maybe or using later ################
@@ -538,8 +546,8 @@ fi
 			
 		elif [[ "$OS" = "Ubuntu" ]]; then
 		
-			chown www-data:www-data /var/spool/cron
-			chmod 0770 /var/spool/cron
+			chown root:root /var/spool/cron
+			chmod 0777 /var/spool/cron
 			
 			chown www-data:www-data /var/spool/cron/crontabs
 			chmod 0770 /var/spool/cron/crontabs
@@ -683,6 +691,11 @@ fi
 		
 		# Set new sentora panel logs dir
 		mkdir -p /var/sentora/logs/panel
+		
+	# Upgrade cron module 1.0.x
+	echo -e "\n--- Updating Cron module..."
+	rm -rf /etc/sentora/panel/modules/cron/
+	cp -r  ~/sentora_php7_upgrade/modules/cron $PANEL_PATH/panel/modules/
 		
 	# Upgrade dns_admin module 1.0.x
 	echo -e "\n--- Updating Dns_Admin module..."

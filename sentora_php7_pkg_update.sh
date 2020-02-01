@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SENTORA_UPDATER_VERSION="1.0.3.1-Build 0.3.5-BETA"
+SENTORA_UPDATER_VERSION="1.0.3.1-Build 0.3.6-BETA"
 PANEL_PATH="/etc/sentora"
 PANEL_DATA="/var/sentora"
 PANEL_CONF="/etc/sentora/configs"
@@ -173,8 +173,7 @@ done
 			sed -i '\~dnssec-lookaside auto;~a   managed-keys-directory "/var/named/dynamic";' /etc/bind/named.conf
 			
 			# Delete Default empty managed-keys.bind.jnl file
-			rm -rf /var/named/dymanic/managed-keys.bind
-			rm -rf /var/named/dymanic/managed-keys.bind.jnl
+			rm -rf /var/named/dynamic/managed-keys.bind
 			
 		fi
 
@@ -217,8 +216,8 @@ done
 			
 		elif [[ "$OS" = "Ubuntu" ]]; then
 		
-			chown www-data:www-data /var/spool/cron
-			chmod 0770 /var/spool/cron
+			chown root:root /var/spool/cron
+			chmod 0777 /var/spool/cron
 			
 			chown www-data:www-data /var/spool/cron/crontabs
 			chmod 0770 /var/spool/cron/crontabs
@@ -349,6 +348,11 @@ done
 	
 		# Set new sentora panel logs dir
 		mkdir -p /var/sentora/logs/panel
+	
+	# Upgrade cron module 1.0.x
+	echo -e "\n--- Updating Cron module..."
+	rm -rf /etc/sentora/panel/modules/cron/
+	cp -r  ~/sentora_php7_upgrade/modules/cron $PANEL_PATH/panel/modules/
 	
 	# Upgrade dns_admin module 1.0.x
 	echo -e "\n--- Updating Dns_Admin module..."
