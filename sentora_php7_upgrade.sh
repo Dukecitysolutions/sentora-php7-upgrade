@@ -798,7 +798,7 @@ fi
 	
 	echo -e "\n--- Starting pChart2.4 upgrade..."
 	rm -rf /etc/sentora/panel/etc/lib/pChart2/
-	cp -r  ~/sentora_php7_upgrade/etc/lib/pChart2 $PANEL_PATH/panel/etc/apps/
+	cp -r  ~/sentora_php7_upgrade/etc/lib/pChart2 $PANEL_PATH/panel/etc/lib/
 		
 	# -------------------------------------------------------------------------------
 	# Start PHPsysinfo 3.3.1 upgrade Below
