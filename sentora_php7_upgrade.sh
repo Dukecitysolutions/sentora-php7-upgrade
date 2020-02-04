@@ -133,9 +133,9 @@ if [[ "$OS" = "CentOs" ]]; then
 	#yum -y remove php
 	
 	# Install PHP 7.3
-	yum -y --enablerepo=remi-php73 install php
+	# yum --enablerepo=remi-php73 install php-xml php-soap php-xmlrpc php-mbstring php-json php-gd php-mcrypt php-zip
 	
-	# yum --enablerepo=remi-php73 install php-xml php-soap php-xmlrpc php-mbstring php-json php-gd php-mcrypt
+	yum -y --enablerepo=remi-php73 install php php-zip
 	
 	# Fix autoconf issues
 	wget http://ftp.gnu.org/gnu/autoconf/autoconf-2.69.tar.gz
@@ -968,9 +968,11 @@ fi
 rm -r ~/sentora_php7_upgrade
 
 # Disable PHP 7.1, 7.2, 7.4 package tell we can test. AGAIN to make ubuntu 16.04 didnt override during install(ISSUE)
-sudo apt-mark hold php7.1
-sudo apt-mark hold php7.2
-sudo apt-mark hold php7.4
+if [[ "$OS" = "Ubuntu" ]]; then
+	sudo apt-mark hold php7.1
+	sudo apt-mark hold php7.2
+	sudo apt-mark hold php7.4
+fi
 
 # -------------------------------------------------------------------------------
 

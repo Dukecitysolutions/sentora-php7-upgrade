@@ -456,6 +456,9 @@ done
 		mv cacert.pem /etc/php.d/curl_cert/cacert.pem
 		sed -i 's|;curl.cainfo =|curl.cainfo = "/etc/php.d/curl_cert/cacert.pem"|g' /etc/php.ini
 		sed -i 's|;openssl.cafile=|openssl.cafile = "/etc/php.d/curl_cert/cacert.pem"|g' /etc/php.ini
+		
+		# Add missing php-zip module for zppy error etc
+		yum -y --enablerepo=remi-php73 install php-zip
 						
 	fi
 	
