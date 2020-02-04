@@ -742,6 +742,11 @@ fi
 	rm -rf /etc/sentora/panel/modules/sub_domains/
 	cp -r  ~/sentora_php7_upgrade/modules/sub_domains $PANEL_PATH/panel/modules/
 	
+	# Upgrade Usage_viewer module 1.0.x
+	echo -e "\n--- Updating Usage_viewer module..."
+	rm -rf /etc/sentora/panel/modules/usage_viewer/
+	cp -r  ~/sentora_php7_upgrade/modules/usage_viewer $PANEL_PATH/panel/modules/
+	
 	# Copy New Apache config template files
 	echo -e "\n--- Updating Sentora vhost templates..."
 	rm -rf /etc/sentora/configs/apache/templates/
@@ -787,6 +792,14 @@ fi
 	bin/installto.sh /etc/sentora/panel/etc/apps/webmail/
 	chown -R root:root /etc/sentora/panel/etc/apps/webmail
 	
+	# -------------------------------------------------------------------------------
+	# Start pChart2.4 w/PHP 7 support upgrade Below
+	# -------------------------------------------------------------------------------
+	
+	echo -e "\n--- Starting pChart2.4 upgrade..."
+	rm -rf /etc/sentora/panel/etc/lib/pChart2/
+	cp -r  ~/sentora_php7_upgrade/etc/lib/pChart2 $PANEL_PATH/panel/etc/apps/
+		
 	# -------------------------------------------------------------------------------
 	# Start PHPsysinfo 3.3.1 upgrade Below
 	# -------------------------------------------------------------------------------
