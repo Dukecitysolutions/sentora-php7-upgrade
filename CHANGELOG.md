@@ -5,9 +5,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [0.3.7-BETA] - TBA
+### Fixed
+- PChart2 upgraded to PChart2.4 w/PHP7 support to fix Chart issues.
+
+### Added
+- Fail2ban to Sentora services(Apache, dovcote, Postfix, Proftpd, Roundcube)
+
 ## [0.3.6-BETA] - 2020-01-31
 ### Fixed
-- Sentora MYSQL_DATABASE module security issue.
+- Sentora MYSQL_DATABASE module SECURITY ISSUE.
 - Ubuntu installing/updating to other PHP 7 versions during update. Might still need work.
 - Ubuntu 16.04 Bind issue not loading zones due to managed-keys not set correctly.
 - Cron module to use Snuffleupagus.rules for PHP function security.
@@ -20,8 +27,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.3.5-BETA] - 2020-01-20
 ### Fixed
-- Sentora MYSQL_USERS module security issue. Sentora_core issue #338.
-- Sentora MAILBOXES module security issue. Sentora_core issue #NEED to submit.
+- Sentora MYSQL_USERS module SECURITY ISSUE. Sentora_core issue #338.
+- Sentora MAILBOXES module SECURITY ISSUE. Sentora_core issue #NEED to submit.
 - CentOS 6.x Apache 2.2 NameVirtualHost error resolved. (Redirect to panel issue)
 - PHP set Curl/Openssl (curl.cainfo & openssl.cafile) CERT in php.ini for PHP curl_opt- 
   (man-in-the-middle attacks) protection with Snuffleupagus.
@@ -31,7 +38,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.3.4-BETA] - 2020-01-15
 ### Fixed
-- Sentora DNS_ADMIN module security issue. Sentora_core issue #344.
+- Sentora DNS_ADMIN module SECURITY ISSUE. Sentora_core issue #344.
 - Issue with CentOS 6 Mysql upgrade corrupting mysql_users table.
 - Adjusted install/update scripts for better compatibilty.
 
