@@ -5,12 +5,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-## [0.3.7-BETA] - TBA
-### Fixed
-- PChart2 upgraded to PChart2.4 w/PHP7 support to fix Chart issues.
-
+## [0.3.8-BETA] - TBA
 ### Added
 - Fail2ban to Sentora services(Apache, dovcote, Postfix, Proftpd, Roundcube)
+
+## [0.3.7-BETA] - 2020-02-04
+### Fixed
+- PChart2 upgraded to PChart2.4 w/PHP7 support to fix Chart issues.
+- CentOS php7-zip module missing in install/update script.
+- CentOS/Ubuntu default Snuffleupagus.rules being to restrictive for panel/php commands.
+
+### Changed
+- Cron module to use its own cron.rules with disabled functions for security.
 
 ## [0.3.6-BETA] - 2020-01-31
 ### Fixed
