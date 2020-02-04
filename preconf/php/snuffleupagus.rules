@@ -62,7 +62,7 @@ sp.disable_function.function("include").value_r("\.(inc|phtml|php)$").allow();
 # Prevent `system`-related injections
 sp.disable_function.function("system").param("command").value_r("[$|;&`\\n\\(\\)\\\\]").drop();
 sp.disable_function.function("shell_exec").param("command").value_r("[$|;&`\\n\\(\\)\\\\]").drop();
-sp.disable_function.function("exec").param("command").value_r("[$|;&`\\n\\(\\)\\\\]").drop();
+#sp.disable_function.function("exec").param("command").value_r("[$|;&`\\n\\(\\)\\\\]").drop();
 sp.disable_function.function("proc_open").param("command").value_r("[$|;&`\\n\\(\\)\\\\]").drop();
 
 # Prevent runtime modification of interesting things
@@ -125,8 +125,8 @@ sp.disable_function.function("is_callable").param("var").value("passthru").drop(
 sp.disable_function.function("curl_setopt").param("value").value("1").allow();
 sp.disable_function.function("curl_setopt").param("value").value("2").allow();
 # `81` is SSL_VERIFYHOST and `64` SSL_VERIFYPEER
-sp.disable_function.function("curl_setopt").param("option").value("64").drop().alias("Please don't turn CURLOPT_SSL_VERIFYCLIENT off.");
-sp.disable_function.function("curl_setopt").param("option").value("81").drop().alias("Please don't turn CURLOPT_SSL_VERIFYHOST off.");
+#sp.disable_function.function("curl_setopt").param("option").value("64").drop().alias("Please don't turn CURLOPT_SSL_VERIFYCLIENT off.");
+#sp.disable_function.function("curl_setopt").param("option").value("81").drop().alias("Please don't turn CURLOPT_SSL_VERIFYHOST off.");
 
 #File upload
 sp.disable_function.function("move_uploaded_file").param("destination").value_r("\\.ph").drop();
