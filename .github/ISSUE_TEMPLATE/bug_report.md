@@ -1,6 +1,6 @@
 ---
 name: Bug report
-about: Create a report to help us improve
+about: Create a report to help us improve or fix issues. ONLY USE if your on current BUILD and still have issues.
 title: ''
 labels: ''
 assignees: ''
@@ -23,9 +23,9 @@ A clear and concise description of what you expected to happen.
 **Screenshots**
 If applicable, add screenshots to help explain your problem.
 
-**Desktop (please complete the following information):**
+**Server info (please complete the following information):**
  - OS: [e.g. iOS]
- - Sentora Live BUILD version [e.g. Build-0.X.X] Find in panel ADMIN->UPDATES
+ - Sentora Live BUILD version: [e.g. Build-0.X.X] Find in panel ADMIN->UPDATES
 
 **Additional context**
 Add any other context about the problem here.
