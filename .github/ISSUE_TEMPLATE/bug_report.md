@@ -1,5 +1,5 @@
 ---
-name: Bug report
+name: Bug/Issue report
 about: Create a report to help us improve or fix issues. ONLY USE if your on current BUILD and still have issues.
 title: ''
 labels: ''
