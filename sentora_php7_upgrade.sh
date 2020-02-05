@@ -679,8 +679,12 @@ fi
 	
 	# Update Snuffleupagus Default rules to current
 	echo -e "\n--- Updating Snuffleupagus default rules..."
-	rm -rf /etc/sentora/configs/php/sp/*
-	cp -r  ~/sentora_php7_upgrade/preconf/php/* /etc/sentora/configs/php/sp/
+	rm -rf /etc/sentora/configs/php/sp/snuffleupagus.rules
+	rm -rf /etc/sentora/configs/php/sp/sentora.rules
+	rm -rf /etc/sentora/configs/php/sp/cron.rules
+	cp -r  ~/sentora_php7_upgrade/preconf/php/snuffleupagus.rules /etc/sentora/configs/php/sp/
+	cp -r  ~/sentora_php7_upgrade/preconf/php/sentora.rules /etc/sentora/configs/php/sp/
+	cp -r  ~/sentora_php7_upgrade/preconf/php/cron.rules /etc/sentora/configs/php/sp/
 	
 	# Upgrade apache_admin with apache_admin 1.0.x
 	echo -e "\n--- Updating Apache_admin module..."
