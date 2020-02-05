@@ -78,21 +78,10 @@ fi
 while true; do
 	echo ""
 	echo "# -----------------------------------------------------------------------------"
-	echo "# THIS CODE IS NOT FOR PRODUCTION SYSTEMS YET. -TESTING ONLY-. USE AT YOUR OWN RISK."
+	echo "# THIS CODE IS NOT FOR PRODUCTION/LIVE SYSTEMS YET. -TESTING ONLY-. USE AT YOUR OWN RISK."
 	echo "# HAPPY SENTORA PHP 7 TESTING. ALL HELP IS NEEDED TO GET THIS OFF THE GROUND AND RELEASED."
 	echo "# -----------------------------------------------------------------------------"
-	echo -e ""
-	echo "###############################################################################"
-	echo -e "\nPlease make sure the Date/Time is correct. This script will need correct Date/Time to install correctly"
-	echo -e "If you continue with wrong date/time this script/services (phpmyadmin) may not install correctly. DO NOT CONTINUE IF DATE/TIME IS WRONG BELOW"
 	echo ""
-	echo -e "\nSet Date/time with this command here - date -s \"19 APR 2012 11:14:00\" "
-	# show date/time to make sure its correct
-	echo ""
-		date
-	echo ""
-	echo "###############################################################################"
-	echo "# -----------------------------------------------------------------------------"
     read -p "Do you wish to continue installing this program? y/yes or n/no..| " yn
     case $yn in
         [Yy]* ) break;;
@@ -553,6 +542,12 @@ fi
 			chmod 0770 /var/spool/cron/crontabs
 		
 		fi
+	
+	# -------------------------------------------------------------------------------
+	# FAIL2BAN Below
+	# -------------------------------------------------------------------------------
+	
+	# COMING SOON!!!!
 	
 	# -------------------------------------------------------------------------------
 	# MYSQL Below

@@ -99,19 +99,10 @@ fi
 while true; do
 	echo ""
 	echo "# -----------------------------------------------------------------------------"
-	echo "# THIS CODE IS NOT FOR PRODUCTION SYSTEMS YET. -TESTING ONLY-. USE AT YOUR OWN RISK."
+	echo "# THIS CODE IS NOT FOR PRODUCTION/LIVE SYSTEMS YET. -TESTING ONLY-. USE AT YOUR OWN RISK."
 	echo "# HAPPY SENTORA PHP 7 TESTING. ALL HELP IS NEEDED TO GET THIS OFF THE GROUND AND RELEASED."
 	echo "# -----------------------------------------------------------------------------"
 	echo ""
-	echo "###############################################################################"
-	echo -e "\nPlease make sure the Date/Time is correct. This script will need correct Date/Time to install correctly"
-	echo -e "If you continue with wrong date/time this script/services (phpmyadmin) may not install correctly. DO NOT CONTINUE IF DATE?TIME IS WRONG BELOW"
-	echo ""
-	# show date/time to make sure its correct
-		date
-	echo ""
-	echo "###############################################################################"
-	echo "# -----------------------------------------------------------------------------"
     read -p "Do you wish to continue updating this program? y/yes or n/no..| " yn
     case $yn in
         [Yy]* ) break;;
@@ -223,6 +214,12 @@ done
 			chmod 0770 /var/spool/cron/crontabs
 		
 		fi
+
+	# -------------------------------------------------------------------------------
+	# FAIL2BAN Below
+	# -------------------------------------------------------------------------------
+	
+	# COMING SOON!!!!
 	
 	# -------------------------------------------------------------------------------
 	# MYSQL Below
@@ -468,57 +465,56 @@ done
 	
 	if [[ "$OS" = "Ubuntu" && ( "$VER" = "16.04" || "$VER" = "18.04" ) ]]; then
 	
-			# Check if PHP 7.1, 7.2, 7.4 is installed and remove
-			sudo apt-get -yqq remove php7.1*
-			sudo apt-get -yqq purge php7.1*
-			sudo apt-get -yqq remove php7.2*
-			sudo apt-get -yqq purge php7.2*
-			sudo apt-get -yqq remove php7.4*
-			sudo apt-get -yqq purge php7.4*
+		# Check if PHP 7.1, 7.2, 7.4 is installed and remove
+		sudo apt-get -yqq remove php7.1*
+		sudo apt-get -yqq purge php7.1*
+		sudo apt-get -yqq remove php7.2*
+		sudo apt-get -yqq purge php7.2*
+		sudo apt-get -yqq remove php7.4*
+		sudo apt-get -yqq purge php7.4*
 	
-			# Disable PHP 7.1, 7.2, 7.4 packages tell we can test.
-			sudo apt-mark hold php7.1
-			sudo apt-mark hold php7.2
-			sudo apt-mark hold php7.4
+		# Disable PHP 7.1, 7.2, 7.4 packages tell we can test.
+		sudo apt-mark hold php7.1
+		sudo apt-mark hold php7.2
+		sudo apt-mark hold php7.4
 			
-			# Disable Apache mod_php7.0-7.2 & 7.4
-			sudo a2dismod php7.0
-			sudo a2dismod php7.1
-			sudo a2dismod php7.2
-			sudo a2dismod php7.4
+		# Disable Apache mod_php7.0-7.2 & 7.4
+		sudo a2dismod php7.0
+		sudo a2dismod php7.1
+		sudo a2dismod php7.2
+		sudo a2dismod php7.4
+		# Enable Apache mod_php7.3
+		sudo a2enmod php7.3
+			
+		# SET Default PHP version to 7.3
+		update-alternatives --set php /usr/bin/php7.3
 		
-			# Enable Apache mod_php7.3
-			sudo a2enmod php7.3
+		#### FIX - Upgrade Sentora to Sentora Live for PHP 7.x fixes
+		# reset home dir for commands
+		cd ~
+	
+		# Pass php.ini.OLD Date.timezone over to new PHP.ini
+		TIMEZONE=$(cat /etc/php5/apache2/php.ini | grep "date.timezone =" | sed -s "s|.*date.timezone \= '\(.*\)';.*|\1|")
+		sed -i 's|;date.timezone =|'"$TIMEZONE"'|g' /etc/php/7.3/apache2/php.ini
+	
+		# Fix missing php.ini settings sentora needs
+		echo -e "\nFix missing php.ini settings sentora needs in Ubuntu 16.04 & 18.04 php 7.3 ..."
+		echo "setting upload_tmp_dir = /var/sentora/temp/"
+		echo ""
+		sed -i 's|;upload_tmp_dir =|upload_tmp_dir = /var/sentora/temp/|g' /etc/php/7.3/apache2/php.ini
+		echo "Setting session.save_path = /var/sentora/sessions"
+		sed -i 's|;session.save_path = "/var/lib/php/sessions"|session.save_path = "/var/sentora/sessions"|g' /etc/php/7.3/apache2/php.ini
+	
+		# Install missing php7.3-xml for system and roundcube
+		echo -e "\nInstall missing php7.3-xml for system and roundcube..."
+		apt-get -y install php7.3-xml php7.3-gd
 			
-			# SET Default PHP version to 7.3
-			update-alternatives --set php /usr/bin/php7.3
-		
-			#### FIX - Upgrade Sentora to Sentora Live for PHP 7.x fixes
-			# reset home dir for commands
-			cd ~
-	
-			# Pass php.ini.OLD Date.timezone over to new PHP.ini
-			TIMEZONE=$(cat /etc/php5/apache2/php.ini | grep "date.timezone =" | sed -s "s|.*date.timezone \= '\(.*\)';.*|\1|")
-			sed -i 's|;date.timezone =|'"$TIMEZONE"'|g' /etc/php/7.3/apache2/php.ini
-	
-			# Fix missing php.ini settings sentora needs
-			echo -e "\nFix missing php.ini settings sentora needs in Ubuntu 16.04 & 18.04 php 7.3 ..."
-			echo "setting upload_tmp_dir = /var/sentora/temp/"
-			echo ""
-			sed -i 's|;upload_tmp_dir =|upload_tmp_dir = /var/sentora/temp/|g' /etc/php/7.3/apache2/php.ini
-			echo "Setting session.save_path = /var/sentora/sessions"
-			sed -i 's|;session.save_path = "/var/lib/php/sessions"|session.save_path = "/var/sentora/sessions"|g' /etc/php/7.3/apache2/php.ini
-	
-			# Install missing php7.3-xml for system and roundcube
-			echo -e "\nInstall missing php7.3-xml for system and roundcube..."
-			apt-get -y install php7.3-xml php7.3-gd
-			
-			# Curl CERT Setup in PHP.ini files for PHP CURL_OPT
-			echo -e "\nSetting up PHP.ini curl CERT..."
-			wget https://curl.haxx.se/ca/cacert.pem
-			mv cacert.pem /etc/php/7.3/cacert.pem
-			sed -i 's|;curl.cainfo =|curl.cainfo = "/etc/php/7.3/cacert.pem"|g' /etc/php/7.3/apache2/php.ini
-			sed -i 's|;openssl.cafile=|openssl.cafile = "/etc/php/7.3/cacert.pem"|g' /etc/php/7.3/apache2/php.ini
+		# Curl CERT Setup in PHP.ini files for PHP CURL_OPT
+		echo -e "\nSetting up PHP.ini curl CERT..."
+		wget https://curl.haxx.se/ca/cacert.pem
+		mv cacert.pem /etc/php/7.3/cacert.pem
+		sed -i 's|;curl.cainfo =|curl.cainfo = "/etc/php/7.3/cacert.pem"|g' /etc/php/7.3/apache2/php.ini
+		sed -i 's|;openssl.cafile=|openssl.cafile = "/etc/php/7.3/cacert.pem"|g' /etc/php/7.3/apache2/php.ini
 	
 		# PHP Mcrypt 1.0.2 install
 		if [ ! -f /etc/php/7.3/apache2/conf.d/20-mcrypt.ini ]
