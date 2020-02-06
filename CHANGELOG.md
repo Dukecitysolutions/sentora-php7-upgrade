@@ -6,8 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ## [0.3.8-BETA] - TBA
+### Fixed
+- Cleaned up installer/updater scripts a little.
+- CentOS/Ubuntu default Snuffleupagus.rules being to restrictive for panel/php commands AGAIN.
+
 ### Added
 - Fail2ban to Sentora services(Apache, dovcote, Postfix, Proftpd, Roundcube)
+
+### Changed
+- Roundcube 1.3.10 to 1.4.2.
 
 ## [0.3.7-BETA] - 2020-02-04
 ### Fixed
