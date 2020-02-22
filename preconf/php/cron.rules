@@ -1,5 +1,6 @@
 # Cron Default snuffleupagus rules - DO NOT EDIT
 
+# Disable PHP Functions for security reasons 
 sp.disable_function.function("passthru").drop();
 sp.disable_function.function("show_source").drop();
 sp.disable_function.function("shell_exec").drop();
