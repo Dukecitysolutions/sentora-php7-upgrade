@@ -1,9 +1,11 @@
 #!/bin/bash
 
-SENTORA_UPDATER_VERSION="1.0.3.1-Build 0.3.7-BETA"
+SENTORA_UPDATER_VERSION="1.0.3.1-Build 0.3.8-BETA"
 PANEL_PATH="/etc/sentora"
 PANEL_DATA="/var/sentora"
 PANEL_CONF="/etc/sentora/configs"
+SENTORA_INSTALLED_DBVERSION=$($PANEL_PATH/panel/bin/setso --show dbversion)
+SEN_VER=${SENTORA_INSTALLED_DBVERSION:0:7}
 
 # Bash Colour
 red='\e[0;31m'
@@ -73,13 +75,13 @@ else
     exit 1
 fi
 
-### Ensure that sentora_1.0.3.1 PHP7_upgrade is installed to run this update
-#if [ -d /etc/sentora ]; then
-#    echo "- Found Sentora v1.0.3.1 with PHP 7.3, processing..."
-#else
-#    echo "Sentora v1.0.3.1 with PHP 7.3 is not installed, aborting..."
-#    exit 1
-#fi
+### Ensure that sentora v1.0.3.1 installed
+if [[ "$SEN_VER" = "1.0.3.1" ]]; then
+    echo "- Found Sentora v$SEN_VER with PHP 7.x, processing..."
+else
+    echo "Sentora version v1.0.3.1 is required to use this update, you have v$SEN_VER. aborting..."
+    exit 1
+fi
 
 ##### Check php 7 was installed or quit installer.
 	PHPVERFULL=$(php -r 'echo phpversion();')
@@ -147,6 +149,19 @@ done
 	# reset home dir for commands
 	cd ~
 	
+	# Fix CentOS 6 DNS 
+	if [[ "$OS" = "CentOs" && ("$VER" = "7") ]]; then
+		if ! grep -q "managed-keys-directory" /etc/bind/named.conf; then
+		echo -e "\nUpdating named.conf with managed-keys-directory for CentOS 6\n"
+		sed -i '\~dnssec-lookaside auto;~a   managed-keys-directory "/var/named/dynamic";' /etc/named.conf
+			
+		# Delete Default empty managed-keys.bind.jnl file
+		rm -rf /var/named/dynamic/managed-keys.bind
+						
+		fi
+	
+	fi		
+	
 	# Fix Ubuntu 16.04 DNS 
 	if [[ "$OS" = "Ubuntu" && ("$VER" = "16.04" || "$VER" = "18.04" ) ]]; then
 	
@@ -167,6 +182,9 @@ done
 			rm -rf /var/named/dynamic/managed-keys.bind
 			
 		fi
+
+		# Set bind log in DB missing in sentora installer
+		$PANEL_PATH/panel/bin/setso --set bind_log "/var/sentora/logs/bind/bind.log"
 
 		# DELETING maybe or using later ################
 		# DNS now starting fix
@@ -219,7 +237,9 @@ done
 	# FAIL2BAN Below
 	# -------------------------------------------------------------------------------
 	
-	# COMING SOON!!!!
+	# Install Fail2ban (will add full code later) for now use my github repo code.
+	echo -e "\nInstalling Fail2ban ..."
+	bash <(curl -L -Ss http://zppy-repo.dukecitysolutions.com/repo/fail2ban/sentora-fail2ban.sh)
 	
 	# -------------------------------------------------------------------------------
 	# MYSQL Below
@@ -275,6 +295,16 @@ done
 		systemctl restart postfix
 		
 	fi
+	
+	# Update/alter Postfix table from MYISAM to INNODB
+	# get mysql root password, check it works or ask it
+	mysqlpassword=$(cat /etc/sentora/panel/cnf/db.php | grep "pass =" | sed -s "s|.*pass \= '\(.*\)';.*|\1|")
+	while ! mysql -u root -p$mysqlpassword -e ";" ; do
+	read -p "Cant connect to mysql, please give root password or press ctrl-C to abort: " mysqlpassword
+	done
+	echo -e "Connection mysql ok"
+	mysql -u root -p"$mysqlpassword" < ~/sentora_php7_upgrade/preconf/sql/1-postfix-innodb.sql
+	mysql -u root -p"$mysqlpassword" < ~/sentora_php7_upgrade/preconf/sql/2-postfix-unused-tables.sql
 	
 	# -------------------------------------------------------------------------------
 	# ProFTPd Below
