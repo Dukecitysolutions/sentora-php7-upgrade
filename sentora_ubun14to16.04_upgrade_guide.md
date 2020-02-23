@@ -1,7 +1,7 @@
 # Sentora Ubuntu 14.04 to 16.04 upgrade Guide
 
-### Login to server directly or thur SSH as root
-### and run the commands below and follow the instructions
+### Login to server directly or thur SSH as ROOT. SUDO will not work!!!
+### Run the following commands below to start OS upgrade and follow the instructions step-by-step.
 ```
 apt-get -y update
 apt-get -y install update-manager-core
@@ -16,10 +16,10 @@ Press [y] - then press Enter.
 ### Continues downloading files...
 
 1 #------------------------------------------------------------------------
-
+```
 [Postfix Configuration] window will appear.
 Select [No Configuration] - then press enter
-
+```
 2 #------------------------------------------------------------------------
 
 [ProFTPD Configuration] window will apprear.
