@@ -21,45 +21,45 @@ Press [y] - then press Enter.
 Select [No Configuration] - then press enter
 ```
 2 #------------------------------------------------------------------------
-
+```
 [ProFTPD Configuration] window will apprear.
 Select [standalone] - then press enter
-
+```
 3 #------------------------------------------------------------------------
-
+```
 [Configuring Libssl1.0.x:i386] window will apprear.
 Select [Yes] - then press enter
-
+```
 4 #------------------------------------------------------------------------
-
+```
 [*Dovecot*- Modified configuration file] window will apprear.
 Select [Keep the local version currently installed] - then press enter
-
+```
 5 #------------------------------------------------------------------------
-
+```
 [Configuration file '/etc/init.d/proftpd'] will ask again about config
 Press [N] - then press enter
-
+```
 6 #------------------------------------------------------------------------
-
+```
 [ProFTPD Configuration] window will apprear.
 Select [Keep the local version currently installed] - then press enter
-
+```
 7 #------------------------------------------------------------------------
-
+```
 [Unattended-upgrade] windows will appear
 Select [Keep the local version currently installed] - then press enter
-
+```
 8 #------------------------------------------------------------------------
-
+```
 [Remove Obsolete packages?]
 Press [Y] - then press enter
-
+```
 9 #------------------------------------------------------------------------
-
+```
 [Restart required]
 Press [Y] - then press enter
-
+```
 10 #------------------------------------------------------------------------
 
 ## Done. Enjoy.
