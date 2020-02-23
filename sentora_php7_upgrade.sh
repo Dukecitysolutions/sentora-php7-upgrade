@@ -490,7 +490,7 @@ fi
 	
 	# Fix CentOS 6 DNS 
 	if [[ "$OS" = "CentOs" && ("$VER" = "7") ]]; then
-		if ! grep -q "managed-keys-directory" /etc/bind/named.conf; then
+		if ! grep -q "managed-keys-directory" /etc/named.conf; then
 		echo -e "\nUpdating named.conf with managed-keys-directory for CentOS 6\n"
 		sed -i '\~dnssec-lookaside auto;~a   managed-keys-directory "/var/named/dynamic";' /etc/named.conf
 			
@@ -521,7 +521,7 @@ fi
 						
 		fi
 
-		# Set bind log in DB missing in sentora installer
+		# Set bind log in DB missing in Sentora installer
 		$PANEL_PATH/panel/bin/setso --set bind_log "/var/sentora/logs/bind/bind.log"
 
 		# DELETING maybe or using later ################
