@@ -8,8 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.3.8-BETA] - 202-02-20
 ### Added
 - Fail2ban to Sentora services(Apache, dovcote, Postfix, Proftpd, Roundcube)
-- Installer version check. Sentora must be v1.0.3 or greater to use script.
-- Update version check. Sentora must be equal to v1.0.3.1 to use update script.
+- Installer version check. Sentora must be v1.0.3 or greater to use INSTALL/UPGRADE script.
+- Update version check. Sentora must be equal to v1.0.3.1 to use UPDATE script.
 
 ### Changed
 - Postfix database tables from MYISAM to INNODB
