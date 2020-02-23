@@ -587,6 +587,9 @@ done
 	rm -rf /etc/sentora/panel/etc/apps/phpsysinfo/
 	cp -r  ~/sentora_php7_upgrade/etc/apps/phpsysinfo $PANEL_PATH/panel/etc/apps/
 	
+	# Setup config file
+	mv -f /etc/sentora/panel/etc/apps/phpsysinfo/phpsysinfo.ini.new /etc/sentora/panel/etc/apps/phpsysinfo/phpsysinfo.ini
+	
 	# -------------------------------------------------------------------------------
 	# Start PHPmyadmin 4.9 upgrade Below - TESTING WHICH VERSION IS BEST HERE.
 	# -------------------------------------------------------------------------------
