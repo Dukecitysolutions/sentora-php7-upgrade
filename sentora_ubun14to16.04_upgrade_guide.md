@@ -1,13 +1,13 @@
-#Sentora Ubuntu 14.04 to 16.04 upgrade Guide
+# Sentora Ubuntu 14.04 to 16.04 upgrade Guide
 
-### login to server directly or thur SSH as root
+### Login to server directly or thur SSH as root
 ### and run the commands below and follow the instructions
 
 apt-get -y update
 apt-get -y install update-manager-core
 sudo do-release-upgrade
 ------------------------------------------------------------------------
-### upgrade will start downloading files
+### Upgrade will start downloading files
 It will say "Installing the upgrade can take serverals hours. Once the download has finished, the process cannot be canceled"
 Press [y] - then press Enter.
 ------------------------------------------------------------------------
@@ -22,7 +22,7 @@ Select [No Configuration] - then press enter
 2 #------------------------------------------------------------------------
 
 [ProFTPD Configuration] window will apprear.
-select [standalone] - then press enter
+Select [standalone] - then press enter
 
 3 #------------------------------------------------------------------------
 
