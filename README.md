@@ -41,7 +41,7 @@ bash <(curl -L -Ss http://zppy-repo.dukecitysolutions.com/repo/sentora-live/php7
 * Check Sentora's ProFTPD, Postfix, Dovecot configs are intact and services are working properply.
 
 ### Download and Read upgrade instructions found below first. Use them Step-by-step.
-(https://github.com/Dukecitysolutions/sentora-php7-upgrade/blob/master/sentora_ubun14to16.04_upgrade_guide.MD)
+(https://github.com/Dukecitysolutions/sentora-php7-upgrade/blob/master/sentora_ubun14to16.04_upgrade_guide.md)
 
 ### After Ubuntu 14.04 to 16.04 is completed with instructions above. Run code below.
 ```
