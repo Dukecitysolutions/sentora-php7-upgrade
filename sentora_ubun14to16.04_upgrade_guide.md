@@ -2,10 +2,11 @@
 
 ### Login to server directly or thur SSH as root
 ### and run the commands below and follow the instructions
-
+```
 apt-get -y update
 apt-get -y install update-manager-core
 sudo do-release-upgrade
+```
 ------------------------------------------------------------------------
 ### Upgrade will start downloading files
 It will say "Installing the upgrade can take serverals hours. Once the download has finished, the process cannot be canceled"
