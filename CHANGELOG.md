@@ -5,7 +5,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-## [0.3.8-BETA \*STABLE\*] - 2020-02-20
+## [0.3.8-BETA \*STABLE\*] - 2020-02-23
 ### Added
 - Fail2ban to Sentora services(Apache, dovcote, Postfix, Proftpd, Roundcube)
 - Installer version check. Sentora must be v1.0.3 or greater to use INSTALL/UPGRADE script.
