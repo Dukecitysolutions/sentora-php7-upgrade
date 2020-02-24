@@ -16,6 +16,9 @@ AddType application/x-httpd-php .php
 #php_admin_value open_basedir "/var/sentora/:/etc/sentora/"
 php_admin_value sp.configuration_file "/etc/sentora/configs/php/sp/sentora.rules"
 
+# PHP Admin Values
+php_admin_value session.save_path {$vh.php_session_path}
+
 ErrorLog "{$cp.log_dir}panel/sentora-error.log" 
 CustomLog "{$cp.log_dir}panel/sentora-access.log" combined
 CustomLog "{$cp.log_dir}panel/sentora-bandwidth.log" common
