@@ -488,10 +488,10 @@ fi
 	# reset home dir for commands
 	cd ~
 	
-	# Fix CentOS 6 DNS 
+	# Fix CentOS 7 DNS 
 	if [[ "$OS" = "CentOs" && ("$VER" = "7") ]]; then
 		if ! grep -q "managed-keys-directory" /etc/named.conf; then
-		echo -e "\nUpdating named.conf with managed-keys-directory for CentOS 6\n"
+		echo -e "\nUpdating named.conf with managed-keys-directory for CentOS 7\n"
 		sed -i '\~dnssec-lookaside auto;~a   managed-keys-directory "/var/named/dynamic";' /etc/named.conf
 			
 		# Delete Default empty managed-keys.bind.jnl file
