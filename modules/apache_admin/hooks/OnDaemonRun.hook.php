@@ -124,7 +124,7 @@ function WriteVhostConfigFile()
 				if ($file != "." && $file != "..") {
 					$page = explode(".", $file);
 					if (!fs_director::CheckForEmptyValue(CheckErrorDocument($page[0]))) {
-						$loaderrorpages[] .= "ErrorDocument " . $page[0] . " /etc/static/errorpages/" . $page[0] . ".html";
+						$loaderrorpages[] = "ErrorDocument " . $page[0] . " /etc/static/errorpages/" . $page[0] . ".html";
 					}
 				}
 			}
