@@ -14,11 +14,11 @@
 ## About this upgrade script:
 * Created this upgrade script to help get PHP 7.x support to Sentora users Quickly, Safely and SECURELY.
 * Upgrades PHP 5.x to PHP 7.3
-* Replaces Suhosin 0.9.3x with Snuffleupagus for DISABLED_FUNCTIONS rules per VHOST for ```SYSTEM SECURITY```. Disabled Fuctions below:
+* Replaces Suhosin 0.9.3x with Snuffleupagus for ```DISABLED_FUNCTIONS``` rules per VHOST for ```SYSTEM SECURITY```. Disabled Fuctions below:
 
   **Disabled_functions (passthru, show_source, shell_exec, system, pcntl_exec, popen, pclose, proc_open, proc_nice, proc_terminate, proc_get_status, proc_close, leak, apache_child_terminate, posix_kill, posix_mkfifo, posix_setpgid, posix_setsid, posix_setuid, escapeshellcmd, escapeshellarg, exec)**
 
-* Apache_admin - Upgraded to support SSL, Snuffleupagus disable_functions, vhosts file written with Smarty .tpl files.
+* Apache_admin - Upgraded to support SSL, Snuffleupagus ```DISABLED_FUNCTIONS```, vhosts file written with Smarty .tpl files.
 * Adds Smarty template lib to /etc/sentora/panel/etc/libs/smarty
 * Updated third-party applications ( PHPmyadmin, PHPsysinfo, Roundcube )
 * NEEDS Security testing to make sure PHP 7 w/Snuffleupagus upgrade did not uninstall packages we need.(Except for Suhosin)
