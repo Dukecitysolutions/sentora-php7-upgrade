@@ -14,7 +14,7 @@
 ## About this upgrade script:
 * Created this upgrade script to help get PHP 7.x support to Sentora users Quickly, Safely and SECURELY.
 * Upgrades PHP 5.x to PHP 7.3
-* Replaces Suhosin 0.9.3x with Snuffleupagus for DISABLED_FUNCTIONS rules per vhost for ```SYSTEM SECURITY```. Disabled Fuctions below:
+* Replaces Suhosin 0.9.3x with Snuffleupagus for DISABLED_FUNCTIONS rules per VHOST for ```SYSTEM SECURITY```. Disabled Fuctions below:
 
   **Disabled_functions (passthru, show_source, shell_exec, system, pcntl_exec, popen, pclose, proc_open, proc_nice, proc_terminate, proc_get_status, proc_close, leak, apache_child_terminate, posix_kill, posix_mkfifo, posix_setpgid, posix_setsid, posix_setuid, escapeshellcmd, escapeshellarg, exec)**
 
