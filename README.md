@@ -20,16 +20,15 @@
 * Apache_admin - Upgraded to support SSL, Snuffleupagus ```DISABLED_FUNCTIONS```, vhosts file written with Smarty .tpl files.
 * Adds Smarty template lib to /etc/sentora/panel/etc/libs/smarty
 * Updated third-party applications to **( PHPmyadmin 4.9.x, PHPsysinfo-3.3.1, Roundcube-1.3.10 )**
-* NEEDS Security testing to make sure PHP 7 w/Snuffleupagus upgrade did not uninstall packages we need.(Except for Suhosin)
 * Check out [CHANGELOG](https://github.com/Dukecitysolutions/sentora-php7-upgrade/blob/master/CHANGELOG.md) to view changes/details about this build.
-* **PLEASE NOTE: Some third-party modules may not work. This is due to PHP 7. The modules will need to be updated to work.**
+* **PLEASE NOTE: Some third-party modules may not work. This is due to PHP 7. The modules will need to be updated to work. Please contact Module Author for help**
 * More details to come soon.
 
 ### Supported OS:
 
-CentOS 6 & 7
+**CentOS 6 & 7**
 
-Ubuntu 16.04 - Upgraded from 14.04 Prior to running upgrade script. - Details Below.
+**Ubuntu 16.04 - Upgraded from 14.04 Prior to running upgrade script. - Details Below.**
 
 
 ## How to use Sentora php7 upgrade script.
