@@ -228,7 +228,7 @@ if [[ "$OS" = "CentOs" ]]; then
 	yum -y install yum-utils
 	yum-config-manager --enable remi-php73
 	yum -y update
-	yum -y install php-zip php-mysql php-mcrypt
+	yum -y install php php-zip php-mysql php-mcrypt
 	
 	
 	## Setup PHP 7.3 new PHP.INI file shipped with PHP and rename old PHP.INI
