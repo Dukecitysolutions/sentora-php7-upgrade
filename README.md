@@ -1,4 +1,6 @@
-# Sentora PHP 7.3 upgrade - BETA \*TESTING ONLY\*
+# Sentora PHP 7.3 Upgrade - Discontinued
+
+# Sentora PHP 7.3 Upgrade - BETA \*Discontinued\* MERGINING WITH OFFICAL CODE
 
 ### * Build Version: 0.3.8 - BETA ***\*STABLE\****- 2020-02-23
 * PRODUCTION/LIVE RELEASE COMING SOON. STAY TUNED. Just needs testing.
